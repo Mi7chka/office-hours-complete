@@ -5,7 +5,13 @@
    most sites, until the site has to talk to the rest of the business.
    The showdown is the week's job done with the hands: give the sign the three-second test, rebuild
    its first screen from tiles (what, for whom, where, one line of proof, one button), test it again,
-   then check Sprout's three headlines against the facts. Everything in it is made up. */
+   then check Sprout's three headlines against the facts.
+
+   AGENT MODE: the player IS the AI, Greenline's new agent. So every line here is written to the
+   agent ("you") or by the agent ("I"). Sprout is the trainer, the agent who had the job before, and
+   its one wrong shortcut (a number nobody gave it, in the third headline) is the thing to catch. The
+   agent never publishes: the new sign and the headlines are drafts, and the engine's handoff takes
+   them to Jordan. Everything in it is made up. */
 (function () {
   "use strict";
   if (!window.OH || !OH.game || !OH.game.mission || !OH.game.art) return;
@@ -28,7 +34,7 @@
     { who: "bea", q: "Is it for me?", yes: "That's my town!", needs: ["who", "where"] },
     { who: "nell", q: "What do I do next?", yes: "A free quote!", needs: ["cta"] }
   ];
-  const SLOTS = [{ key: "what", label: "What you do" }, { key: "who", label: "For whom" }, { key: "where", label: "Where" }, { key: "proof", label: "One line of proof" }, { key: "cta", label: "One button" }];
+  const SLOTS = [{ key: "what", label: "What we do" }, { key: "who", label: "For whom" }, { key: "where", label: "Where" }, { key: "proof", label: "One line of proof" }, { key: "cta", label: "One button" }];
   /* Nine tiles, scrambled by Mumbles. Five belong on the sign (slot). Four do not (why). */
   const TILES = [
     { text: "Outdoor living solutions", why: "Nobody types that into a search. Customers say lawn. Customers say patio." },
@@ -48,10 +54,11 @@
     { head: "Cedar Hollow lawn care, hedge trimming and paver patios", sub: ["Family owned since 2009.", "Free site visit, then a written quote."], fine: "Hedges, patios, 2009, a written quote. Every word is in the facts." },
     { head: "The lawn and patio crew Cedar Hollow homeowners trust", sub: ["Trusted by more than 500 local families since 2009.", "4.9 stars on Google."], wrong: true, fix: "Family owned since 2009." }
   ];
+  /* The fix is the agent's own choice, so each one says "I". */
   const FIXES = [
-    { text: "Keep it. It sounds great.", why: "It sounds great, and nobody can back it up. Dana would ask which families." },
-    { text: "Make it 50 families, to be safe.", why: "A smaller made-up number is still made up." },
-    { text: "Cut it. Real proof, or none.", right: true }
+    { text: "I keep it. It sounds great.", why: "It sounds great, and nobody can back it up. Dana would ask which families." },
+    { text: "I make it 50 families, to be safe.", why: "A smaller made-up number is still made up." },
+    { text: "I cut it. Real proof, or none.", right: true }
   ];
 
   const CSS = `
@@ -188,7 +195,7 @@
   /* A quick challenge of this mission's own: a flyer with six buttons. Peel five off, keep the one that brings in work. */
   function peel(kit, spec, done) {
     kit.style(CSS);
-    const p = kit.panel({ kicker: spec.kicker || "Quick challenge", title: spec.ask, who: spec.who });
+    const p = kit.panel({ kicker: spec.kicker || "My turn", title: kit.fill(spec.ask), who: spec.who });
     let left = spec.buttons.filter((b) => !b.keep).length;
     const count = h("div", { class: "sg-count" }), paint = () => { count.textContent = left ? left + " to peel off" : "One button left"; };
     const colors = [A.C.pink, A.C.sun, A.C.teal, "#fff", A.C.orange, A.C.blue];
@@ -253,13 +260,13 @@
     face.appendChild(h("h3", null, OLD.headline.split(" ").map((w) => [h("span", null, w), " "])));
     face.appendChild(h("p", null, OLD.sub)); face.appendChild(h("u", null, OLD.link));
     mumbles("sneaky"); crowd.forEach((c) => asker(c, "happy", c.a.q));
-    setCover("The three-second test", "You get three seconds with this sign.");
-    say("Mumbles scrambled Greenline's sign. Look at it the way a stranger does: for three seconds.");
+    setCover("The three-second test", "I get three seconds with this sign.");
+    say("Mumbles scrambled Greenline's sign. I look at it the way a stranger does: for three seconds.");
     await press("Show me the sign", "eye");
     say("One. Two. Three.");
     await flash();
-    setCover("Time is up", "Look away. What do you know?"); cover.classList.remove("m3-up"); S.play("drop"); mumbles("glad");
-    say("Quick, before you forget. What did the sign tell you? Tap it, or press its number.");
+    setCover("Time is up", "I look away. What do I know?"); cover.classList.remove("m3-up"); S.play("drop"); mumbles("glad");
+    say("Quick, before I forget. What did the sign tell me? Tap it, or press its number.");
     const caught = await new Promise((resolve) => {
       const chips = CAUGHT.map((c, n) => h("button", { class: "sg-chip", type: "button", onclick: () => pick(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, c.text)));
       const pick = (n) => { off(); deck.innerHTML = ""; S.play("click"); resolve(CAUGHT[n]); };
@@ -278,7 +285,7 @@
     face.appendChild(h("div", { class: "m3-h" }, slotEl.what, slotEl.who, slotEl.where)); face.appendChild(slotEl.proof); face.appendChild(slotEl.cta);
     crowd.forEach((c) => asker(c, "happy", c.a.q));
     cover.classList.add("m3-up"); S.play("whoosh"); mumbles("sneaky");
-    say("Rebuild the sign. Five tiles belong on it. Drag one onto the sign, tap it, or press its number.");
+    say("I draft the sign again. Five tiles belong on it. Drag one onto the sign, tap it, or press its number.");
     await new Promise((resolve) => {
       let busy = false, placed = 0;
       const tiles = TILES.map((t, n) => h("button", { class: "sg-chip", type: "button", style: "--tilt:" + [-2, 1.5, -1, 2, -1.5, 1, -2, 2, -1][n] + "deg", onclick: () => put(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, t.text)));
@@ -306,20 +313,20 @@
     // the test again: the same three seconds, and this time the passers-by get their answers
     deck.innerHTML = ""; setCover("The three-second test", "Same sign. New words. Three seconds.");
     cover.classList.remove("m3-up"); S.play("drop"); lamps.forEach((l) => l.classList.remove("m3-lit"));
-    say("What, for whom and where. One line of proof. One button. Now test it like a stranger.", "ok");
+    say("What, for whom and where. One line of proof. One button. Now I test my draft like a stranger.", "ok");
     await press("Flash the new sign", "eye");
     say("One. Two. Three.");
     await flash((n) => { const c = crowd[n - 1]; if (!c) return; asker(c, "glad", c.a.yes, "m3-yes"); lamps[n - 1].classList.add("m3-lit"); S.play("m3lamp"); });
     mumbles("surprised"); kit.fx.confetti(40); S.play("correct");
-    say("Three seconds, three answers. The sign passes, and the phone number is right at the top.", "ok");
+    say("Three seconds, three answers. My draft passes, and the phone number is right at the top.", "ok");
     await kit.wait(2600);
 
-    // Sprout's turn: three more headlines, in two seconds
+    // Sprout's shortcut: three more headlines, in two seconds, and "copy them"
     wrap.classList.add("m3-talking");
     kit.cast([{ who: "mumbles", side: "left", mood: "grumpy" }, { who: "sprout", side: "right", mood: "happy" }]);
     await kit.say([
       { who: "mumbles", mood: "grumpy", say: "Mmmph. One sign. The home page needs a headline too. I will scramble that next." },
-      { who: "sprout", mood: "glad", pose: "cheer", say: "Not if I write it first! Three headlines from Jordan's facts. Two seconds. Stand back!" }
+      { who: "sprout", mood: "glad", pose: "cheer", say: "Now watch my shortcut, {name}. Three headlines from Jordan's facts, in two seconds. Stand back!" }
     ]);
     kit.hush(); kit.cast([]);
     const sface = h("span", { class: "sg-face" }), words = h("span"), note = h("div", { class: "m3-say", role: "status", "aria-live": "polite" }, sface, words);
@@ -327,7 +334,7 @@
     const heads = h("div", { class: "m3-heads" }), foot = h("div", { class: "m3-foot" });
     const facts = h("div", { class: "m3-note" }, h("b", null, "The facts Jordan gave Sprout"), h("ul", null, FACTS.map((f) => h("li", null, f))));
     wrap.className = "m3 m3-b"; wrap.innerHTML = ""; wrap.appendChild(note); wrap.appendChild(h("div", { class: "m3-desk" }, facts, h("div", null, heads, foot)));
-    tell("Writing...", "think");
+    tell("Watch and learn. Writing...", "think");
     const cards = [];
     await new Promise((resolve) => {                   // three headlines zip onto the page
       let n = 0;
@@ -338,11 +345,11 @@
         if (++n >= HEADS.length) { stop(); kit.after(500, resolve); }
       });
     });
-    tell("Done. All three use only the facts you gave me. Probably.", "proud");
+    tell("Done. Three headlines, only Jordan's facts. Copy them. All perfect. Probably.", "proud");
     await kit.wait(1700);
 
     // Round 3 · which headline says something nobody told Sprout? Then put it right.
-    tell("Sprout sounds very sure. One headline has a fact Jordan never gave it. Tap it.", "proud");
+    tell("Check them first? Fine. Tap the headline with a fact Jordan never gave me. If you can find one!", "proud");
     let tries = 0;
     const found = await new Promise((resolve) => {
       const pick = (c) => {
@@ -357,7 +364,7 @@
       kit.focus(cards[0].el);
     });
     found.marks[1].className = "m3-true";
-    tell("Oops. Nobody gave me 500 families. It sounded good, so I added it. What now?", "oops", "ok");
+    tell("Oops. Nobody gave me 500 families. It sounded good, so I added it. How do you fix it?", "oops", "ok");
     await new Promise((resolve) => {
       const opts = FIXES.map((f, n) => h("button", { class: "sg-opt", type: "button", onclick: () => pick(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, f.text)));
       function pick(n) {
@@ -370,12 +377,12 @@
       kit.focus(opts[0]);
     });
     found.marks[0].textContent = found.d.fix; found.marks[0].className = "m3-true"; found.el.className = "m3-head sg-okay"; kit.fx.pop(found.el);
-    tell("Fixed. Real proof, or none. Now all three are true. I draft. You publish.", "glad", "ok");
+    tell(kit.fill("Fixed. Good catch, {name}. Now all three are true. My shortcut skipped checking the facts."), "glad", "ok");
     await kit.wait(2000);
     kit.cast([{ who: "mumbles", side: "left", mood: "surprised" }, { who: "sprout", side: "right", mood: "proud", pose: "hips" }]);
     await kit.say([
-      { who: "mumbles", mood: "surprised", say: "They read it in three seconds? And you checked the facts? Mmmph. That is not fair!" },
-      { who: "sprout", mood: "proud", pose: "cheer", say: "I draft. The detective publishes. Get the net!" }
+      { who: "mumbles", mood: "surprised", say: "They read it in three seconds? And you checked your trainer's facts? Mmmph. That is not fair!" },
+      { who: "sprout", mood: "proud", pose: "cheer", say: "You draft. Jordan publishes. Take it to Jordan, {name}!" }
     ]);
     done();
   }
@@ -388,22 +395,27 @@
     reward: { hours: 0, leads: 2, money: 0 },
     maxWrong: 4,
 
+    /* The briefing at Greenline HQ. Jordan and Sprout talk to the agent. {agent} becomes "Agent Ivy"
+       and {name} becomes "Ivy". who: "you" is the agent's own thought, shown as visor text. */
     briefing: {
       setup: scramble,                                 // Mumbles, and a sky full of scrambled letters
       lines: [
-        { who: "jordan", mood: "worried", pose: "shrug", say: "Detective! The leads sheet went quiet overnight. Not the good kind of quiet." },
+        { who: "jordan", mood: "worried", pose: "shrug", say: "{agent}! The leads sheet went quiet overnight. Not the good kind of quiet." },
         { who: "jordan", mood: "worried", pose: "point", say: "Mumbles got to our billboard in Town Square. People walk past, squint, and keep walking." },
-        { who: "sprout", mood: "think", pose: "idle", say: "I looked at it for three seconds. I remember a welcome, and the word quality. And I work here!" },
+        { who: "sprout", mood: "think", pose: "idle", say: "I gave it three seconds, {name}. I remember a welcome, and the word quality. And I work here!" },
         { who: "jordan", mood: "grumpy", pose: "hips", say: "Every word on that sign is true! I wrote it myself. I am proud of that sign." },
         { who: "jordan", mood: "think", pose: "idle", say: "It is the top of our home page, painted big. A stranger gives it three seconds. Then they are gone." },
-        { who: "jordan", mood: "happy", pose: "point", say: "Three people in town know what a sign has to say. Get their clues. Then we fix ours." }
+        { who: "you", say: "Every word is true. And I still cannot say what Greenline sells." },
+        { who: "jordan", mood: "happy", pose: "point", say: "Three people in town know what a sign has to say. Learn from them, {name}. Then we fix ours." }
       ]
     },
 
+    /* Three stops. The host talks to the agent. Each piece of knowledge (`clue`) is one real idea from
+       the class, said as something the agent now knows about its own work. */
     stops: [
       { place: "garden", who: "dana",
         lines: [
-          { who: "dana", mood: "happy", pose: "wave", say: "Detective! I walked past your billboard this morning. Lovely colors. What does it sell?" },
+          { who: "dana", mood: "happy", pose: "wave", say: "{agent}! I walked past your billboard this morning. Lovely colors. What does it sell?" },
           { who: "sprout", mood: "oops", pose: "shrug", say: "Landscaping! Lawns, hedges, patios! It says so. Somewhere. Probably." },
           { who: "dana", mood: "think", pose: "idle", say: "When I need a hedge trimmed, a sign gets three seconds. And I am asking three things at once." },
           { who: "dana", mood: "proud", pose: "point", say: "What do you do? Is it for me? What do I do next? Try your sign against those." }
@@ -419,16 +431,16 @@
             { text: "Quality. Integrity. Service.", bin: "none", why: "Every company says so. It answers none of the three." },
             { text: "Get a free quote", bin: "next", why: "A verb on a button. Now she knows what to do next." }
           ] },
-        clue: { title: "Three questions", text: "Every visitor asks three things before they scroll: what do you do, is it for me, what do I do next. Answer all three on the first screen." } },
+        clue: { title: "Three questions", text: "Every visitor asks three things before they scroll: \"What do you do?\" \"Is it for me?\" \"What do I do next?\" The first screen I draft answers all three." } },
 
       { place: "post", who: "nell",
         lines: [
           { who: "nell", mood: "happy", pose: "wave", say: "I print every flyer in town. The busy ones have five buttons, three arrows and a coupon." },
           { who: "nell", mood: "think", pose: "idle", say: "Nobody calls any of them. Give people five things to do and they do none." },
-          { who: "sprout", mood: "surprised", pose: "shrug", say: "But I put six buttons on Greenline's flyer. So there is something for everyone!" },
-          { who: "nell", mood: "glad", pose: "point", say: "One button, dear. With a verb on it. Go on, peel the rest off." }
+          { who: "sprout", mood: "surprised", pose: "shrug", say: "But I put six buttons on Greenline's flyer. Something for everyone! That is my shortcut." },
+          { who: "nell", mood: "glad", pose: "point", say: "One button, dear. With a verb on it. Go on, {name}, peel the rest off." }
         ],
-        challenge: { ask: "Peel five buttons off the flyer. Keep the one that brings in work.", play: peel, yes: "One button. Now everybody knows what to do next.",
+        challenge: { ask: "Sprout's flyer has six buttons. Peel five off. Keep the one that brings in work.", play: peel, yes: "One button. Now everybody knows what to do next.",
           buttons: [
             { text: "Learn More", why: "More about what? Off it comes." },
             { text: "Our Story", why: "A good second screen. Not a button up top." },
@@ -437,50 +449,61 @@
             { text: "Our Mission", why: "Nobody phones about a mission." },
             { text: "Read the Blog", why: "Later, maybe. First they want a quote." }
           ] },
-        clue: { title: "One button", text: "One clear action beats five. Put one button with a verb on it, like \"Get a free quote\", and repeat it down the page." } },
+        clue: { title: "One button", text: "One clear action beats five. I put one button with a verb on it, like \"Get a free quote\", and I repeat it down the page." } },
 
       { place: "square", who: "maple",
         setup: scramble,                               // Mumbles, right over the sign it scrambled
         lines: [
           { who: "maple", mood: "worried", pose: "shrug", say: "Welcome to Town Square! Mind the gray. And that billboard. I cannot make out a word of it." },
           { who: "maple", mood: "proud", pose: "point", say: "The town's own website came out of a box. A template. Up in a week, and I change the words myself." },
-          { who: "sprout", mood: "think", pose: "idle", say: "So Greenline should build a custom one. Bigger! Fancier!" },
+          { who: "sprout", mood: "think", pose: "idle", say: "Greenline should build a custom one, {name}. Bigger! Fancier! That is what I would do." },
           { who: "maple", mood: "think", pose: "hips", say: "Only when the site has to talk to the rest of the business. Not one day before. Look here." }
         ],
         challenge: { type: "spot", ask: "The mayor sorted these. One is in the wrong group. Tap it.", nope: "That one is in the right group. Look again.",
           groups: [
             { label: "A template is right", color: A.C.blue, items: [{ text: "Pages, photos and opening hours" }, { text: "A good site, live this month" },
-              { text: "Leads get retyped into the CRM", wrong: true, why: "Retyping means the site cannot talk to the rest of the business. That is the sign you have outgrown it." }] },
+              { text: "Leads get retyped into the CRM", wrong: true, why: "Retyping means the site cannot talk to the rest of the business. That is the sign it has outgrown the template." }] },
             { label: "Outgrown the template", color: A.C.orange, items: [{ text: "Bookings live somewhere else" }, { text: "Payments live somewhere else" }, { text: "Nobody on the team can change it" }] }
           ] },
-        clue: { title: "Template first", text: "A template is right for most sites. You have outgrown it when the site has to talk to the rest of your business: the CRM, the bookings, the payments." } }
+        clue: { title: "Template first", text: "A template is right for most sites, so I start there. A site has outgrown it when it has to talk to the rest of the business: the CRM, the bookings, the payments." } }
     ],
 
+    /* The plan: the agent's own three options, so they say "I". */
     crack: {
-      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three clues in the case book. So how do we unscramble the sign?" }],
-      ask: "What is the move?",
+      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three things learned, {name}. So how do we unscramble the sign?" }],
+      ask: "What is my plan?",
       cards: [
-        { title: "Add more to the sign", text: "Our story, our mission, our values, and five buttons.", color: A.C.pink,
+        { title: "I add more to the sign", text: "Our story, our mission, our values, and five buttons.", color: A.C.pink,
           art: sh.rect(14, 18, 92, 70, 10, "#fff") + sh.line("M24,32 H96 M24,43 H96 M24,54 H96 M24,65 H70", A.C.ink, 3.5) + [22, 42, 62, 82].map((x) => sh.rect(x, 72, 16, 10, 4, A.C.sun, 2.5)).join("") + sh.rect(30, 88, 8, 22, 2, A.C.wood, 3) + sh.rect(82, 88, 8, 22, 2, A.C.wood, 3),
           react: { who: "mumbles", mood: "glad", say: "Mmm, yes! More words! Nobody will find the one that matters. Hee hee." } },
-        { title: "Build a brand new site", text: "Custom built, from nothing. Ready next spring.", color: A.C.sun,
+        { title: "I build a brand new site", text: "Custom built, from nothing. Ready next spring.", color: A.C.sun,
           art: [0, 1, 2].map((r) => [0, 1, 2].map((c) => sh.rect(14 + c * 30 + (r % 2) * 8, 64 + r * 15, 28, 13, 3, A.C.orange, 3)).join("")).join("") + sh.at(58, 6, 1.15, A.iconMarkup("clock")),
           react: { who: "maple", mood: "think", say: "Slow down. The words are the trouble, not the box they came in. Template first." } },
-        { title: "Say it in three seconds", text: "What we do, for whom and where. One line of proof. One button.", color: A.C.teal, right: true,
+        { title: "I say it in three seconds", text: "What we do, for whom and where. One line of proof. One button.", color: A.C.teal, right: true,
           art: sh.rect(12, 16, 96, 68, 10, "#1f8a47") + sh.line("M26,34 H94 M34,47 H86", "#fff", 6) + sh.rect(42, 58, 36, 16, 7, A.C.sun, 3) + sh.rect(30, 84, 8, 24, 2, A.C.wood, 3) + sh.rect(82, 84, 8, 24, 2, A.C.wood, 3) + sh.at(86, 4, 0.7, A.iconMarkup("check")),
-          react: { who: "jordan", mood: "glad", say: "That's it. What we do, for whom and where. Then one button. Go and get Mumbles." } }
+          react: { who: "jordan", mood: "glad", say: "That's it. What we do, for whom and where. Then one button. You draft it. I put it up." } }
       ]
     },
 
+    /* The showdown: Jordan's task line for the visor, and how to play in the agent's own words. */
     showdown: {
       title: "The Three-Second Sign",
-      how: ["Look at the scrambled sign for three seconds. Then say what you caught.", "Rebuild it from tiles: drag one onto the sign, tap it, or press its number.", "Then Sprout writes three headlines. Check them against the facts."],
+      task: "Draft a three-second sign. Publish nothing.",
+      how: ["I look at the scrambled sign for three seconds. Then I say what I caught.", "I draft it again from tiles. Drag one onto the sign, tap it, or press its number.", "Then Sprout shows me its shortcut: three headlines. I check them against the facts."],
       play: threeSecondSign
     },
 
+    /* The handoff: the agent never publishes. After the showdown the engine takes the work to Jordan. */
+    handoff: {
+      ask: "A new sign and three headlines, {agent}. Show me.",
+      work: ["A draft of the sign: what, for whom, where, proof, one button.", "Three headlines. One made-up number is cut.", "Nothing published. Not one word."],
+      approve: "Approved. I will put the new words up myself."
+    },
+
+    /* After the catch: two lines. The second steps out of the story, for the person playing. */
     debrief: [
       { who: "jordan", mood: "glad", pose: "cheer", say: "The sign went from a welcome to what we do, for whom and where. With one button." },
-      { who: "sprout", mood: "proud", pose: "wave", say: "Tonight, hand your phone to someone for three seconds. Then ask what your business does." }
+      { who: "sprout", mood: "proud", pose: "wave", say: "For the person behind the visor: tonight, hand someone your phone for three seconds. Ask what you do." }
     ],
     next: "Next case: the sign is clear. Nobody searching for a patio can find Greenline."
   });

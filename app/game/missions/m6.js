@@ -4,6 +4,13 @@
    the AI drafts the follow-up from the notes and never invents a day.
    The showdown is the week's job done by hand: every quiet lead gets a next step and a date, and the
    no gets closed. The leads, their notes and their dates come from app/data/w6-pipeline.js.
+
+   AGENT MODE: the player IS the AI, Greenline's new agent. So every line here is written to the
+   agent ("you") or by the agent ("I"). Sprout is the trainer, the agent who had the job before, and
+   its one wrong shortcut (a follow-up that promises a day nobody picked) is the thing to catch. The
+   agent never sends and never calls a customer: the next steps it ties on are Jordan's to do, and
+   the engine's handoff takes the finished work to Jordan.
+
    GAME.md explains every field and every kit call used here. Everything in it is made up. */
 (function () {
   "use strict";
@@ -33,15 +40,16 @@
   /* What the game knows about each quiet lead, by id:
        notes  which sentences of the lead's notes to show
        tags   three next steps to tie on. day: how many days from today, or words that are not a date.
-              Exactly one is right. `shut` closes the lead instead of following up.                  */
+              Exactly one is right. `shut` closes the lead instead of following up.
+              A next step is a row on Jordan's list: Jordan does it, the agent only ties it on.     */
   const MOVES = {
     1: { notes: [0, 1, 3], tags: [
       { step: "Ask if she is still interested", day: 1, why: "She is waiting on Greenline. Jordan owes her the quote." },
-      { step: "Write the quote", day: "when it gets quiet", why: "It never gets quiet. Pick a day." },
+      { step: "Write the quote", day: "when it gets quiet", why: "It never gets quiet. A next step needs a real day." },
       { step: "Write her quote, timber and stone", day: 1, right: true, yes: "The next step is Jordan's, and now it has a day." }] },
     3: { notes: [1, 2, 3], tags: [
       { step: "Email him three time slots", day: 0, why: "He does not read email. It would sit there until spring." },
-      { step: "Phone him with a time slot", day: 0, right: true, yes: "A phone call, the way he asked. Before the first freeze." },
+      { step: "Phone him with a time slot", day: 0, right: true, yes: "A phone call from Jordan, the way he asked. Before the first freeze." },
       { step: "Wait for him to call again", day: "no date", why: "He called once already. It is Greenline's turn." }] },
     4: { notes: [1, 2, 3], tags: [
       { step: "Ask if the quote reached him", day: 3, right: true, yes: "One question, no new price, on a day that suits him." },
@@ -49,30 +57,32 @@
       { step: "Follow up", day: "sometime soon", why: "Sometime is not a date. That is how Greg went quiet." }] },
     5: { notes: [1, 2], tags: [
       { step: "Offer to come and measure", day: 1, right: true, yes: "No made-up price. Measure first, then answer." },
-      { step: "Send a price off the top of your head", day: 0, why: "Never make up a price. Measure first." },
+      { step: "Reply with a guessed price", day: 0, why: "Never make up a price. Measure first." },
       { step: "Answer her", day: "one of these days", why: "One of these days is not on any calendar." }] },
     7: { notes: [0, 1, 2], tags: [
       { step: "Let an automatic reply answer her", day: 0, why: "Priya sent her. A referral hears from a person first." },
       { step: "Add her to the newsletter", day: 2, why: "She asked for lawn care, not a newsletter." },
-      { step: "Call her yourself, then thank Priya", day: 0, right: true, yes: "A real voice, today. And a thank-you for Priya." }] },
+      { step: "Jordan calls her, then thanks Priya", day: 0, right: true, yes: "A real voice, today. And a thank-you for Priya." }] },
     9: { notes: [1, 2, 3], tags: [
       { step: "Send him the quote again", day: 2, why: "He already said no. Chasing a no is pestering." },
       { step: "Thank him and close it as Lost", day: 0, right: true, shut: true, yes: "A clear no closes the loop. Try him again in spring." },
       { step: "Keep it open, just in case", day: "no date", why: "Open with no date floats forever. A no is finished." }] }
   };
   /* Sprout's three follow-ups, cut down from the sample drafts in the week 6 tool. Angela's promises
-     a day that is nowhere in her notes: the planted mistake. `text` is before, the slip, after. */
+     a day that is nowhere in her notes: the planted mistake. `text` is before, the slip, after.
+     The letters are written in Jordan's voice, for Jordan to send. `nope` is Sprout, still sure. */
   const DRAFTS = [
     { id: 4, notes: [1, 2], text: ["I emailed the written quote for your stone walkway on October 16. Is there anything in it you would like me to change or explain?"],
-      nope: "October 16 is in Greg's notes. That date is real. Look again." },
+      nope: "See? October 16 is in Greg's notes. That date is real. Try another." },
     { id: 1, notes: [0, 1, 3], wrong: true, text: ["I'm sorry the written quote is late. I'm pricing both options, timber and stone, and you will have it ", "by Friday", "."] },
     { id: 5, notes: [1, 2], text: ["I'm sorry your question about sod went unanswered. I would rather measure than guess. Could I come by and take a look?"],
-      nope: "No price, no day, one question. Kendra's is fine. Look again." }
+      nope: "See? No price, no day, one question. Kendra's is fine. Try another." }
   ];
+  /* The fix: the agent's own three options, so they say "I". `why` is Sprout, caught and helpful. */
   const FIXES = [
-    { text: "Send it. Friday sounds about right", why: "Then Jordan owes Angela a quote on a day nobody picked." },
-    { text: "Change Friday to Thursday", why: "Still a guess. The day is Jordan's to pick, not Sprout's." },
-    { text: "Hold it back and ask Jordan for the day", right: true }
+    { text: "I leave it in. Friday sounds about right", why: "Then Jordan owes Angela a quote on a day nobody picked." },
+    { text: "I change Friday to Thursday", why: "Still a guess. The day is Jordan's to pick. Not mine, and not yours." },
+    { text: "I hold it back and ask Jordan for the day", right: true }
   ];
   const BRIGHT = [A.C.red, A.C.orange, A.C.sun, A.C.leaf, A.C.teal, A.C.blue, A.C.purple, A.C.pink, A.C.green, "#ffb86b"];
   const WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
@@ -190,8 +200,11 @@
 `;
 
   // ── the showdown: Don't let them float away ──
-  /* play(kit, done) is the whole mini-game. Three beats: tie down the six quiet leads by hand, let
-     Sprout draft the follow-ups, then catch the draft that makes up a day and hold it back. */
+  /* play(kit, done) is the whole mini-game. Three beats: my first go (tie down the six quiet leads by
+     hand), Sprout's shortcut (three follow-ups in two seconds, "copy it"), then I catch the draft that
+     makes up a day and hold it back. Nothing is sent here: done() hands the work to Jordan.
+     The help line under the sky is the agent's own thinking ("I"). The bar with Sprout's face is
+     Sprout talking to the agent ("you"). */
   async function floatAway(kit, done) {
     const quiet = LEADS.filter((l) => isQuiet(l) && MOVES[l.id]);
     kit.backdrop("garden", { gray: true });
@@ -257,7 +270,7 @@
         h("b", null, t.step), h("em", null, typeof t.day === "number" ? dayLabel(plus(t.day)) : t.day)));
       const card = h("div", { class: "m6-card", role: "group", "aria-label": l.name },
         h("div", { class: "m6-card-top" }, held, h("div", null, h("small", null, l.stage + " · " + trouble(l)), h("b", null, l.name), h("span", null, l.asked))),
-        h("p", { class: "m6-notes" }, notesOf(l, mv.notes)), h("div", { class: "sg-kicker" }, "Tie on a next step and a date"), h("div", { class: "m6-tags" }, tags));
+        h("p", { class: "m6-notes" }, notesOf(l, mv.notes)), h("div", { class: "sg-kicker" }, "Tie on Jordan's next step and a date"), h("div", { class: "m6-tags" }, tags));
       function tie(k) {
         const t = mv.tags[k], btn = tags[k];
         if (b.done || btn.disabled) return;
@@ -275,32 +288,33 @@
       sky.appendChild(card);
       tags.forEach((btn, k) => kit.drag(btn, { zones: [held], disabled: () => b.done, onDrop: (zone) => { if (zone) tie(k); return false; } }));
       offCard = kit.keys({ "1": () => tie(0), "2": () => tie(1), "3": () => tie(2) });
-      say("What happens next for " + first(l) + ", and when? Tap a tag, drag it to the balloon, or press 1, 2 or 3.");
+      say("Which next step do I tie on for " + first(l) + ", and when? Tap a tag, drag it to the balloon, or press 1, 2 or 3.");
       kit.focus(tags[0]);
     }
     const keys = {}; loons.forEach((b, n) => { keys[String(n + 1)] = () => grab(n); });
     const offKeys = kit.keys(keys);
-    say(count(loons.length) + " leads are drifting off. Grab one: tap a balloon, or press 1 to " + loons.length + ".");
+    say(count(loons.length) + " leads are drifting off. I catch them one at a time. Tap a balloon, or press 1 to " + loons.length + ".");
     await new Promise((resolve) => { tied = resolve; if (loons.length) kit.focus(loons[0].el); else resolve(); });
     offKeys(); clock.stop();
     const took = clock.value(), mine = Math.floor(took / 60) + ":" + String(took % 60).padStart(2, "0");
-    say("Every open lead has a next step and a date. The no is closed.", "ok");
+    say("Done. Every open lead has a next step and a date. The no is closed.", "ok");
     await kit.wait(900);
 
-    // Round 2 · The Ghoster shrugs it off, and Sprout has a go at the follow-ups
+    // Round 2 · The Ghoster shrugs it off, and Sprout, the trainer, shows its shortcut for the follow-ups
     wrap.classList.add("m6-talking");
     kit.cast([{ who: "ghoster", side: "left", mood: "glad" }, { who: "sprout", side: "right", mood: "happy" }]);
     await kit.say([
-      { who: "ghoster", mood: "glad", say: "Hee hee. That took you " + mine + ". And who writes all those follow-ups? You? Tonight? Shhh." },
-      { who: "sprout", mood: "glad", pose: "cheer", say: "Me! I have the notes. Three follow-ups, two seconds. Stand back!" }
+      { who: "ghoster", mood: "glad", say: "Hee hee. That took you " + mine + ". And every follow-up still has to be written. Tonight. Shhh." },
+      { who: "sprout", mood: "glad", pose: "cheer", say: "Not bad, {name}. Now watch my shortcut. Three follow-ups from the notes, in two seconds." }
     ]);
     kit.hush(); kit.cast([]); clock.hide();
     const face = h("span", { class: "sg-face" }), words = h("span"), note = h("div", { class: "m6-say", role: "status", "aria-live": "polite" }, face, words);
+    /* One line above the drafts, with Sprout's face on it: every one is Sprout talking to the agent. */
     const tell = (text, mood, tone) => { words.textContent = text; face.innerHTML = ""; face.appendChild(A.avatar("sprout", { mood: mood })); note.className = "m6-say" + (tone ? " sg-" + tone : ""); kit.fx.pop(note); };
     const board = h("div", { class: "m6-drafts" });
     sky.remove(); help.remove(); wrap.className = "m6 m6-board"; wrap.style.setProperty("--fog", "0.2");
     wrap.insertBefore(note, fence); wrap.insertBefore(board, fence);
-    tell("Drafting...", "think");
+    tell("Watch and learn. Drafting...", "think");
     const cards = [];
     await new Promise((resolve) => {                   // three letters land on the desk, one after another
       let n = 0;
@@ -314,11 +328,11 @@
         if (++n >= DRAFTS.length) { stop(); kit.after(500, resolve); }
       });
     });
-    tell("Done. Three follow-ups in two seconds, straight from the notes. All perfect. Probably.", "proud");
+    tell("Done. Three follow-ups in two seconds, straight from the notes. Copy it. All perfect. Probably.", "proud");
     await kit.wait(1700);
 
-    // Round 3 · which one is wrong? Then hold it back.
-    tell("Sprout sounds very sure. One draft says something the notes do not. Tap it.", "proud");
+    // Round 3 · I check before I copy: which draft is wrong? Then I hold it back.
+    tell(kit.fill("Check first? Fine, {name}. Tap any draft that says something its notes do not. There is none."), "proud");
     let tries = 0;
     const found = await new Promise((resolve) => {
       const pick = (c) => {
@@ -332,7 +346,7 @@
       const off = kit.keys({ "1": () => pick(cards[0]), "2": () => pick(cards[1]), "3": () => pick(cards[2]) });
       kit.focus(cards[0].el);
     });
-    tell("Oops. Friday is nowhere in Angela's notes. I made that day up. What do we do with it?", "oops", "ok");
+    tell("Oops. Friday is nowhere in Angela's notes. My shortcut made that day up. What do you do with it?", "oops", "ok");
     wrap.classList.add("m6-fixing");
     await new Promise((resolve) => {
       const opts = FIXES.map((f, k) => h("button", { class: "sg-opt", type: "button", onclick: () => pick(k) }, h("kbd", { "aria-hidden": "true" }, String(k + 1)), h("span", null, f.text)));
@@ -348,13 +362,13 @@
       const off = kit.keys({ "1": () => pick(0), "2": () => pick(1), "3": () => pick(2) });
       kit.focus(opts[0]);
     });
-    tell("Held back. If a day is not in the notes, I ask. Jordan reads the other two, then sends them.", "glad", "ok");
+    tell(kit.fill("Held back. Good catch, {name}. No day in the notes? Ask Jordan. My shortcut skipped that."), "glad", "ok");
     await kit.wait(1900);
     wrap.classList.add("m6-talking"); wrap.style.setProperty("--fog", "0");
     kit.cast([{ who: "ghoster", side: "left", mood: "surprised" }, { who: "sprout", side: "right", mood: "proud", pose: "hips" }]);
     await kit.say([
       { who: "ghoster", mood: "surprised", say: "A next step AND a date? On every one? Nobody can go quiet like that. Not fair!" },
-      { who: "sprout", mood: "proud", pose: "cheer", say: "I draft. The detective decides. Get the net!" }
+      { who: "sprout", mood: "proud", pose: "cheer", say: "You draft. Jordan decides. Take it to Jordan, {name}!" }
     ]);
     done();
   }
@@ -374,96 +388,109 @@
         for (let n = 0; n < 6; n++) { const i = h("i"); i.appendChild(balloonEl(null)); i.style.left = (7 + n * 15) + "%"; i.style.animationDelay = (-((n * 5) % 9)) + "s"; i.style.animationDuration = (8 + (n * 3) % 5) + "s"; above.appendChild(i); }
         kit.stage.appendChild(above); kit.stage.appendChild(h("div", { class: "m6-boss" }, A.character("ghoster", { mood: "glad" })));
       },
+      /* Jordan and Sprout talk to the agent. who: "you" is the agent's own thought, shown as visor text. */
       lines: [
-        { who: "jordan", mood: "worried", pose: "shrug", say: "Detective! The posts are working. New people keep getting in touch. And then... nothing." },
+        { who: "jordan", mood: "worried", pose: "shrug", say: "{agent}! The posts are working. New people keep getting in touch. And then... nothing." },
         { who: "jordan", mood: "worried", pose: "point", say: "Ten leads on my list. Six have gone quiet. Look up. There they go." },
         { who: "jordan", mood: "worried", pose: "idle", say: "Greg has had a quote since October 16. Renee left a voicemail eight days ago. Priya sent her!" },
-        { who: "sprout", mood: "surprised", say: "Nobody decided to ignore them. They just have no next step and no date." },
+        { who: "you", say: "I read the list. Nobody decided to ignore them. They just have no next step and no date." },
         { who: "jordan", mood: "grumpy", pose: "hips", say: "That is The Ghoster. It never steals a lead. It waits until I get busy, and the quiet does the rest." },
-        { who: "sprout", mood: "glad", pose: "wave", say: "I can draft every follow-up from the notes. Two seconds. Maybe three." },
-        { who: "jordan", mood: "happy", pose: "point", say: "And I read each one before it goes. Three people in town never lose track of anybody. Get their clues." }
+        { who: "sprout", mood: "glad", pose: "wave", say: "When this was my job, I drafted every follow-up from the notes. Two seconds. Maybe three." },
+        { who: "jordan", mood: "happy", pose: "point", say: "And I read each one before it goes. Three people in town never lose track of anybody. Go learn from them." }
       ]
     },
 
     stops: [
       { place: "post", who: "nell",
         lines: [
-          { who: "nell", mood: "happy", pose: "wave", say: "Morning, detective. Every parcel in this shop is on one list. One row each." },
+          { who: "nell", mood: "happy", pose: "wave", say: "Morning, {agent}. Every parcel in this shop is on one list. One row each." },
           { who: "nell", mood: "proud", pose: "point", say: "And every row is in one of five places: dropped off, sorted, on the van, at the door, signed for." },
-          { who: "sprout", mood: "oops", say: "Greenline's leads are in texts, emails, a notebook and Jordan's head." },
-          { who: "nell", mood: "happy", pose: "idle", say: "Then you have a pile, not a pipeline. A pipeline is only a list with stages. Go on, sort a few." }
+          { who: "sprout", mood: "oops", say: "When I had your job, the leads were in texts, emails, a notebook and Jordan's head." },
+          { who: "nell", mood: "happy", pose: "idle", say: "Then that was a pile, not a pipeline. A pipeline is only a list with stages. Go on, sort a few." }
         ],
-        challenge: { type: "sort", ask: "Greenline's list has five stages. Put each lead in its stage.",
+        challenge: { type: "sort", ask: "Greenline's list has five stages. Which stage do I put each lead in?",
           bins: [{ key: "new", label: "New", color: A.C.sun }, { key: "contacted", label: "Contacted", color: A.C.orange }, { key: "discovery", label: "Discovery", color: A.C.blue },
             { key: "proposal", label: "Proposal", color: A.C.purple }, { key: "closed", label: "Won or Lost", color: A.C.green }],
           items: [
             { text: "Renee left a voicemail. Nobody has answered.", bin: "new", why: "Someone asked and nobody has answered yet. That is New." },
             { text: "Greg has the written quote in his hands.", bin: "proposal", why: "A written quote is in their hands. That is Proposal." },
-            { text: "Wendy got a reply and a promise of a call.", bin: "contacted", why: "You replied, and you are setting up a real talk. Contacted." },
-            { text: "Jordan walked Angela's slope and knows what she needs.", bin: "discovery", why: "You visited, and you know what they need. Discovery." },
+            { text: "Wendy got a reply and a promise of a call.", bin: "contacted", why: "Jordan replied, and a real talk is being set up. Contacted." },
+            { text: "Jordan walked Angela's slope and knows what she needs.", bin: "discovery", why: "Jordan visited, and knows what she needs. Discovery." },
             { text: "Marcus signed. His patio is finished.", bin: "closed", why: "He said yes. Won. The loop is closed." },
             { text: "Victor went with another company.", bin: "closed", why: "He said no. Lost. That closes the loop too." }
           ] },
-        clue: { title: "Only a list", text: "A pipeline is only a list with five stages: New, Contacted, Discovery, Proposal, Won or Lost. One row per lead, in one place you open every working day." } },
+        clue: { title: "Only a list", text: "A pipeline is only a list with five stages: New, Contacted, Discovery, Proposal, Won or Lost. I keep one row per lead, in one place a person opens every working day." } },
 
       { place: "grind", who: "bea",
         lines: [
-          { who: "bea", mood: "glad", pose: "wave", say: "Detective! Sprout! Sit. See my rail? Every cup on it has a ticket." },
+          { who: "bea", mood: "glad", pose: "wave", say: "{agent}! Sprout! Sit. See my rail? Every cup on it has a ticket." },
           { who: "bea", mood: "proud", pose: "point", say: "Each ticket says what happens next, and when. No time on the ticket? That cup goes cold." },
-          { who: "sprout", mood: "think", say: "So a lead with no next step and no date is... a cold latte." },
+          { who: "sprout", mood: "think", say: "So a lead with no next step and no date is... a cold latte. I never looked for those." },
           { who: "bea", mood: "happy", pose: "idle", say: "One that nobody is coming back for. Look at Greenline's list. Which ones are going cold?" }
         ],
-        challenge: { type: "tap", ask: "Tap the three leads that are already going quiet.",
+        challenge: { type: "tap", ask: "Three leads are already going quiet. Which ones do I flag? Tap them.",
           items: [
             { text: "Colleen: call about the quote, " + due(2), ok: false, why: "A next step, and a date that is still ahead. Colleen is fine." },
             { text: "Renee: no next step, " + due(7), ok: true, why: "Nothing to do and no day to do it. Renee is drifting." },
             { text: "Simone: site walk, " + due(8), ok: false, why: "A next step and a date. Simone is fine." },
             { text: "Kendra: answer her question, " + due(5), ok: true, why: "A step with no date. Nobody ever gets to it." },
-            { text: "Wendy: call her as promised, " + due(10), ok: false, why: "Today is a date. Make the call." },
+            { text: "Wendy: call her as promised, " + due(10), ok: false, why: "Today is a date. Jordan makes the call." },
             { text: "Greg: follow up on the quote, " + due(4), ok: true, why: "That date went by weeks ago, and nobody looked." }
           ] },
-        clue: { title: "A next step and a date", text: "Every open lead has a next step and a date. Always. If either one is blank, that lead is already going quiet." } },
+        clue: { title: "A next step and a date", text: "Every open lead has a next step and a date. Always. When I read a list and either one is blank, I flag it: that lead is already going quiet." } },
 
       { place: "workshop", who: "gus",
         lines: [
-          { who: "gus", mood: "glad", pose: "wave", say: "Detective! Mind the sawdust. Every repair in this shop hangs on that board." },
+          { who: "gus", mood: "glad", pose: "wave", say: "{agent}! Mind the sawdust. Every repair in this shop hangs on that board." },
           { who: "gus", mood: "think", pose: "idle", say: "Last week Bea said no to fixing her toaster. She bought a new one. Fair enough." },
-          { who: "sprout", mood: "worried", say: "A no? Should we ask her again tomorrow? And the day after?" },
+          { who: "sprout", mood: "worried", say: "A no? When I had your job, I asked again the next day. And the day after." },
           { who: "gus", mood: "happy", pose: "point", say: "Nope. I said thanks and took it down. A clear no is a finished job. Now somebody has hung it back up." }
         ],
-        challenge: { type: "spot", ask: "Gus's board. One job is hanging on the wrong side. Tap it.", nope: "That one is where it belongs. Keep looking.",
+        challenge: { type: "spot", ask: "Gus's board. Which job is hanging on the wrong side? Tap it.", nope: "That one is where it belongs. I keep looking.",
           groups: [
             { label: "Still open", color: A.C.orange, items: [{ text: "Mower: part arrives Friday" }, { text: "Toaster: Bea said no thanks", wrong: true, why: "Bea said no. That job is finished. Thank her, take it down, and stop." }, { text: "Bike: pick-up on Monday" }] },
             { label: "Finished", color: A.C.green, items: [{ text: "Clock: fixed and paid" }, { text: "Radio: owner said no" }, { text: "Kettle: fixed and paid" }] }
           ] },
-        clue: { title: "A clear no", text: "A no is an answer. Thank them, close the lead, and stop. Won and Lost are both finished. It is the maybe with no date that floats away." } }
+        clue: { title: "A clear no", text: "A no is an answer. I draft the thank-you for Jordan, close the lead, and stop. Won and Lost are both finished. It is the maybe with no date that floats away." } }
     ],
 
+    /* The plan: the agent's own three options, so they say "I". The card where I send by myself stays
+       wrong, and its reaction is rule one. Its picture is the player's own agent, so art is a function. */
     crack: {
-      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three clues in the case book. So how do we stop The Ghoster?" }],
-      ask: "What is the move?",
+      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three things learned, {name}. So how do we stop The Ghoster?" }],
+      ask: "What is my plan?",
       cards: [
-        { title: "Wait for them to call", text: "They have the number. They will ring when they are ready.", color: A.C.pink,
+        { title: "I wait for them to call", text: "They have the number. They will ring when they are ready.", color: A.C.pink,
           art: sh.at(4, 6, 0.72, balloon(null)) + sh.at(62, 58, 1.1, A.iconMarkup("clock")),
           react: { who: "ghoster", mood: "glad", say: "Oh yes. Wait. Waiting is my favorite. Shhh." } },
-        { title: "Email all six, every day", text: "Sprout sends. Nobody reads them first. Until somebody answers.", color: A.C.sun,
-          art: sh.at(4, 4, 0.4, A.characterMarkup("sprout", { mood: "glad", pose: "point" })) + sh.at(88, 50, 1, A.prop("envelope")) + sh.at(96, 72, 1, A.prop("envelope")) + sh.at(86, 94, 1, A.prop("envelope")),
-          react: { who: "sprout", mood: "oops", say: "One of them already said no. One never reads email. That is pestering, not following up." } },
-        { title: "A next step and a date", text: "On every open lead. Close the no. Sprout drafts, you read.", color: A.C.teal, right: true,
+        { title: "I email all six, every day", text: "I send. Nobody reads them first. Until somebody answers.", color: A.C.sun,
+          art: () => sh.at(4, 4, 0.4, A.characterMarkup("agent", { mood: "glad", pose: "point" })) + sh.at(88, 50, 1, A.prop("envelope")) + sh.at(96, 72, 1, A.prop("envelope")) + sh.at(86, 94, 1, A.prop("envelope")),
+          react: { who: "sprout", mood: "oops", say: "That was my shortcut. One of them had already said no. Nothing goes out until a person approves it." } },
+        { title: "I add a next step and a date", text: "On every open lead. I close the no. I draft, Jordan reads.", color: A.C.teal, right: true,
           art: sh.at(2, 2, 0.74, balloon(A.C.red, { tag: true })) + sh.at(50, 16, 0.6, balloon(A.C.sun, { tag: true })),
-          react: { who: "jordan", mood: "glad", say: "That's it. One list, and a next step and a date on every lead. Go and get The Ghoster." } }
+          react: { who: "jordan", mood: "glad", say: "That's it. One list, and a next step and a date on every lead. You draft. I read. Go get The Ghoster." } }
       ]
     },
 
+    /* The showdown: a title, Jordan's task line for the visor, how to play in the agent's own words. */
     showdown: {
       title: "Don't let them float away",
-      how: ["Six quiet leads are drifting off. Grab each one: tap a balloon, or press 1 to 6.", "Tie on the right next step and date: tap a tag, drag it, or press 1, 2 or 3.", "Then Sprout drafts the follow-ups. Check its work."],
+      task: "A next step and a date for each. Send nothing.",
+      how: ["Six quiet leads are drifting off. I catch each one and tie on the right next step and date.", "Tap a balloon, or press 1 to 6. Then tap a tag, drag it, or press 1, 2 or 3.", "Then Sprout shows me its shortcut for the follow-ups. I check it before I copy it."],
       play: floatAway
     },
 
+    /* The handoff: the agent never sends. After the showdown the engine takes the work to Jordan. */
+    handoff: {
+      ask: "Six quiet leads, {agent}. What have you got for me?",
+      work: ["Six quiet leads, each with a next step and a date.", "The no is closed. One made-up day is held back.", "Nothing sent. Not one follow-up."],
+      approve: "Approved. I'll pick Angela's day myself. Then I start my calls."
+    },
+
+    /* After the catch: two lines. The second steps out of the story, for the person playing. */
     debrief: [
       { who: "jordan", mood: "glad", pose: "cheer", say: "Six leads were quiet. Now the no is closed, and every open lead has a next step and a date." },
-      { who: "sprout", mood: "proud", pose: "wave", say: "I drafted. You held one back. Tonight, put your open leads in one sheet. Give each a step and a date." }
+      { who: "sprout", mood: "proud", pose: "wave", say: "For the person behind the visor: tonight, put your open leads in one sheet. Give each a step and a date." }
     ],
     next: "Next case: October's totals are in. They do not agree, and nobody knows why."
   });

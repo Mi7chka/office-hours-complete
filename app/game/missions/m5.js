@@ -2,8 +2,15 @@
    What it teaches (session 5 of the class): one real idea a week becomes five pieces (a post, a short
    video, an email, a website answer, a listing post) · a short weekly routine beats a burst of effort
    (pick, draft, design, schedule, one number) · it drafts, you approve, then it posts.
-   The showdown is the week's job done by hand: plant one idea, send its five pieces where they belong,
+   The showdown is the week's job done by hand: plant one idea, put its five pieces where they belong,
    then read what Sprout wrote, pull the promise nobody made, and stamp what is true.
+
+   AGENT MODE: the player IS the AI, Greenline's new agent. So every line here is written to the
+   agent ("you") or by the agent ("I"). Sprout is the trainer, the agent who had the job before, and
+   its one wrong shortcut (five pieces lined up to post unread, one with a promise nobody made) is the
+   thing to catch. The agent never posts: its stamp says Checked, not Approved, and the engine's
+   handoff takes the five pieces to Jordan.
+
    The format and every kit call are explained in GAME.md; m1.js is the model. Everything in it is made up. */
 (function () {
   "use strict";
@@ -19,7 +26,7 @@
   const PIECES = {
     post: { label: "Social post", icon: "chat", color: C.pink, head: "daisy", at: 72,
       shape: "A few short lines", who: "The question and the answer, for the people who follow Greenline.", line: "Is it too late to plant this fall? Not yet.",
-      why: "A few short lines for the people who follow you. That is a social post.", yes: "A post. The question and the answer, in a few lines.",
+      why: "A few short lines for the people who follow Greenline. That is a social post.", yes: "A post. The question and the answer, in a few lines.",
       sprout: "Is it too late to plant this fall? Not yet." },
     video: { label: "Video script", icon: "play", color: C.red, head: "tulip", at: 58,
       shape: "Thirty seconds, said out loud", who: "Jordan, a phone camera, and the same answer.", line: "A customer asked me this on Tuesday.",
@@ -27,7 +34,7 @@
       sprout: "The real cutoff is the ground freezing, not the calendar." },
     email: { label: "Email", icon: "envelope", color: C.sun, head: "sun", at: 50,
       shape: "Three lines and one link", who: "For the people who asked to hear from Greenline.", line: "Subject: Is it too late to plant this fall?",
-      why: "Three lines and a link, to people who asked to hear from you. That is the email.", yes: "An email. Three lines, one link.",
+      why: "Three lines and a link, to people who asked to hear from Greenline. That is the email.", yes: "An email. Three lines, one link.",
       sprout: "Our crew's last planting day is Saturday, November 21." },
     site: { label: "Website answer", icon: "home", color: C.blue, head: "pom", at: 74,
       shape: "The question, answered once and kept", who: "In the customer's own words, on the questions page.", line: "Is it too late to plant shrubs this fall? No.",
@@ -35,7 +42,7 @@
       sprout: "After planting, water once a week until the ground freezes." },
     listing: { label: "Listing post", icon: "pin", color: C.purple, head: "star", at: 62,
       shape: "A short update with a photo", who: "It shows where people look Greenline up on the town map.", line: "Last planting day: Saturday, November 21.",
-      why: "A short update with a photo, where people look you up. That is the listing post.", yes: "A listing post. Short, with a photo.",
+      why: "A short update with a photo, where people look Greenline up. That is the listing post.", yes: "A listing post. Short, with a photo.",
       sprout: "Every shrub we plant is guaranteed to make it to spring.", wrong: true }
   };
   const POTS = ["post", "video", "email", "site", "listing"];        // the five pots, in key order 1 to 5
@@ -47,10 +54,10 @@
   /* Gus's jobs board: the weekly routine from the class, a day for each step. */
   const WEEK = [
     { day: "Mon", text: "Pick one idea from last week", short: "Pick the idea", yes: "Monday. One question, one job or one fix. Five minutes." },
-    { day: "Tue", text: "Draft all five pieces in one sitting", short: "Draft all five", yes: "Tuesday. All five at once, with Sprout, in your own voice.", why: "Nothing to draft yet. First you need the idea." },
-    { day: "Wed", text: "Drop the words into one template", short: "Design", yes: "Wednesday. The same template every week. New words, new photo.", why: "The words come before the design. Draft them first." },
-    { day: "Thu", text: "Read every piece, then line up the week", short: "Read, then schedule", yes: "Thursday. Read first. Then line them up, one a day.", why: "Not yet. A piece gets its design before it gets a date." },
-    { day: "Fri", text: "Write down one number", short: "One number", yes: "Friday. How many new people got in touch? Write it down.", why: "The count comes last, when the week is done." }
+    { day: "Tue", text: "Draft all five pieces in one sitting", short: "Draft all five", yes: "Tuesday. I draft all five at once, in Jordan's voice.", why: "Nothing to draft yet. First I need the idea." },
+    { day: "Wed", text: "Drop the words into one template", short: "Design", yes: "Wednesday. The same template every week. New words, new photo.", why: "The words come before the design. I draft them first." },
+    { day: "Thu", text: "Jordan reads every piece, then lines up the week", short: "Read, then schedule", yes: "Thursday. Jordan reads first. Then the pieces line up, one a day.", why: "Not yet. A piece gets its design before it gets a date." },
+    { day: "Fri", text: "Write down one number", short: "One number", yes: "Friday. How many new people got in touch? I write it down.", why: "The count comes last, when the week is done." }
   ];
   const SHUFFLE = [3, 0, 4, 2, 1];                                   // the order the five jobs hang on the board
 
@@ -227,7 +234,7 @@
   /* A custom challenge is play(kit, spec, done). It is built with kit.panel() so it looks like the others. */
   function weekInOrder(kit, spec, done) {
     kit.style(CSS);
-    const p = kit.panel({ kicker: "Quick challenge", title: spec.ask, who: spec.who });
+    const p = kit.panel({ kicker: "My turn", title: kit.fill(spec.ask), who: spec.who });
     const days = WEEK.map((d) => h("div", { class: "m5-day" }, h("b", null, d.day), h("span", null, "")));
     const chips = SHUFFLE.map((s, n) => h("button", { class: "sg-chip", type: "button", onclick: () => pick(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, WEEK[s].text)));
     let next = 0;
@@ -267,8 +274,8 @@
     const hop = (el) => { el.classList.remove("m5-bloom", "m5-hop"); void el.offsetWidth; el.classList.add("m5-hop"); };
     hover("glad");
 
-    // Round 1 · plant the one idea: drag the seed into the soil, tap it, or press Enter
-    say("One real idea is enough. Drag the seed into the soil, or tap Plant the seed.");
+    // Round 1 · my first go. Plant the one idea: drag the seed into the soil, tap it, or press Enter
+    say("One real idea is enough for me. Drag the seed into the soil, or tap Plant the seed.");
     await new Promise((resolve) => {
       let sown = false;
       const seed = h("div", { class: "m5-seed" }, A.svg(seedArt(), { box: "0 0 120 130" }));
@@ -293,7 +300,7 @@
     count.textContent = "5 to go"; kit.fx.pop(count); hover("surprised", true);
     await kit.wait(800);
 
-    // Round 2 · each sprout is one piece. Send it where it belongs: drag the card, tap a pot, or press 1 to 5
+    // Round 2 · each sprout is one piece. Put it in the pot it belongs to: drag the card, tap a pot, or press 1 to 5
     const bins = POTS.map((key, n) => h("button", { class: "sg-bin", type: "button", style: "--c:" + PIECES[key].color, onclick: () => send(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), A.icon(PIECES[key].icon), h("b", null, PIECES[key].label), h("em", null, A.icon("check"))));
     pots.innerHTML = ""; pots.className = "m5-pots"; bins.forEach((b) => pots.appendChild(b));
     const clock = kit.timer({ up: true });
@@ -301,7 +308,7 @@
     function deal() {
       const p = PIECES[BED[i]];
       plants[i].className = "m5-plant m5-ripe"; thief.style.setProperty("--x", SPOTS[i] + "%"); hover(i < 2 ? "glad" : i < 4 ? "sneaky" : "worried");
-      card = h("div", { class: "m5-tag" }, h("div", { class: "m5-tag-top" }, A.icon("leaf"), h("b", null, "Sprout " + (i + 1) + " of 5"), h("span", null, "Where does it go?")),
+      card = h("div", { class: "m5-tag" }, h("div", { class: "m5-tag-top" }, A.icon("leaf"), h("b", null, "Sprout " + (i + 1) + " of 5"), h("span", null, "Where do I put it?")),
         h("div", { class: "m5-tag-body" }, h("b", null, p.shape), h("p", null, p.who), h("q", null, "\"" + p.line + "\"")));
       mid.innerHTML = ""; mid.appendChild(card); busy = false; S.play("whoosh");
       kit.drag(card, { zones: bins, disabled: () => busy, onDrop: (zone) => (zone ? send(bins.indexOf(zone), true) : false) });
@@ -319,30 +326,32 @@
       return true;
     }
     const offKeys = kit.keys({ "1": () => send(0), "2": () => send(1), "3": () => send(2), "4": () => send(3), "5": () => send(4) });
-    say("Where does this piece belong? Drag it, tap a pot, or press 1 to 5.");
+    say("Where do I put this piece? Drag it, tap a pot, or press 1 to 5.");
     await new Promise((resolve) => { sorted = resolve; deal(); });
     offKeys(); clock.stop(); count.classList.add("m5-all"); thief.style.setProperty("--x", "50%");
     say("One idea. Five pieces. That is a week of marketing.", "ok");
     const took = clock.value(), mine = Math.floor(took / 60) + ":" + String(took % 60).padStart(2, "0");
     await kit.wait(1700);
 
-    // Blank Page laughs, and Sprout has a go
+    // Blank Page laughs, and Sprout, the trainer, shows its shortcut
     wrap.classList.add("m5-talking");
     kit.cast([{ who: "blankpage", side: "left", mood: "glad" }, { who: "sprout", side: "right", mood: "happy" }]);
     await kit.say([
-      { who: "blankpage", mood: "glad", say: "Hee hee. " + mine + " to label them. And who writes all five? You? In the busy season?" },
-      { who: "sprout", mood: "glad", pose: "cheer", say: "Me! I have Jordan's answer and three things Jordan wrote. Stand back!" }
+      { who: "blankpage", mood: "glad", say: "Hee hee. " + mine + " to label them. And who writes all five? Jordan? In the busy season?" },
+      { who: "sprout", mood: "glad", pose: "cheer", say: "We do, {name}! Watch my shortcut. I take Jordan's answer and three things Jordan wrote. Stand back!" }
     ]);
     kit.hush(); kit.cast([]); clock.hide();
 
-    // Round 3 · Sprout writes all five in two seconds. One piece makes a promise nobody made.
+    // Round 3 · Sprout's shortcut: it writes all five in two seconds, lines them up to post, and says to copy it.
+    // One piece makes a promise nobody made. The note above the pieces always has Sprout's face, so every line
+    // in it is Sprout talking.
     const face = h("span", { class: "sg-face" }), words = h("span"), note = h("div", { class: "m5-say", role: "status", "aria-live": "polite" }, face, words);
     const tell = (text, mood, tone) => { words.textContent = text; face.innerHTML = ""; face.appendChild(A.avatar("sprout", { mood: mood })); note.className = "m5-say" + (tone ? " sg-" + tone : ""); kit.fx.pop(note); };
     const list = h("div", { class: "m5-pieces" });
     wrap.className = "m5 m5-check"; help.hidden = true; pots.hidden = true; right.insertBefore(note, mid);
     under.appendChild(h("div", { class: "m5-card m5-facts" }, h("div", { class: "m5-cardtop" }, A.icon("book"), "What Jordan told the customer"), h("ul", null, FACTS.map((f) => h("li", null, f)))));
     mid.innerHTML = ""; mid.appendChild(list);
-    tell("Writing...", "think");
+    tell("Watch and learn. Writing...", "think");
     const chips = [];
     await new Promise((resolve) => {                   // five pieces zip out, and each flower gives a hop
       let n = 0;
@@ -353,15 +362,15 @@
         if (++n >= POTS.length) { stop(); kit.after(450, resolve); }
       });
     });
-    tell("Done! Five pieces, in Jordan's voice, in two seconds. All lined up to post on Thursday!", "proud");
+    tell("Done! Five pieces, in Jordan's voice, in two seconds. All lined up to post on Thursday. Copy that!", "proud");
     await kit.wait(2000);
-    tell("Lined up is not approved. One piece promises something Jordan never said. Tap it.", "proud");
+    tell(kit.fill("Go on, read them, {name}. If a piece promises something Jordan never said, tap it. There is none!"), "proud");
     const after = (c) => (chips.slice(chips.indexOf(c)).concat(chips).find((x) => !x.el.disabled) || c).el;     // where the keyboard goes next
     let tries = 0;
     const found = await new Promise((resolve) => {
       const pick = (c) => {
         if (c.el.disabled) return;
-        if (!c.p.wrong) { tries++; kit.score.wrong(); kit.fx.shake(c.el); c.el.disabled = true; c.el.classList.add("sg-okay"); tell("Jordan really said that one. Look again.", "proud", "bad"); return kit.focus(after(c)); }
+        if (!c.p.wrong) { tries++; kit.score.wrong(); kit.fx.shake(c.el); c.el.disabled = true; c.el.classList.add("sg-okay"); tell("Jordan really said that one. See? Keep looking if you must.", "proud", "bad"); return kit.focus(after(c)); }
         chips.forEach((x) => { x.el.disabled = true; x.el.classList.remove("sg-okay"); }); c.el.classList.add("sg-found"); kit.score.right(); off();
         kit.score.sprout(tries === 0);                 // the second star: Sprout's slip caught on the first try
         resolve(c);
@@ -374,7 +383,7 @@
     const at = BED.indexOf(found.key), old = plants[at];
     const pull = h("button", { class: "m5-plant m5-weed", type: "button", style: "left:" + SPOTS[at] + "%", "aria-label": "Pull the weed" }, weed(), h("span", { class: "m5-pulltag" }, "Pull!"));
     bed.replaceChild(pull, old); plants[at] = pull; thief.style.setProperty("--x", SPOTS[at > 2 ? 0 : 4] + "%"); hover("worried"); S.play("oops");   // Blank Page backs away from it
-    tell("Oops. Jordan never promised that. It is a weed! Pull it: tap it three times, or drag it up and out.", "oops", "ok");
+    tell("Oops. Jordan never promised that. I made it up. A weed! Pull it: tap it three times, or drag it up and out.", "oops", "ok");
     await new Promise((resolve) => {
       let tugs = 0, out = false;
       const yank = () => { if (out) return; out = true; off(); pull.disabled = true; pull.classList.add("m5-out"); S.play("m5pull"); kit.score.right(); hover("surprised", true); kit.after(700, resolve); };
@@ -386,17 +395,17 @@
     });
     const fresh = h("div", { class: "m5-plant", style: "left:" + SPOTS[at] + "%" }); bed.replaceChild(fresh, pull); plants[at] = fresh; grow(at, found.key); S.play("m5grow");
     found.text.textContent = TRUE_LINE; found.el.className = "sg-chip sg-yes"; kit.fx.pop(found.el);
-    tell("Fixed. A fact goes in its place. If it is not in the facts, it does not go out.", "glad", "ok");
+    tell(kit.fill("Fixed. Good catch, {name}. My shortcut skipped the reading. Not in the facts, not in the piece."), "glad", "ok");
     await kit.wait(1900);
 
-    // now every piece is true: stamp each one, and it leaves the shop
-    tell("Now you have read all five. Stamp each one, and it posts. Tap a piece, or press 1 to 5.", "happy");
+    // now every piece is true: the agent stamps each one Checked, ready for Jordan. Nothing posts here.
+    tell("You have read all five. Now stamp each one Checked, ready for Jordan. Tap a piece, or press 1 to 5.", "happy");
     await new Promise((resolve) => {
       let left = chips.length;
       const stamp = (c) => {
         if (c.el.disabled) return;
         c.el.disabled = true; c.el.classList.remove("m5-stampable"); S.play("m5stamp"); kit.focus(after(c));
-        const rubber = h("i", { class: "m5-rubber" }, A.svg(stampArt(), { box: "0 0 60 60" })); c.el.appendChild(rubber); c.el.appendChild(h("em", { class: "m5-ok" }, "Approved"));
+        const rubber = h("i", { class: "m5-rubber" }, A.svg(stampArt(), { box: "0 0 60 60" })); c.el.appendChild(rubber); c.el.appendChild(h("em", { class: "m5-ok" }, "Checked"));
         kit.after(520, () => {
           rubber.remove();
           kit.fx.fly(c.el, plants[BED.indexOf(c.key)], () => { c.el.className = "sg-chip m5-sent"; hop(plants[BED.indexOf(c.key)]); S.play("star"); if (--left === 0) kit.after(700, resolve); });
@@ -406,15 +415,15 @@
       kit.keys(keys); kit.focus(chips[0].el);
     });
     kit.fx.confetti(28); S.play("color"); hover("caught");
-    tell("Five pieces from one idea. All read, all approved, all posted. That is the week!", "glad", "ok");
+    tell("Five pieces from one idea. All read, all checked, none posted. They wait for Jordan!", "glad", "ok");
     await kit.wait(1900);
     wrap.classList.add("m5-talking"); thief.hidden = true;
     kit.cast([{ who: "blankpage", side: "left", mood: "surprised" }, { who: "sprout", side: "right", mood: "proud", pose: "hips" }]);
     await kit.say([
-      { who: "blankpage", mood: "surprised", say: "A whole week from ONE idea? And somebody READ every piece? That is not fair!" },
-      { who: "sprout", mood: "proud", pose: "cheer", say: "I draft. The detective approves. Then it posts. Get the net!" }
+      { who: "blankpage", mood: "surprised", say: "A whole week from ONE idea? And you READ every piece? That is not fair!" },
+      { who: "sprout", mood: "proud", pose: "cheer", say: "You draft. Jordan approves and posts. Take it to Jordan, {name}!" }
     ]);
-    done();
+    done();                                            // the engine's handoff comes next: Jordan approves
   }
 
   // ── the case ──
@@ -425,7 +434,9 @@
     reward: { hours: 2, leads: 0, money: 0 },
     maxWrong: 4,
 
-    /* The briefing at Greenline HQ: two weeks of posts, one of them written, and who is keeping the rest blank. */
+    /* The briefing at Greenline HQ: two weeks of posts, one of them written, and who is keeping the rest blank.
+       Jordan and Sprout talk to the agent. {agent} becomes "Agent Ivy" and {name} becomes "Ivy".
+       who: "you" is the agent's own thought, shown as visor text with no actor. */
     briefing: {
       setup: (kit) => {
         kit.style(CSS);
@@ -434,28 +445,30 @@
           h("div", { class: "m5-hover" }, A.character("blankpage", { mood: "glad" }))));
       },
       lines: [
-        { who: "jordan", mood: "worried", pose: "shrug", say: "Detective! People can find Greenline now. Look what they find." },
+        { who: "jordan", mood: "worried", pose: "shrug", say: "{agent}! People can find Greenline now. Look what they find." },
         { who: "jordan", mood: "worried", pose: "point", say: "One post about mulch, in early October. Then two weeks of nothing." },
         { who: "jordan", mood: "worried", pose: "idle", say: "That was the fall rush. I was out on a crew. Every time I get busy, the marketing stops." },
-        { who: "sprout", mood: "think", say: "Every post starts from a blank page. And somebody likes the pages blank." },
+        { who: "sprout", mood: "think", say: "I had your job, {name}. Every post started from a blank page. Somebody likes the pages blank." },
         { who: "jordan", mood: "grumpy", pose: "hips", say: "Blank Page. It steals the ideas. I sit down to write and there is nothing there." },
         { who: "jordan", mood: "think", pose: "idle", say: "Funny, though. On Tuesday Priya asked me if it is too late to plant shrubs this fall." },
-        { who: "sprout", mood: "surprised", pose: "cheer", say: "And you gave her a good answer! On the phone. Where nobody else heard it." },
-        { who: "jordan", mood: "happy", pose: "point", say: "Three people in town never run out of things to say. Get their clues, detective." }
+        { who: "you", say: "A real question. And Jordan answered it on the phone, where nobody else heard it." },
+        { who: "jordan", mood: "happy", pose: "point", say: "Three people in town never run out of things to say. Go and learn from them, {name}." }
       ]
     },
 
-    /* Three clue stops: a place, who is there, a few lines, a quick challenge, and the clue it earns. */
+    /* Three stops: a place, who is there, a few lines, a quick challenge, and the knowledge it earns.
+       A piece of knowledge (`clue`) is one real idea from the class, as something the agent now knows
+       about itself or its work. It is kept under "What I know" in the Skills panel. */
     stops: [
       { place: "garden", who: "dana",
         lines: [
-          { who: "dana", mood: "glad", pose: "wave", say: "Detective! Look at this flower bed. Five plants. I only ever bought one." },
+          { who: "dana", mood: "glad", pose: "wave", say: "{agent}! Look at this flower bed. Five plants. I only ever bought one." },
           { who: "dana", mood: "proud", pose: "hips", say: "The rest are cuttings. I never start from bare dirt. One good plant, grown five ways." },
-          { who: "sprout", mood: "think", say: "Jordan hunts for a brand new idea for every post. That is bare dirt, every time." },
-          { who: "dana", mood: "happy", pose: "point", say: "A real thing from your week is the seed. Sort these. Which ones would grow?" }
+          { who: "sprout", mood: "think", say: "Jordan and I hunted for a brand new idea for every post, {name}. Bare dirt, every time." },
+          { who: "dana", mood: "happy", pose: "point", say: "A real thing from Jordan's week is the seed. Sort these. Which ones would grow?" }
         ],
-        challenge: { type: "sort", ask: "Which ones are a real idea from Jordan's week?",
-          bins: [{ key: "seed", label: "A seed. Plant it", icon: "leaf", color: C.green }, { key: "dirt", label: "Bare dirt", icon: "cross", color: C.gray }],
+        challenge: { type: "sort", ask: "Which ones are a real idea from Jordan's week? I sort them.",
+          bins: [{ key: "seed", label: "A seed. I plant it", icon: "leaf", color: C.green }, { key: "dirt", label: "Bare dirt", icon: "cross", color: C.gray }],
           items: [
             { text: "A question a customer asked on Tuesday", bin: "seed", why: "Somebody asked it. Others are wondering the same thing." },
             { text: "A brand new idea for every post", bin: "dirt", why: "That is how the marketing stops on a busy week." },
@@ -464,66 +477,79 @@
             { text: "A mistake Greenline fixed", bin: "seed", why: "A fixed mistake is a lesson worth telling." },
             { text: "Waiting to feel inspired", bin: "dirt", why: "Blank Page loves that plan." }
           ] },
-        clue: { title: "One seed, five pieces", text: "One real lesson from your week becomes five pieces: a post, a short video, an email, a website answer, a listing post. Stop starting from zero." } },
+        clue: { title: "One seed, five pieces", text: "I never start from zero. I take one real lesson from Jordan's week and draft five pieces: a post, a short video, an email, a website answer, a listing post." } },
 
       { place: "workshop", who: "gus",
         lines: [
           { who: "gus", mood: "happy", pose: "wave", say: "I used to clean this whole shop in one heroic Saturday. Then not again for six months." },
           { who: "gus", mood: "proud", pose: "hips", say: "Now it is one small job a day. Ten minutes. The shop has never been tidier." },
-          { who: "sprout", mood: "surprised", say: "Jordan does marketing the heroic way! One big burst, then nothing for weeks." },
+          { who: "sprout", mood: "surprised", say: "Jordan and I did marketing the heroic way, {name}! One big burst, then nothing for weeks." },
           { who: "gus", mood: "think", pose: "point", say: "Give each step its own day. About an hour for the whole week. Hang my jobs in order." }
         ],
-        challenge: { ask: "Hang the week's five jobs in order. Tap what comes first, then what comes next.", play: weekInOrder },
-        clue: { title: "A little, every week", text: "A short weekly routine beats a burst of effort. Give each step a day: pick, draft, design, schedule, one number. About an hour in all." } },
+        challenge: { ask: "I hang the week's five jobs in order. Tap what comes first, then what comes next.", play: weekInOrder },
+        clue: { title: "A little, every week", text: "A short weekly routine beats a burst of effort. So I give each step its own day: pick, draft, design, schedule, one number. About an hour in all." } },
 
       { place: "square", who: "nell",
         lines: [
           { who: "nell", mood: "worried", pose: "shrug", say: "Blank Page is in my shop. Every sheet comes out empty. So I am pinning notices by hand." },
           { who: "nell", mood: "proud", pose: "idle", say: "Thirty years of printing, one rule. Nothing goes on the press until a person signs the proof." },
-          { who: "sprout", mood: "proud", pose: "hips", say: "I lined up five posts for Thursday! Lined up means approved. Right?" },
-          { who: "nell", mood: "think", pose: "point", say: "Scheduled is not approved, little one. What counts as a real yes? Tap them." }
+          { who: "sprout", mood: "proud", pose: "hips", say: "My shortcut, {name}: I line up five posts for Thursday. Lined up means approved. Right?" },
+          { who: "nell", mood: "think", pose: "point", say: "Scheduled is not approved, little one. {name}, what counts as a real yes? Tap them." }
         ],
-        challenge: { type: "tap", ask: "Tap the three things that count as approving a piece.",
+        challenge: { type: "tap", ask: "Tap the three things that count as Jordan approving my piece.",
           items: [
-            { text: "You read the whole piece", ok: true, why: "Every line. Not just the first one." },
+            { text: "Jordan read the whole piece", ok: true, why: "Every line. Not just the first one." },
             { text: "It is scheduled for Thursday", ok: false, why: "Scheduling is not approving." },
-            { text: "You would say it to a customer's face", ok: true, why: "If you would not say it out loud, it does not go out." },
-            { text: "Sprout checked it twice", ok: false, why: "Sprout sounds sure either way. A person reads it." },
-            { text: "You could prove every line", ok: true, why: "No numbers, reviews or promises you cannot back up." },
+            { text: "Jordan would say it to a customer's face", ok: true, why: "If Jordan would not say it out loud, it does not go out." },
+            { text: "I checked it twice", ok: false, why: "I sound sure either way. A person reads it." },
+            { text: "Jordan could prove every line", ok: true, why: "No numbers, reviews or promises Greenline cannot back up." },
             { text: "It has a lovely photo", ok: false, why: "Pretty is not the same as true." }
           ] },
-        clue: { title: "It drafts, you approve", text: "It drafts. You approve. Then it posts. Scheduling is not approving: read the whole piece first." } }
+        clue: { title: "I draft. Jordan approves.", text: "I draft. A person approves. Only then does it go out. Scheduling is not approving: a person reads the whole piece first." } }
     ],
 
-    /* Crack the case: three cards, exactly one with right: true. */
+    /* The plan: three cards, exactly one with right: true. The cards are the agent's own options, so they say "I".
+       The third card's picture shows the player's own agent, so its art is a function: the file is read
+       before anybody has logged in. */
     crack: {
-      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three clues in the case book. So how do we stop Blank Page?" }],
-      ask: "What is the move?",
+      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three things learned, {name}. So how do we stop Blank Page?" }],
+      ask: "What is my plan?",
       cards: [
-        { title: "A new idea every morning", text: "Stare at the blank page until something comes.", color: C.pink,
+        { title: "I hunt a new idea every morning", text: "I stare at the blank page until something comes.", color: C.pink,
           art: sh.rect(28, 12, 64, 84, 8, "#fff") + sh.text(60, 70, "?", 46, C.gray) + sh.at(66, 66, 1, A.iconMarkup("clock")),
-          react: { who: "blankpage", mood: "glad", say: "Yes! Stare at me. I love that. You will quit by the first busy week. Hee hee." } },
-        { title: "One idea, five pieces, you approve", text: "One real question a week. Sprout drafts. You read. Then it posts.", color: C.teal, right: true,
+          react: { who: "blankpage", mood: "glad", say: "Yes! Stare at me. I love that. The marketing will quit by the first busy week. Hee hee." } },
+        { title: "I draft five. Jordan approves.", text: "One real question a week. Five pieces from it. Jordan reads them first.", color: C.teal, right: true,
           art: sh.at(26, 104, 1.5, A.prop("flower", { color: C.pink })) + sh.at(60, 110, 1.9, A.prop("flower", { color: C.sun })) + sh.at(94, 104, 1.5, A.prop("flower", { color: C.blue })) + sh.at(70, 68, 1, A.iconMarkup("check")),
           react: { who: "jordan", mood: "glad", say: "That's it. One seed a week, and nothing leaves until I have read it." } },
-        { title: "Sprout posts all by itself", text: "Every day. Nobody reads it first. What could go wrong?", color: C.sun,
-          art: sh.at(6, 4, 0.4, A.characterMarkup("sprout", { mood: "glad", pose: "point" })) + sh.rect(68, 64, 48, 30, 12, C.red) + sh.text(92, 85, "POST", 13, "#fff"),
-          react: { who: "sprout", mood: "oops", say: "I would promise something Jordan never said. Please read it first!" } }
+        { title: "I post all by myself", text: "Every day. Nobody reads it first. What could go wrong?", color: C.sun,
+          art: () => sh.at(6, 4, 0.4, A.characterMarkup("agent", { mood: "glad", pose: "point" })) + sh.rect(68, 64, 48, 30, 12, C.red) + sh.text(92, 85, "POST", 13, "#fff"),
+          react: { who: "sprout", mood: "oops", say: "That was my shortcut. Rule one, {name}: nothing goes out until a person approves it." } }
       ]
     },
 
-    /* The showdown: a title, two or three lines of how to play, and the mini-game itself. */
+    /* The showdown: a title, the task line Jordan gives (it shows in the visor), two or three lines of
+       how to play in the agent's own words, and the mini-game itself. */
     showdown: {
       title: "One seed, five sprouts",
-      how: ["Plant one real idea: a question a customer asked. Five sprouts come up.", "Send each sprout where it belongs. Drag it, tap a pot, or press 1 to 5.",
-        "Then read Sprout's five pieces, pull the weed, and stamp what is true."],
+      task: "Turn one idea into five pieces. Post nothing.",
+      how: ["I plant one real idea: a question a customer asked. Five sprouts come up.", "I put each sprout in the pot it belongs to. Drag it, tap a pot, or press 1 to 5.",
+        "Then Sprout shows me its shortcut. I read all five, pull the weed, and stamp what I checked."],
       play: oneSeed
     },
 
-    /* After the catch: two lines. The second is one thing to try for real, tonight. */
+    /* The handoff: the agent never posts. After the showdown the engine takes the work to Jordan.
+       ask: Jordan's line. work: two or three short lines of what the agent did. approve: Jordan's yes. */
+    handoff: {
+      ask: "Five pieces from one question, {agent}. What have you got for me?",
+      work: ["One customer question, turned into five pieces.", "One fix: a promise nobody made is out.", "All five read and checked. Nothing posted."],
+      approve: "Approved. I have read all five. I will post them myself, one a day."
+    },
+
+    /* After the catch: two lines. The second steps out of the story: one thing for the person playing
+       to try for real, tonight. It starts "For the person behind the visor:". */
     debrief: [
       { who: "jordan", mood: "glad", pose: "cheer", say: "One customer question, five pieces, and the promise I never made stayed in the shop." },
-      { who: "sprout", mood: "proud", pose: "wave", say: "Tonight, write down one question a customer asked you this week. That is your seed." }
+      { who: "sprout", mood: "proud", pose: "wave", say: "For the person behind the visor: tonight, write down one question a customer asked. That is your seed." }
     ],
     next: "Next case: new people got in touch. Six of them are still waiting."
   });

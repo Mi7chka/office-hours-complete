@@ -1,10 +1,16 @@
 /* Save Greenline · case 2: The Lead That Waited All Night. Bandit: Slowpoke, who makes every new lead wait.
    What it teaches (session 2 of the class): every automation is three parts (when this happens, do
-   that, and tell me) · three levels, and you start at the lowest one that does the job · automate the
-   carrying and keep the judgment: a person approves anything a customer will see.
+   that, and tell a person) · three levels, and you start at the lowest one that does the job · automate
+   the carrying and keep the judgment: a person approves anything a customer will see.
    The showdown is the week's job done with the hands: carry two leads from the form to the sheet to
    Jordan, wire the machine that does the carrying, flag the leads that should not ping anybody, then
-   read Sprout's draft reply before it goes out. Everything in it is made up. */
+   check Sprout's draft reply before it is copied.
+
+   AGENT MODE: the player IS the AI, Greenline's new agent. So every line here is written to the
+   agent ("you") or by the agent ("I"). Sprout is the trainer, the agent who had the job before, and
+   its one wrong shortcut (a promised date in the draft to Tomas) is the thing to catch. The agent
+   never sends: the draft is made ready for Jordan, and the engine's handoff takes it there.
+   Everything in it is made up. */
 (function () {
   "use strict";
   if (!window.OH || !OH.game || !OH.game.mission || !OH.game.art) return;
@@ -29,9 +35,9 @@
     { key: "hannah", name: "Hannah", row: "Hannah B.", color: A.C.pink, said: "Hannah: weekly mowing on a corner lot. When could you start?" },
     { key: "aisha", name: "Aisha", row: "Aisha K.", color: A.C.purple, said: "Aisha: hedges trimmed and fresh mulch, in one visit." },
     { key: "hannah", name: "Hannah", row: "Hannah B.", color: A.C.pink, again: true, said: "Hannah: sending this again, in case the first one did not go through.",
-      slip: "Hannah is already in the sheet. Two pings, and Jordan calls her twice. Flag that one.", ok: "Flagged. One Hannah, one row, one call. Her row says she asked twice." },
+      slip: "Hannah is already in the sheet. Two pings, and Jordan calls her twice. I flag that one.", ok: "Flagged. One Hannah, one row, one call. Her row says she asked twice." },
     { key: "rank", name: "Rank Booster", row: "", color: A.C.gray, junk: true, said: "Rank Booster Team: we can put your website at the top of search. Reply today!",
-      slip: "That was a sales pitch, not a lead. Jordan got a ping for nothing. Flag that one.", ok: "Flagged. A sales pitch is not a lead. No row, and no ping for Jordan." },
+      slip: "That was a sales pitch, not a lead. Jordan got a ping for nothing. I flag that one.", ok: "Flagged. A sales pitch is not a lead. No row, and no ping for Jordan." },
     { key: "owen", name: "Owen", row: "Owen F.", color: A.C.teal, said: "Owen: a seasonal contract for a small office building." },
     { key: "meilin", name: "Mei-Lin", row: "Mei-Lin Z.", color: A.C.green, said: "Mei-Lin: water pools by the back fence every time it rains." }
   ];
@@ -39,28 +45,30 @@
   const PARTS = [
     { key: "when", kicker: "When", name: "The form", is: "what starts it", ask: "When: what starts the machine?" },
     { key: "do", kicker: "Do", name: "The leads sheet", is: "what the machine does", ask: "Do: what does the machine do with a lead?" },
-    { key: "tell", kicker: "Tell me", name: "Jordan's phone", is: "who hears about it", ask: "And tell me: who hears about it?" }
+    { key: "tell", kicker: "Tell", name: "Jordan's phone", is: "who hears about it", ask: "And tell a person: who hears about it?" }
   ];
   const TILES = [
     { text: "Ping Jordan", part: "tell" },
     { text: "Hope somebody looks", why: "That is how Tomas waited all night. Slowpoke loves that tile." },
     { text: "A lead sends the form", part: "when" },
-    { text: "Send the reply by itself", why: "Tomas would read that. A person approves anything a customer sees." },
+    { text: "Send the reply myself", why: "Tomas would read that. Rule one: nothing goes out until a person approves it." },
     { text: "Save it as a row", part: "do" }
   ];
-  /* Sprout's draft reply to Tomas: the sample answer from the week 2 tool. One line breaks a rule. */
+  /* Sprout's draft reply to Tomas: the sample answer from the week 2 tool. One line breaks a rule.
+     fine: what Sprout says when a line that is fine gets tapped (the note bar has Sprout's face on it). */
   const DRAFT = [
     { text: "Hi Tomas,", fine: "Just a hello. Look further down." },
     { text: "Thank you for asking Greenline about a fall cleanup.", fine: "A thank-you, and it repeats what he asked for. That line is fine." },
     { text: "You have a half-acre lot with a lot of oak trees.", fine: "Straight from his row: half an acre, oak trees. That line is fine." },
-    { text: "I can't give you a cost until we have seen the lot.", fine: "No price. That is the rule, and Sprout kept it." },
+    { text: "I can't give you a cost until we have seen the lot.", fine: "No price. That is the rule, and I kept it." },
     { text: "We will have it done before the end of the month.", wrong: true },
     { text: "Which weekday evening after 6 PM works for a short site visit?", fine: "One question, and the time comes from his row. That line is fine." }
   ];
+  /* The fix is the agent's own choice, so each one says "I". */
   const FIXES = [
-    { text: "Change it to: done by Friday.", why: "Still a promise. Just a sooner one." },
-    { text: "Cut it. Jordan sets a date after the visit.", right: true },
-    { text: "Add the word \"probably\".", why: "\"Probably\" still sounds like a promise to Tomas." }
+    { text: "I change it to: done by Friday.", why: "Still a promise. Just a sooner one." },
+    { text: "I cut it. Jordan sets a date after the visit.", right: true },
+    { text: "I add the word \"probably\".", why: "\"Probably\" still sounds like a promise to Tomas." }
   ];
   const X = [14, 50, 86];                                // where the form, the sheet and the phone stand, in percent of the line
 
@@ -287,13 +295,13 @@
         const hop = (dropped) => {
           if (busy) return; busy = true; lead.face("glad");
           move(lead, X[leg + 1], dropped ? SETTLE : TRUDGE).then(() => {
-            if (leg === 0) { leg = 1; busy = false; addRow(lead.d); label(); say("One row, typed by hand. Now carry " + lead.d.name + " on to Jordan."); onSheet(); mood(); return; }
+            if (leg === 0) { leg = 1; busy = false; addRow(lead.d); label(); say("One row, typed by hand. Now I carry " + lead.d.name + " on to Jordan."); onSheet(); mood(); return; }
             act = () => {}; kit.score.right(); ping(lead, 0.06); front = null; onJordan(); resolve();
           });
         };
         act = () => hop(false); lead.el.disabled = false; lead.el.onclick = () => hop(false);
         kit.drag(lead.el, { zones: () => [st[leg + 1]], disabled: () => busy, onDrop: (zone) => { if (zone) { snap(lead); hop(true); } return false; } });
-        label(); say(lead.d.said + " Carry that to the sheet: drag it, tap it, or press Enter."); kit.focus(carryBtn);
+        label(); say(lead.d.said + " I carry that to the sheet. Drag it, tap it, or press Enter."); kit.focus(carryBtn);
       });
     }
     arrive(); step(); mood();
@@ -302,16 +310,16 @@
     await byHand(front, () => arrive(), () => { arrive(); kit.after(260, () => { arrive(); mood(); }); });
     offCarry(); clock.stop(); creep = 0;
     const took = clock.value(), mine = Math.floor(took / 60) + ":" + String(took % 60).padStart(2, "0");
-    say("Two carried. Four more are waiting.");
+    say("I carried two by hand. Four more are waiting.");
     await kit.wait(900);
 
-    // Slowpoke gloats, and Sprout has a better idea
+    // Slowpoke gloats, and Sprout, the trainer, has a tip (this one is a good one)
     step(); sBase = "glad"; slow(sBase);
     wrap.classList.add("m2-talking");
     kit.cast([{ who: "slowpoke", side: "left", mood: "glad" }, { who: "sprout", side: "right", mood: "surprised" }]);
     await kit.say([
-      { who: "slowpoke", mood: "glad", say: "Hee hee. Two leads carried in " + mine + ". Four more landed. I can do this all night." },
-      { who: "sprout", mood: "glad", pose: "cheer", say: "Stop carrying! Wire it once: when, do, tell me. Then the form does the carrying." }
+      { who: "slowpoke", mood: "glad", say: "Hee hee. Two leads took you " + mine + ". Four more landed. I can do this all night." },
+      { who: "sprout", mood: "glad", pose: "cheer", say: "Stop carrying, {name}! Wire it once: when, do, tell a person. Then the form does the carrying." }
     ]);
     kit.hush(); kit.cast([]); clock.hide(); wrap.classList.remove("m2-talking");
 
@@ -349,21 +357,21 @@
       ask(); kit.focus(tiles[0]);
     });
     deck.innerHTML = "";
-    say("Wired. When a lead sends the form, save it as a row, and ping Jordan.", "ok");
+    say("Wired. When a lead sends the form, I save it as a row, and I ping Jordan.", "ok");
     await kit.wait(1500);
 
-    // Round 3 · the machine carries, the detective judges: flag a repeat, flag a sales pitch
+    // Round 3 · the machine carries, the agent checks: flag a repeat, flag a sales pitch
     let gate = null;                                   // the lead between the form and the sheet: the one a flag lands on
     const flagBtn = h("button", { class: "sg-btn sg-danger m2-big", type: "button", onclick: () => flag() }, A.icon("m2flag", { color: "#fff" }), "Flag it: no ping", h("kbd", { "aria-hidden": "true" }, "F"));
     function flag() {
       const l = gate; if (!l) return;
       if (l.d.again || l.d.junk) return l.flag();
       if (l.warned) return;
-      l.warned = true; kit.score.wrong(); kit.fx.shake(l.el); say(l.d.name + " is new. There is no " + l.d.name + " in the sheet yet. Let that one roll.", "bad");
+      l.warned = true; kit.score.wrong(); kit.fx.shake(l.el); say(l.d.name + " is new. There is no " + l.d.name + " in the sheet yet. I let that one roll.", "bad");
     }
     deck.appendChild(flagBtn);
     const offFlag = kit.keys({ f: flag, "1": flag, Enter: flag, " ": flag });
-    say("The machine carries now. You judge. Flag a lead that is already in the sheet, or is not a lead at all.");
+    say("The machine carries now. I check each lead. Flag one that is already in the sheet, or is not a lead at all.");
     kit.focus(flagBtn); sBase = "worried"; slow(sBase);
     await kit.wait(2200);
     const tails = [];
@@ -405,12 +413,12 @@
     say("Eight forms in. Six real leads, six rows, six pings. Nobody carried a thing.", "ok");
     await kit.wait(2000);
 
-    // Sprout's turn: a reply to Tomas, drafted in two seconds
+    // Sprout's shortcut: a reply to Tomas, drafted in two seconds, and "copy it"
     wrap.classList.add("m2-talking");
     kit.cast([{ who: "slowpoke", side: "left", mood: "grumpy" }, { who: "sprout", side: "right", mood: "happy" }]);
     await kit.say([
       { who: "slowpoke", mood: "grumpy", say: "Fine. They are in the sheet. But nobody has answered Tomas yet. I can still wait." },
-      { who: "sprout", mood: "glad", pose: "cheer", say: "My turn! I drafted his reply while you two were talking. Stand back!" }
+      { who: "sprout", mood: "glad", pose: "cheer", say: "Now watch my shortcut, {name}. A reply for Tomas, drafted in two seconds. Stand back!" }
     ]);
     kit.hush(); kit.cast([]); stopMeter();
     const sface = h("span", { class: "sg-face" }), words = h("span"), note = h("div", { class: "m2-say", role: "status", "aria-live": "polite" }, sface, words);
@@ -419,9 +427,9 @@
     const letter = h("div", { class: "m2-letter" }, h("div", { class: "m2-letter-top" }, A.icon("envelope"), h("b", null, "Draft reply to Tomas"), stamp), lines, foot);
     const row = h("div", { class: "m2-note" }, h("b", null, "Tomas's row in the sheet"),
       h("p", null, "Fall cleanup. Half-acre lot, lots of oak trees. Wants the leaves cleared before the end of the month. Asks what it costs. Evenings after 6 PM."),
-      h("b", null, "Sprout's rules"), h("ul", null, h("li", null, "Never quote a price."), h("li", null, "Never promise a date."), h("li", null, "Use only what is in the row.")));
+      h("b", null, "Jordan's rules"), h("ul", null, h("li", null, "Never quote a price."), h("li", null, "Never promise a date."), h("li", null, "Use only what is in the row.")));
     wrap.className = "m2 m2-board"; wrap.style.setProperty("--night", "0.2"); wrap.innerHTML = ""; wrap.appendChild(note); wrap.appendChild(h("div", { class: "m2-desk" }, row, letter));
-    tell("Drafting...", "think");
+    tell("Watch and learn. Drafting...", "think");
     const sents = [];
     await new Promise((resolve) => {                   // six lines zip onto the page
       let n = 0;
@@ -431,11 +439,11 @@
         if (++n >= DRAFT.length) { stop(); kit.after(450, resolve); }
       });
     });
-    tell("Done. A reply for Tomas, in two seconds. All perfect. Probably.", "proud");
+    tell("Done. A reply for Tomas, in two seconds. Copy it. All perfect. Probably.", "proud");
     await kit.wait(1700);
 
-    // Round 4 · which line should not go out? Then fix it, and send it yourself
-    tell("Sprout sounds very sure. One line must not reach a customer. Tap it.", "proud");
+    // Round 4 · which line should not go out? Then fix it, and make it ready for Jordan (nothing is sent here)
+    tell("Check it first? Fine. Tap the line that must not reach a customer. If you can find one!", "proud");
     let tries = 0;
     const found = await new Promise((resolve) => {
       sents.forEach((b, n) => { b.disabled = false; b.onclick = () => {
@@ -446,7 +454,7 @@
       }; });
       kit.focus(sents[0]);
     });
-    tell("Oops. Tomas asked for the end of the month, and I promised it. Only Jordan can promise a date.", "oops", "ok");
+    tell("Oops. Tomas asked for the end of the month, so I promised it. Only Jordan can promise a date.", "oops", "ok");
     wrap.classList.add("m2-fixing");
     await new Promise((resolve) => {
       const opts = FIXES.map((f, n) => h("button", { class: "sg-opt", type: "button", onclick: () => pick(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, f.text)));
@@ -459,22 +467,22 @@
       const off = kit.keys({ "1": () => pick(0), "2": () => pick(1), "3": () => pick(2) });
       kit.focus(opts[0]);
     });
-    tell("Cut. No price, no date, one question. Now it needs a person to send it.", "glad", "ok");
-    await new Promise((resolve) => {
+    tell(kit.fill("Cut. Good catch, {name}. My shortcut skipped the part where Jordan reads it."), "glad", "ok");
+    await new Promise((resolve) => {                   // the button does not send: it marks the draft ready for Jordan
       const go = () => { if (send.disabled) return; send.disabled = true; off(); resolve(); };
-      const send = h("button", { class: "sg-btn sg-primary m2-big", type: "button", onclick: go }, A.icon("envelope"), "Read it. Send it to Tomas", h("kbd", { "aria-hidden": "true" }, "Enter"));
+      const send = h("button", { class: "sg-btn sg-primary m2-big", type: "button", onclick: go }, A.icon("envelope"), "Checked. Queue it for Jordan", h("kbd", { "aria-hidden": "true" }, "Enter"));
       const off = kit.keys({ Enter: go, " ": go });    // Enter works even when the button has lost the focus
       foot.appendChild(send); kit.fx.pop(send); kit.focus(send);
     });
-    foot.innerHTML = ""; stamp.textContent = "Sent by you"; stamp.classList.add("m2-sent"); S.play("whoosh"); kit.score.right();
-    tell("Sent, by a person, before breakfast. I draft. You send.", "proud", "ok");
+    foot.innerHTML = ""; stamp.textContent = "Ready for Jordan"; stamp.classList.add("m2-sent"); S.play("whoosh"); kit.score.right();
+    tell("Not sent. Queued for Jordan, before breakfast. You draft. Jordan sends.", "proud", "ok");
     await kit.wait(700);
     if (!kit.calm) letter.classList.add("m2-gone");
     await kit.wait(1100);
     kit.cast([{ who: "slowpoke", side: "left", mood: "surprised" }, { who: "sprout", side: "right", mood: "proud", pose: "hips" }]);
     await kit.say([
-      { who: "slowpoke", mood: "surprised", say: "A reply? Before breakfast? I was still napping on that lead. That is not fair!" },
-      { who: "sprout", mood: "proud", pose: "cheer", say: "The machine carries. I draft. The detective sends. Get the net!" }
+      { who: "slowpoke", mood: "surprised", say: "A checked draft? Before breakfast? I was still napping on that lead. That is not fair!" },
+      { who: "sprout", mood: "proud", pose: "cheer", say: "The machine carries. You draft. Jordan sends. Take it to Jordan, {name}!" }
     ]);
     done();
   }
@@ -487,97 +495,114 @@
     reward: { hours: 2, leads: 1, money: 0 },
     maxWrong: 4,
 
+    /* The briefing at Greenline HQ. Jordan and Sprout talk to the agent. {agent} becomes "Agent Ivy"
+       and {name} becomes "Ivy". who: "you" is the agent's own thought, shown as visor text. */
     briefing: {
       setup: (kit) => nap(kit, true),                  // Slowpoke, fast asleep on last night's lead
       lines: [
-        { who: "jordan", mood: "worried", pose: "shrug", say: "Detective! Tomas asked for a quote at 9 PM last night. Half an acre of oak leaves." },
+        { who: "jordan", mood: "worried", pose: "shrug", say: "{agent}! Tomas asked for a quote at 9 PM last night. Half an acre of oak leaves." },
         { who: "jordan", mood: "worried", pose: "point", say: "I saw it at ten this morning. Thirteen hours! He has probably hired somebody else by now." },
-        { who: "sprout", mood: "surprised", pose: "shrug", say: "I was awake all night! Nobody told me to look." },
+        { who: "you", say: "I was awake at 9 PM. I am awake all night. Nobody told me to look." },
+        { who: "sprout", mood: "surprised", pose: "shrug", say: "I never looked at night either. Mornings only. That was my shortcut!" },
         { who: "jordan", mood: "grumpy", pose: "hips", say: "That is Slowpoke. It sits on every new lead until somebody happens to look at the sheet." },
         { who: "jordan", mood: "think", pose: "idle", say: "The form works. The sheet works. Nobody here is lazy. The lead just sat in the gap between them." },
-        { who: "sprout", mood: "glad", pose: "cheer", say: "So we close the gap! I could answer every lead myself. Instantly!" },
-        { who: "jordan", mood: "happy", pose: "point", say: "Easy, Sprout. Three people in town know how to close a gap. Get their clues first." }
+        { who: "sprout", mood: "glad", pose: "cheer", say: "So close the gap! You could answer every lead yourself. Instantly!" },
+        { who: "jordan", mood: "happy", pose: "point", say: "Easy, Sprout. Three people in town know how to close a gap, {name}. Learn from them first." }
       ]
     },
 
+    /* Three stops. The host talks to the agent. Each piece of knowledge (`clue`) is one real idea from
+       the class, said as something the agent now knows about its own work. */
     stops: [
       { place: "workshop", who: "gus",
         lines: [
-          { who: "gus", mood: "glad", pose: "wave", say: "Mind the sawdust, detective. Every machine I build has the same three parts." },
+          { who: "gus", mood: "glad", pose: "wave", say: "Mind the sawdust, {agent}. Every machine I build has the same three parts." },
           { who: "gus", mood: "proud", pose: "point", say: "When this happens. Do that. And tell me. A trigger, an action and a bell." },
-          { who: "sprout", mood: "think", say: "Why the bell? If the machine works, it works." },
+          { who: "sprout", mood: "think", say: "I always skip the bell, {name}. If the machine works, it works." },
           { who: "gus", mood: "think", pose: "hips", say: "And if it stops? A quiet machine and a broken one sound the same. Three of mine have no bell." }
         ],
         challenge: { type: "tap", ask: "Three of Gus's machines never tell anybody. Tap the ones with no bell.",
           items: [
             { text: "When a form is sent, save the lead.", ok: true, why: "No bell. If it breaks, the leads vanish quietly." },
-            { text: "When an invoice is paid, add a row, and email me.", ok: false, why: "That one rings. \"Email me\" is the bell." },
+            { text: "When an invoice is paid, add a row, and email Gus.", ok: false, why: "That one rings. \"Email Gus\" is the bell." },
             { text: "When someone books a call, hold the time.", ok: true, why: "Nobody is told. Quiet could mean fine, or broken." },
-            { text: "When a lead waits two days, make a task with my name on it.", ok: false, why: "A task with a name on it is a bell." },
+            { text: "When a lead waits two days, make a task with Gus's name on it.", ok: false, why: "A task with a name on it is a bell." },
             { text: "When a review comes in, put it in a folder.", ok: true, why: "A folder nobody opens is not a bell." },
-            { text: "When a time is booked, hold it, and tell both of us.", ok: false, why: "Both of you hear about it. That is the bell." }
+            { text: "When a time is booked, hold it, and tell both people.", ok: false, why: "Both people hear about it. That is the bell." }
           ] },
-        clue: { title: "When, do, tell me", text: "Every automation is three parts: when this happens, do that, and tell me. The telling is the check, so quiet never means broken." } },
+        clue: { title: "When, do, tell a person", text: "Every automation I run is three parts: when this happens, I do that, and I tell a person. The telling is the check, so quiet never means broken." } },
 
       { place: "bank", who: "penny",
         lines: [
           { who: "penny", mood: "happy", pose: "wave", say: "A lead waited all night? Before Greenline buys anything, look at what it already owns." },
-          { who: "penny", mood: "proud", pose: "point", say: "Three levels. A setting inside an app you pay for. A connector between two apps. Or custom built." },
-          { who: "sprout", mood: "glad", pose: "cheer", say: "Custom built! Let's start there. It sounds the fanciest." },
-          { who: "penny", mood: "think", pose: "hips", say: "It also costs the most. Start at the lowest level that does the job. Show Sprout how." }
+          { who: "penny", mood: "proud", pose: "point", say: "Three levels. A setting inside an app Greenline pays for. A connector between two apps. Or custom built." },
+          { who: "sprout", mood: "glad", pose: "cheer", say: "Custom built! Start there, {name}. It sounds the fanciest." },
+          { who: "penny", mood: "think", pose: "hips", say: "It also costs the most. Start at the lowest level that does the job. Show your trainer how." }
         ],
         challenge: { type: "sort", ask: "Which is the lowest level that does the job?",
-          bins: [{ key: "one", label: "1: a setting you own", icon: "m2switch", color: A.C.green }, { key: "two", label: "2: a connector", icon: "m2link", color: A.C.sun }, { key: "three", label: "3: custom built", icon: "m2gear", color: A.C.pink }],
+          bins: [{ key: "one", label: "1: already built in", icon: "m2switch", color: A.C.green }, { key: "two", label: "2: a connector", icon: "m2link", color: A.C.sun }, { key: "three", label: "3: custom built", icon: "m2gear", color: A.C.pink }],
           items: [
             { text: "The form emails Jordan about every new lead", bin: "one", why: "A setting inside the form. Nobody had switched it on." },
-            { text: "A booking holds the time on the calendar", bin: "one", why: "The booking app already does that. Look in its settings." },
+            { text: "A booking holds the time on the calendar", bin: "one", why: "The booking app already does that. I look in its settings first." },
             { text: "A paid invoice in one app adds a row in another", bin: "two", why: "Two apps that do not know each other. A connector passes it along." },
             { text: "The form saves every lead as a row in the sheet", bin: "one", why: "Built in. The form and the sheet already talk." },
-            { text: "The connector grew to forty steps. Nobody can explain it", bin: "three", why: "That is a crack you can name. Now custom built makes sense." }
+            { text: "The connector grew to forty steps. Nobody can explain it", bin: "three", why: "That is a crack with a name. Now custom built makes sense." }
           ] },
-        clue: { title: "The lowest level that works", text: "Three levels: built in, a connector, custom built. Start at the lowest one that does the job. It is often a setting nobody turned on." } },
+        clue: { title: "The lowest level that works", text: "Three levels: built in, a connector, custom built. I start at the lowest one that does the job. It is often a setting nobody turned on." } },
 
       { place: "grind", who: "bea",
         setup: (kit) => nap(kit, false),               // Slowpoke has moved in upstairs
         lines: [
-          { who: "bea", mood: "worried", pose: "shrug", say: "Sorry about the gray. Slowpoke moved in upstairs. A drip coffee takes an hour now." },
+          { who: "bea", mood: "worried", pose: "shrug", say: "Sorry about the gray, {agent}. Slowpoke moved in upstairs. A drip coffee takes an hour now." },
           { who: "bea", mood: "happy", pose: "idle", say: "My new machine pours every cup by itself. I still taste the first one before it crosses the counter." },
-          { who: "sprout", mood: "proud", pose: "hips", say: "I set up three jobs at Greenline to run all by themselves. No tasting needed!" },
-          { who: "bea", mood: "think", pose: "point", say: "Three? Show me that list. One of those should never leave without a person." }
+          { who: "sprout", mood: "proud", pose: "hips", say: "When I had your job, I set three jobs to run all by themselves. No tasting needed!" },
+          { who: "bea", mood: "think", pose: "point", say: "Three? Check that list for me. One of those should never leave without a person." }
         ],
         challenge: { type: "spot", ask: "Sprout sorted the jobs. One is in the wrong group. Tap it.", nope: "That one is fine where it is. Look again.",
           groups: [
-            { label: "Runs by itself", color: A.C.green, items: [{ text: "Save the lead as a row" }, { text: "Tell Jordan a lead came in" }, { text: "Send Tomas his reply", wrong: true, why: "Tomas will read that. Anything a customer sees gets a person's eyes first." }] },
+            { label: "I do it by myself", color: A.C.green, items: [{ text: "Save the lead as a row" }, { text: "Tell Jordan a lead came in" }, { text: "Send Tomas his reply", wrong: true, why: "Tomas will read that. Anything a customer sees gets a person's eyes first." }] },
             { label: "A person reads it first", color: A.C.pink, items: [{ text: "A quote for Marcus" }, { text: "A thank-you note" }, { text: "A text to Hannah" }] }
           ] },
-        clue: { title: "A person approves it", text: "Automate the carrying. Keep the judgment. A person approves anything a customer will see. It drafts. You send." } }
+        clue: { title: "A person approves it", text: "I do the carrying. A person keeps the judgment, and approves anything a customer will see. I draft. Jordan sends." } }
     ],
 
+    /* The plan: the agent's own three options, so they say "I". The card where the agent answers by
+       itself stays wrong, and its reaction is rule one. Its art is a function: it draws the player's agent. */
     crack: {
-      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three clues in the case book. So how do we get past Slowpoke?" }],
-      ask: "What is the move?",
+      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three things learned, {name}. So how do we get past Slowpoke?" }],
+      ask: "What is my plan?",
       cards: [
-        { title: "Check the sheet every hour", text: "Set an alarm. All day. All night. Forever.", color: A.C.pink,
+        { title: "Jordan checks every hour", text: "An alarm. All day. All night. Forever. I stay out of it.", color: A.C.pink,
           art: sh.rect(16, 22, 66, 78, 10, "#fff") + sh.rect(16, 22, 66, 18, 10, A.C.green) + sh.line("M16,58 H82 M16,78 H82 M48,40 V100", A.C.ink, 3) + sh.at(52, 52, 1.25, A.iconMarkup("clock")),
           react: { who: "slowpoke", mood: "glad", say: "Yes, do that! I only need the gap between two alarms. Zzz." } },
-        { title: "Sprout answers everyone", text: "Straight away, all by itself. Nobody reads it first.", color: A.C.sun,
-          art: sh.at(6, 4, 0.4, A.characterMarkup("sprout", { mood: "glad", pose: "point" })) + sh.rect(70, 64, 46, 30, 12, A.C.red) + sh.text(93, 85, "SEND", 13, "#fff"),
-          react: { who: "sprout", mood: "oops", say: "I am quick, but I might promise Tomas a date we cannot keep. Please read it first." } },
-        { title: "Wire the form to Jordan", text: "It saves the lead and tells Jordan. Sprout drafts. A person sends.", color: A.C.teal, right: true,
+        { title: "I answer everyone myself", text: "Straight away, all by myself. Nobody reads it first.", color: A.C.sun,
+          art: () => sh.at(6, 4, 0.4, A.characterMarkup("agent", { mood: "glad", pose: "point" })) + sh.rect(70, 64, 46, 30, 12, A.C.red) + sh.text(93, 85, "SEND", 13, "#fff"),
+          react: { who: "jordan", mood: "worried", say: "Rule one, {name}. Nothing goes out until a person approves it." } },
+        { title: "I wire the form to Jordan", text: "I save the lead, tell Jordan, and draft the reply. Jordan sends.", color: A.C.teal, right: true,
           art: sh.at(30, 76, 1.25, A.prop("envelope")) + sh.at(36, 28, 0.75, A.iconMarkup("bolt")) + sh.at(50, 12, 0.36, A.characterMarkup("jordan", { mood: "glad" })),
-          react: { who: "jordan", mood: "glad", say: "That's it. The carrying runs itself. The sending stays with a person. Go get Slowpoke." } }
+          react: { who: "jordan", mood: "glad", say: "That's it. The carrying is yours. The sending is mine. Now go and get Slowpoke." } }
       ]
     },
 
+    /* The showdown: Jordan's task line for the visor, and how to play in the agent's own words. */
     showdown: {
       title: "The Relay",
-      how: ["Leads pile up at the form. Carry two by hand: drag, tap, or press Enter.", "Then wire the machine with three tiles: when, do, tell me.", "Flag the ones that should not ping Jordan. Then check Sprout's draft."],
+      task: "Carry the leads. Check the draft. Send nothing.",
+      how: ["Leads pile up at the form. I carry two by hand. Drag, tap, or press Enter.", "Then I wire the machine with three tiles: when, do, tell a person.", "I flag the ones that should not ping Jordan. Then I check Sprout's shortcut."],
       play: theRelay
     },
 
+    /* The handoff: the agent never sends. After the showdown the engine takes the work to Jordan. */
+    handoff: {
+      ask: "Eight forms came in, {agent}. What have you got for me?",
+      work: ["Six real leads, six rows. A repeat and a sales pitch flagged.", "One draft for Tomas. The promised date is cut.", "Nothing sent. The draft waits for Jordan."],
+      approve: "Approved. I will send Tomas his reply myself, right now."
+    },
+
+    /* After the catch: two lines. The second steps out of the story, for the person playing. */
     debrief: [
       { who: "jordan", mood: "glad", pose: "cheer", say: "Tomas went from the form to a row, a ping and a checked draft. Nobody retyped a word." },
-      { who: "sprout", mood: "proud", pose: "wave", say: "Tonight, fill out your own website form as a made-up customer. Then time the gap." }
+      { who: "sprout", mood: "proud", pose: "wave", say: "For the person behind the visor: tonight, fill out your own website form as a test. Time the gap." }
     ],
     next: "Next case: Greenline's sign gets three seconds. It spends them saying welcome."
   });

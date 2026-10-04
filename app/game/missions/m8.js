@@ -6,11 +6,18 @@
    login), and a trick shows itself by pressure, a link, or a request for a password or a payment ·
    one printed page says who owns each login and who to call. Never a password on it.
 
+   AGENT MODE: the player IS the AI, Greenline's new agent. So every line here is written to the
+   agent ("you") or by the agent ("I"). Sprout is the trainer, the agent who had the job before, and
+   its one wrong shortcut (a guess at the cause, in the support request) is the thing to catch. The
+   agent never sends, pays or gives out a password: it asks, checks and drafts, and the engine's
+   handoff takes the work to Jordan. When "the boss" asks the agent for a password, the agent does
+   not act on it. It checks with the real Jordan.
+
    The showdown is a boss fight in three rounds, each a different kind of play:
-     1. Stay calm        panic buttons pop up all over the wall; tap only the calm questions
-        Sprout's turn    Sprout writes the support request and guesses the cause; catch it, fix it
-     2. Lock the doors   Captain Chaos knocks in disguise; tag the signs of a trick and the door slams
-     3. Who do we call?  snap the right card onto each broken tool, then print the page
+     1. Stay calm          panic buttons pop up all over the wall; tap only the calm questions
+        Sprout's shortcut  Sprout drafts the support request and guesses the cause; catch it, fix it
+     2. Lock the doors     Captain Chaos knocks in disguise; tag the signs of a trick and the door slams
+     3. Who do we call?    snap the right card onto each broken tool, then print the draft page
    The last case has no `next`. Everything in it is made up. GAME.md explains every kit call. */
 (function () {
   "use strict";
@@ -72,16 +79,16 @@
     { text: "What are the exact words on the screen?", note: "Luis: It spins, then says something about connection??" }
   ];
   const PANIC = [
-    { text: "Restart everything!", why: "Restart it all and the clues go with it. Ask first." },
-    { text: "Buy a new one!", why: "A new one could break the very same way. Find out what happened first." },
+    { text: "Restart everything!", why: "If I restart it all, the words on the screen go with it. I ask first." },
+    { text: "Buy a new one!", why: "A new one could break the very same way. And buying is Jordan's call, not mine." },
     { text: "Try five fixes at once!", why: "Five at once hides the one that worked. One at a time, later." },
     { text: "Unplug it all!", why: "That is restarting everything, with more crawling under desks." },
     { text: "Press it harder!", why: "Luis pressed it three times already. It noticed." },
-    { text: "Call everybody!", why: "\"It's broken, call me\" gets a slow answer. Questions first." },
+    { text: "Call everybody!", why: "\"It's broken, call me\" gets a slow answer. My questions come first." },
     { text: "Throw it in the pond!", why: "The duck in Hollow Park does not take cards." },
-    { text: "Panic!", why: "Panicking is Captain Chaos's job. Yours is asking." }
+    { text: "Panic!", why: "Panicking is Captain Chaos's job. Mine is asking." }
   ];
-  /* Sprout's turn. The support request, a line at a time. Exactly one line is a guess. */
+  /* Sprout's shortcut. The support request Sprout drafts, a line at a time. Exactly one line is a guess. */
   const REQUEST = [
     { text: "One of our two card readers stopped taking payments this afternoon.", why: "That line is a fact. It says what stopped working." },
     { text: "The other reader, on the same account, still works.", why: "A fact. Ana's truck took a card at 2:10." },
@@ -92,20 +99,20 @@
   ];
   const FIXES = [
     { text: "\"The weak signal broke it.\"", why: "Still a guess. Two things changed and nobody knows which one did it." },
-    { text: "The exact words on the screen. Ask Luis.", right: true },
+    { text: "The exact words on the screen. I ask Luis.", right: true },
     { text: "Nothing. Support can work it out.", why: "The exact words are the first thing support asks for. Then everybody waits." }
   ];
   /* Round 2. The three signs of a trick, and four messages at the door: three from Captain Chaos in
      a disguise, one real. A bit with a `sign` is a sign of a trick; a bit without one is harmless. */
   const SIGNS = {
-    pressure: { label: "Pressure", icon: "clock", tag: "PRESSURE", found: "Pressure. A real message can wait while you check." },
-    link: { label: "A link", icon: "m8link", tag: "A LINK", found: "A link. Go to the site the way you always do instead." },
-    ask: { label: "Password or money", icon: "m8key", tag: "ASKS", found: "It asks for a password or a payment. Real support never needs your password." }
+    pressure: { label: "Pressure", icon: "clock", tag: "PRESSURE", found: "Pressure. A real message can wait while I check." },
+    link: { label: "A link", icon: "m8link", tag: "A LINK", found: "A link. I do not tap it. Jordan goes to the site the usual way instead." },
+    ask: { label: "Password or money", icon: "m8key", tag: "ASKS", found: "It asks for a password or a payment. Real support never needs a password. I give neither." }
   };
   const MESSAGES = [
     { from: "Parcel Desk", who: "chaos", tag: "DELIVERY",
       bits: [{ text: "A parcel is waiting for Greenline." }, { text: "Tap this link to see it.", sign: "link" }, { text: "A small fee is due first. Card number, please.", sign: "ask" }],
-      done: "SLAM! A link and a payment. A real parcel does not need a card number." },
+      done: "SLAM! A link and a payment. A real parcel does not need a card number. I pay nothing." },
     { from: "Nell, at Print and Post", who: "nell", real: true,
       bits: [{ text: "Hi Jordan, Nell here." }, { text: "The big printer is free this afternoon." }, { text: "Bring your page over whenever you like." }],
       done: "No pressure, no link, nothing asked for. That one is just Nell." },
@@ -113,8 +120,8 @@
       bits: [{ text: "Your account closes in one hour!", sign: "pressure" }, { text: "Click here to keep it open.", sign: "link" }, { text: "Then type your email password.", sign: "ask" }],
       done: "SLAM! All three signs at once. The email stays locked." },
     { from: "Jordan, the boss (new phone)", who: "chaos", tag: "THE BOSS",
-      bits: [{ text: "Hope your Friday is going well." }, { text: "Text me the email password.", sign: "ask" }, { text: "Right now! No time to call!", sign: "pressure" }],
-      done: "SLAM! Pressure and a password. And Jordan is standing right next to you." }
+      bits: [{ text: "Hope your Friday is going well, {name}." }, { text: "Text me the email password.", sign: "ask" }, { text: "Right now! No time to call!", sign: "pressure" }],
+      done: "SLAM! Pressure and a password. I do nothing it says. I check with the real Jordan first." }
   ];
   /* The disguises: a cap pulled over his own hat, and a prop. Drawn in the bandit's 200 by 220 box. */
   const cap = (color) => sh.path("M42,60 Q42,6 100,6 Q158,6 158,60 Z", color) + sh.path("M150,46 Q194,42 198,58 Q176,68 152,60 Z", sh.dark(color, 0.25));
@@ -407,18 +414,20 @@
       h("div", { class: "m8-brief-boss" }, bossArt(0), shout("Restart everything!", 0), shout("Buy a new one!", 1), shout("Five fixes at once!", 2))));
   }
 
-  // ── clue stop 2's own challenge: every "forgot password" link lands in one inbox. Then lock it. ──
+  // ── stop 2's own challenge: every "forgot password" link lands in one inbox. Then pick its locks. ──
+  /* Penny's practice board. The agent watches where each reset link goes, then picks the two locks
+     Jordan should put on that inbox. Nothing here takes a password, and nothing must. */
   const DOORS = [["The bank", "coins"], ["The books", "book"], ["The website", "sign"], ["The card reader", "m8reader"]];
   const LOCKS = [
-    { text: "A password manager", ok: true, why: "You remember one long password. It remembers the rest." },
+    { text: "A password manager", ok: true, why: "Jordan remembers one long password. It remembers the rest." },
     { text: "The dog's name, plus 1", ok: false, why: "Biscuit1 is the first thing anybody tries." },
-    { text: "Two-step login", ok: true, why: "A password, then a code from your phone. Print the backup codes." },
+    { text: "Two-step login", ok: true, why: "A password, then a code from Jordan's phone. Jordan prints the backup codes." },
     { text: "The same password as the bank", ok: false, why: "Then one leak opens both doors." },
     { text: "A sticky note on the screen", ok: false, why: "Easy to remember. Easy to read, too." }
   ];
   function masterKey(kit, spec, done) {
     kit.style(CSS);
-    const p = kit.panel({ kicker: "Quick challenge", title: spec.ask, who: spec.who }), title = p.el.querySelector("h2");
+    const p = kit.panel({ kicker: "My turn", title: kit.fill(spec.ask), who: spec.who }), title = p.el.querySelector("h2");
     const count = h("small", null, "No reset links yet"), locks = h("span"), inbox = h("div", { class: "m8-inbox" }, A.icon("envelope"), h("div", null, h("b", null, "Jordan's email"), count), locks);
     const grid = h("div", { class: "m8-keys" }, inbox);
     let got = 0;
@@ -426,7 +435,7 @@
     doors.forEach((b) => grid.appendChild(b)); p.body.appendChild(grid);
     function knock(n) {
       const b = doors[n]; if (b.disabled) return;
-      b.disabled = true; b.classList.add("m8-sent"); b.querySelector("small").textContent = "Link sent to the email";
+      b.disabled = true; b.classList.add("m8-sent"); b.querySelector("small").textContent = "Its link went to the email";
       const key = h("i", { class: "m8-flykey" }, A.icon("m8key")); b.appendChild(key); S.play("zip");
       kit.fx.fly(key, inbox, () => {
         key.remove(); got++; count.textContent = got + (got === 1 ? " reset link" : " reset links") + " in here"; kit.fx.pop(inbox); S.play("pop");
@@ -437,7 +446,7 @@
     kit.focus(doors[0]);
     function lockIt() {
       offKeys(); doors.forEach((b) => b.remove());
-      title.textContent = "Now lock that inbox. Tap the two strongest locks."; kit.fx.pop(title); p.say("");
+      title.textContent = "Which locks should Jordan put on that inbox? Tap the two strongest."; kit.fx.pop(title); p.say("");
       let found = 0;
       const chips = LOCKS.map((l, n) => h("button", { class: "sg-chip", type: "button", onclick: () => pick(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, l.text)));
       function pick(n) {
@@ -532,32 +541,32 @@
       }
       const keys = {}; for (let n = 1; n <= 9; n++) keys[String(n)] = () => press(n);
       const offKeys = kit.keys(keys);
-      say("Captain Chaos is popping panic buttons. Leave them alone. Tap the calm question, or press its number.");
+      say("Captain Chaos is popping panic buttons. I leave them alone. Tap the calm question, or press its number.");
       wave();
     });
 
-    // Sprout's turn · Sprout writes to support in two seconds, and guesses the cause. Catch it, then fix it.
-    round("Sprout's turn");
+    // Sprout's shortcut · Sprout, the trainer, drafts the support request in two seconds, and guesses the cause. Catch it, then fix it.
+    round("Sprout's shortcut");
     await talk([{ who: "chaos", side: "left", mood: "sneaky" }, { who: "sprout", side: "right", mood: "happy" }], [
       { who: "chaos", mood: "sneaky", say: "Four questions and not one restart? Fine. You still do not know WHY it broke. Hee hee." },
-      { who: "sprout", mood: "proud", pose: "cheer", say: "I do! I wrote to support already. Four answers, and the cause. Stand back!" }
+      { who: "sprout", mood: "proud", pose: "cheer", say: "I do! Watch my shortcut, {name}. A request for support in two seconds, cause and all. Copy me!" }
     ]);
     wrap.classList.add("m8-talking");
-    const p = kit.panel({ kicker: "Sprout's turn", title: "Sprout is writing to card reader support...", who: "sprout" }), title = p.el.querySelector("h2");
+    const p = kit.panel({ kicker: "Sprout's shortcut", title: "Sprout drafts the request for card reader support...", who: "sprout" }), title = p.el.querySelector("h2");
     const lines = REQUEST.map((r, n) => h("button", { class: "m8-line", type: "button", disabled: true }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, r.text)));
-    const letter = h("div", { class: "m8-letter" }, h("div", { class: "m8-letter-top" }, h("b", null, "To: card reader support"), h("span", null, "From: Greenline")));
+    const letter = h("div", { class: "m8-letter" }, h("div", { class: "m8-letter-top" }, h("b", null, "Draft · To: card reader support"), h("span", null, "From: Greenline")));
     p.body.appendChild(letter);
     await new Promise((resolve) => {                   // six lines zip onto the page
       let n = 0;
       const stop = kit.every(190, () => { letter.appendChild(lines[n]); S.play("zip"); if (++n >= lines.length) { stop(); kit.after(500, resolve); } });
     });
-    title.textContent = "Sprout sounds very sure. One line is a guess, not a fact. Tap it."; kit.fx.pop(title);
-    p.say("Sprout: Done. Two seconds! I am very sure about the cause.");
+    title.textContent = "I check before I copy. One line is a guess, not a fact. Tap it."; kit.fx.pop(title);
+    p.say("Sprout: Done. Two seconds! Copy it. I am very sure about the cause.");
     let tries = 0;
     const found = await new Promise((resolve) => {
       const pick = (n) => {
         const el = lines[n]; if (el.disabled) return;
-        if (!REQUEST[n].guess) { tries++; el.disabled = true; el.classList.add("m8-fact"); kit.score.wrong(); kit.fx.shake(el); return p.say(REQUEST[n].why + " Look again.", "bad"); }
+        if (!REQUEST[n].guess) { tries++; el.disabled = true; el.classList.add("m8-fact"); kit.score.wrong(); kit.fx.shake(el); return p.say(REQUEST[n].why + " I look again.", "bad"); }
         off(); lines.forEach((x) => { x.disabled = true; }); el.classList.add("m8-guess"); kit.score.right();
         kit.score.sprout(tries === 0);                 // the second star: Sprout's slip caught on the first try
         resolve(el);
@@ -566,8 +575,8 @@
       const keys = {}; lines.forEach((el, n) => { keys[String(n + 1)] = () => pick(n); });
       const off = kit.keys(keys); kit.focus(lines[0]);
     });
-    title.textContent = "Two things changed, and Sprout blamed one. What goes on that line instead?"; kit.fx.pop(title);
-    p.say("Sprout: Oops. I guessed. I had no proof at all.", "ok");
+    title.textContent = "Two things changed, and Sprout blamed one. What do I put on that line instead?"; kit.fx.pop(title);
+    p.say("Sprout: Oops. I guessed. My shortcut skipped the proof.", "ok");
     const fixes = h("div", { class: "m8-fixes" }); p.body.appendChild(fixes);
     await new Promise((resolve) => {
       const opts = FIXES.map((f, n) => h("button", { class: "m8-fix", type: "button", onclick: () => pick(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, f.text)));
@@ -582,10 +591,10 @@
     fixes.remove(); S.play("m8buzz");                  // Luis sends a photo of the screen, and the guess becomes the exact words
     p.body.appendChild(h("div", { class: "m8-photo" }, h("span", { class: "sg-face" }, A.avatar("luis", { mood: "glad" })), h("div", null, h("small", null, "Luis sent a photo of the screen"), h("b", { class: "m8-screen" }, WORDS))));
     found.className = "m8-line m8-fixed"; found.querySelector("span").textContent = "The screen says: \"" + WORDS + "\""; kit.fx.pop(found);
-    title.textContent = "The exact words, and not one guess. Send it."; kit.fx.pop(title);
-    p.say("Sprout: New rule saved. Do not guess the cause. Ask for the exact words.", "ok");
+    title.textContent = "The exact words, and not one guess. Ready for Jordan to send."; kit.fx.pop(title);
+    p.say("Sprout: Good catch. My shortcut skipped the exact words. No more guessing the cause.", "ok");
     await new Promise((resolve) => {
-      const send = h("button", { class: "sg-btn sg-primary", type: "button", onclick: () => { S.play("whoosh"); resolve(); } }, A.icon("envelope"), "Send it to support");
+      const send = h("button", { class: "sg-btn sg-primary", type: "button", onclick: () => { S.play("whoosh"); resolve(); } }, A.icon("envelope"), "Save the draft for Jordan");
       p.body.appendChild(h("div", { class: "m8-sendrow" }, send)); kit.focus(send);
     });
     p.close(); wrap.classList.remove("m8-talking"); clock("4:53");
@@ -612,28 +621,28 @@
         boss.step(!m.real);                            // he is at the door in a disguise, so his console is empty (and he is back at it while Nell knocks)
         Object.keys(bolt).forEach((k) => bolt[k].classList.remove("m8-lit"));
         from.textContent = "From: " + m.from; nth.textContent = (i + 1) + " of " + MESSAGES.length; bits.innerHTML = "";
-        const chips = m.bits.map((b, n) => h("button", { class: "m8-bit", type: "button", onclick: () => tap(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, b.text)));
+        const chips = m.bits.map((b, n) => h("button", { class: "m8-bit", type: "button", onclick: () => tap(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("span", null, kit.fill(b.text))));
         chips.forEach((c) => bits.appendChild(c)); letBtn.disabled = false; kit.fx.pop(msg); S.play("m8knock");
-        if (i) say("Knock, knock. Message " + (i + 1) + " of " + MESSAGES.length + ". Any sign of a trick?");
+        if (i) say("Knock, knock. Message " + (i + 1) + " of " + MESSAGES.length + ". Do I see a sign of a trick?");
         const next = () => { off(); chips.forEach((c) => { c.disabled = true; }); letBtn.disabled = true; kit.after(1900, () => (i + 1 < MESSAGES.length ? knock(i + 1) : finish())); };
         function tap(n) {
           const b = m.bits[n], el = chips[n]; if (over || el.disabled) return;
           el.disabled = true;
-          if (!b.sign) { el.classList.add("m8-fine"); kit.score.wrong(); kit.fx.shake(el); return say(m.real ? "Nothing wrong with that bit. No pressure, no link, nothing asked for." : "That bit is harmless. Look for pressure, a link, or a request.", "bad"); }
+          if (!b.sign) { el.classList.add("m8-fine"); kit.score.wrong(); kit.fx.shake(el); return say(m.real ? "Nothing wrong with that bit. No pressure, no link, nothing asked for." : "That bit is harmless. I look for pressure, a link, or a request.", "bad"); }
           el.classList.add("m8-sign"); el.appendChild(h("em", null, SIGNS[b.sign].tag)); bolt[b.sign].classList.add("m8-lit"); kit.fx.pop(bolt[b.sign]); S.play("m8clack");
           if (--left > 0) return say(SIGNS[b.sign].found, "ok");
           over = true; frame.classList.add("m8-shut"); S.play("m8slam"); kit.score.right(); kit.fx.shake(doorway); boss.hop(); say(m.done, "ok"); next();   // every sign tagged: the door slams
         }
         function letIn() {
           if (over || letBtn.disabled) return;
-          if (!m.real) { kit.score.wrong(); kit.fx.shake(letBtn); boss.hop(); return say("Hold the door! There is a trick in that one. Look for pressure, a link, or a request.", "bad"); }
+          if (!m.real) { kit.score.wrong(); kit.fx.shake(letBtn); boss.hop(); return say("Hold the door! There is a trick in that one. I look for pressure, a link, or a request.", "bad"); }
           over = true; frame.classList.add("m8-open"); kit.score.right(); say(m.done, "ok"); next();
         }
         letBtn.onclick = letIn;
         const off = kit.keys({ "1": () => tap(0), "2": () => tap(1), "3": () => tap(2), l: letIn });
         kit.focus(chips[0]);
       }
-      say("Captain Chaos is at the door in a disguise. Tap every sign of a trick and the door slams. No signs? Let it in.");
+      say("I check every message before I act on it. Tap each sign of a trick and the door slams. No signs? Let it in.");
       knock(0);
     });
     boss.step(false); boss.hit(); clock("4:56"); await kit.wait(1000);
@@ -641,7 +650,7 @@
     // Round 3 · Who do we call? He breaks the tools one by one. Snap the right card onto each row, then print the page.
     await talk([{ who: "chaos", side: "left", mood: "surprised" }, { who: "sprout", side: "right", mood: "happy" }], [
       { who: "chaos", mood: "surprised", say: "Locked out! Then I will break EVERYTHING. And who will you call? WHO?" },
-      { who: "sprout", mood: "think", pose: "shrug", say: "Um. Good question. Who do we call? It should be written down somewhere." }
+      { who: "sprout", mood: "think", pose: "shrug", say: "Um. Good question. I never wrote it down, {name}. So draft the page: who owns it, who to call." }
     ]);
     await splash(3, "Who do we call?");
     await new Promise((finish) => {
@@ -657,7 +666,7 @@
         cur++;
         if (cur >= rows.length) return print();
         boss.slam(); boss.shout(["The reader is down!", "Now the email!", "The website too!", "And the books!"][cur]); rows[cur].el.classList.add("m8-down"); busy = false;
-        say(rows[cur].tool.name + " is down! Who owns it, and who do we call?" + (cur ? "" : " Drag a card to the row, tap it, or press its number."));
+        say(rows[cur].tool.name + " is down! Who owns it, and who gets the call?" + (cur ? "" : " Drag a card to the row, tap it, or press its number."));
         kit.focus(cards.find((el) => !el.disabled));
       }
       function play(n, dropped) {
@@ -685,15 +694,15 @@
       const offKeys = kit.keys(keys);
       function print() {                               // four rows filled: the leftovers never go on the page, and the page gets printed
         offKeys(); busy = true; hand.classList.add("m8-done"); cards.forEach((el) => { el.disabled = true; if (!el.classList.contains("m8-used")) el.classList.add("m8-never"); });
-        say("Four rows, four names, and not one password. Print it, so it works on the day the internet is down.", "ok");
-        const go = h("button", { class: "sg-btn sg-primary sg-huge", type: "button", onclick: () => stamp() }, A.icon("printer"), "Print the page");
+        say("Four rows, four names, and not one password. On paper, it works on the day the internet is down.", "ok");
+        const go = h("button", { class: "sg-btn sg-primary sg-huge", type: "button", onclick: () => stamp() }, A.icon("printer"), "Print the draft for Jordan");
         const box = h("div", { class: "m8-printbox" }, go); hand.appendChild(box); kit.focus(go);
         let printed = false;
         function stamp() {
           if (printed) return; printed = true; go.disabled = true; S.play("m8print");
           kit.after(520, () => {
             box.remove(); sheet.classList.add("m8-printed"); sheet.appendChild(h("div", { class: "m8-stamp" }, "PRINTED")); S.play("m8stamp"); kit.fx.confetti(34);
-            boss.hit(); boss.shout("My buttons do nothing!"); clock("4:59"); say("Printed. One copy on the workshop wall, one in the truck.", "ok"); kit.after(2100, finish);
+            boss.hit(); boss.shout("My buttons do nothing!"); clock("4:59"); say("Printed. Jordan checks it. Then one copy for the workshop wall, and one for the truck.", "ok"); kit.after(2100, finish);
           });
         }
       }
@@ -707,11 +716,9 @@
     ]);
     await talk([{ who: "chaos", side: "left", mood: "caught" }, { who: "sprout", side: "right", mood: "proud", pose: "hips" }], [
       { who: "chaos", mood: "caught", say: "Calm questions? A locked inbox? A printed PAGE? You wrote it all DOWN. That is not fair!" },
-      { who: "sprout", mood: "proud", pose: "cheer", say: "I draft. The detective decides. And we log what fixed it. Get the net!" }
+      { who: "sprout", mood: "proud", pose: "cheer", say: "You draft. Jordan decides. And you log what fixed it. Take it to Jordan, {name}!" }
     ]);
-    const stage = kit.stage;
-    done();
-    grandCatch(stage);                                 // the engine's caught screen is up now: the other seven come back to watch
+    done();                                            // the handoff is next; the other seven come back at the catch (`caught.setup`, below)
   }
 
   // ── the case ──
@@ -721,99 +728,119 @@
     badge: { name: "The Calm One" },                   // the sticker. The icon and color come from the story bible.
     reward: { hours: 2, leads: 0, money: 0 },          // story numbers: the same as this case has always had
     maxWrong: 4,                                       // a long showdown: four wrong picks still earn the third star
+    task: "Learn three things. Press nothing yet.",    // Jordan's task line in the visor while the agent is learning: 60 characters or fewer
 
-    /* The briefing at Greenline HQ. The extra art: Luis's text, and Captain Chaos at his console. */
+    /* The briefing at Greenline HQ. The extra art: Luis's text, and Captain Chaos at his console.
+       Jordan and Sprout talk to the agent. {agent} becomes "Agent Ivy" and {name} becomes "Ivy".
+       who: "you" is the agent's own thought, shown as visor text with no actor. */
     briefing: {
       setup: briefArt,
       lines: [
-        { who: "jordan", mood: "worried", pose: "shrug", say: "Detective! It is 4:45 on a Friday. Of course it is." },
+        { who: "jordan", mood: "worried", pose: "shrug", say: "{agent}! It is 4:45 on a Friday. Of course it is." },
         { who: "jordan", mood: "worried", pose: "point", say: "Luis just texted from the Whitfield house. The card reader in his truck has stopped." },
         { who: "sprout", mood: "think", say: "His text says it spins, then says \"something about connection.\" That is all we know." },
+        { who: "you", say: "A spinner and half an error message. I do not know what broke yet." },
         { who: "jordan", mood: "worried", pose: "idle", say: "Mrs. Whitfield is waiting to pay. And Captain Chaos is pressing every panic button in town." },
-        { who: "sprout", mood: "glad", pose: "cheer", say: "I can press buttons too! All of them! At once!" },
-        { who: "jordan", mood: "happy", pose: "point", say: "Not one button. Three people in town know how to keep a cool head. Get their clues first." }
+        { who: "sprout", mood: "glad", pose: "cheer", say: "My Friday shortcut, {name}: press every button. All of them! At once!" },
+        { who: "jordan", mood: "happy", pose: "point", say: "Not one button. Three people in town know how to keep a cool head. Learn from them first." }
       ]
     },
 
-    /* Three clue stops. Gus is in the park because Captain Chaos has his workshop. */
+    /* Three stops. Gus is in the park because Captain Chaos has his workshop. Each piece of knowledge
+       (`clue`) is one real idea from the class, said as something the agent now knows about its work. */
     stops: [
       { place: "park", who: "gus",
         lines: [
           { who: "gus", mood: "grumpy", pose: "hips", say: "Captain Chaos locked me out of my own workshop. He is in there pressing my buttons." },
           { who: "gus", mood: "happy", pose: "idle", say: "Forty years of fixing things. You know what I touch first? Nothing. I ask four questions." },
-          { who: "sprout", mood: "surprised", say: "Before pressing anything? Not even one tiny restart?" },
+          { who: "sprout", mood: "surprised", say: "Before pressing anything? My shortcut always starts with a restart. Just a tiny one!" },
           { who: "gus", mood: "proud", pose: "point", say: "Not even a tiny one. Here is what Jordan knows so far. Match each fact to its question." }
         ],
-        challenge: { type: "sort", ask: "Which calm question does each fact answer?",
+        challenge: { type: "sort", ask: "I have five facts. Which calm question does each one answer?",
           bins: [{ key: "changed", label: "What changed?", icon: "bolt", color: C.sun }, { key: "who", label: "One person or everyone?", icon: "truck", color: C.blue },
             { key: "again", label: "Does it happen again?", icon: "hand", color: C.pink }, { key: "words", label: "The exact words?", icon: "eye", color: C.teal }],
           items: [
             { text: "The tablet updated itself at lunch", bin: "changed", why: "That is new since this morning. It answers: what changed?" },
             { text: "Ana's truck took a card at 2:10", bin: "who", why: "One reader is stuck and the other works. So it is not everyone." },
-            { text: "Three tries, the same thing each time", bin: "again", why: "It fails every time. Good to know. Now stop pressing." },
-            { text: "The truck moved to a house with weak signal", bin: "changed", why: "A second thing that changed. Write down both. Blame neither yet." },
+            { text: "Three tries, the same thing each time", bin: "again", why: "It fails every time. Good to know. Now Luis can stop pressing." },
+            { text: "The truck moved to a house with weak signal", bin: "changed", why: "A second thing that changed. I write down both. I blame neither yet." },
             { text: "\"Something about connection??\"", bin: "words", why: "Close, but not exact. Somebody has to read the real words off the screen." }
           ] },
-        clue: { title: "Ask before you touch", text: "Ask before you press anything: what changed, is it one person or everyone, does it happen again, and what are the exact words on the screen?" } },
+        clue: { title: "I ask before I touch", text: "I ask before I press anything: what changed, is it one person or everyone, does it happen again, and what are the exact words on the screen?" } },
 
       { place: "bank", who: "penny",
         lines: [
-          { who: "penny", mood: "happy", pose: "wave", say: "Detective. I guard a vault all day. Let me show you the door that matters more." },
-          { who: "penny", mood: "think", pose: "idle", say: "Forget a password, almost anywhere, and where does the reset link go? Your email. Every time." },
-          { who: "sprout", mood: "surprised", say: "So whoever gets into the email can open the bank, the books and the website?" },
-          { who: "penny", mood: "proud", pose: "point", say: "One inbox, all the doors. Try it. Then put my two best locks on that inbox." }
+          { who: "penny", mood: "happy", pose: "wave", say: "{agent}. I guard a vault all day. Let me show you the door that matters more." },
+          { who: "penny", mood: "think", pose: "idle", say: "Forget a password, almost anywhere, and where does the reset link go? Jordan's email. Every time." },
+          { who: "sprout", mood: "surprised", say: "So whoever gets into the email can open the bank, the books and the website? I never checked that!" },
+          { who: "penny", mood: "proud", pose: "point", say: "One inbox, all the doors. Try it on my practice board. Then pick my two best locks for that inbox." }
         ],
-        challenge: { ask: "Forgot a password? Tap each door and watch where the reset link goes.", play: masterKey },
-        clue: { title: "The master key", text: "Almost every reset link lands in your email, so your email opens everything else. Give it the strongest lock: a password manager and two-step login." } },
+        challenge: { ask: "Where does a reset link go? Tap each door and watch.", play: masterKey },
+        clue: { title: "The master key", text: "Almost every reset link lands in Jordan's email, so I treat that email as the master key. It gets the strongest lock: a password manager and two-step login." } },
 
       { place: "post", who: "nell",
         lines: [
-          { who: "nell", mood: "happy", pose: "wave", say: "Detective! The printer is warm. What are we printing?" },
-          { who: "nell", mood: "think", pose: "idle", say: "The day it all breaks is the day you cannot look anything up. So the answer goes on paper first." },
+          { who: "nell", mood: "happy", pose: "wave", say: "{agent}! The printer is warm. What are we printing?" },
+          { who: "nell", mood: "think", pose: "idle", say: "The day it all breaks is the day nobody can look anything up. So the answer goes on paper first." },
           { who: "nell", mood: "proud", pose: "point", say: "One page. A row for every tool the business runs on. Who owns the login, and who to call." },
-          { who: "sprout", mood: "glad", say: "I will help pick what goes on it!" }
+          { who: "sprout", mood: "glad", say: "I never wrote any of it down, {name}. It was faster. Until a Friday like this one." }
         ],
-        challenge: { type: "tap", ask: "Tap the four things that belong on the one page.",
+        challenge: { type: "tap", ask: "I draft the one page. Tap the four things that belong on it.",
           items: [
             { text: "Who owns each login", ok: true, why: "A name, and a second person in case the first is up a ladder." },
             { text: "Every password, in big letters", ok: false, why: "Never. Passwords live in the password manager, not on paper." },
             { text: "Who to call when it breaks", ok: true, why: "A name and a number, found before the bad day." },
-            { text: "What to do while it is down", ok: true, why: "Write the name and the amount on the job sheet. Invoice later." },
+            { text: "What to do while it is down", ok: true, why: "The crew writes the name and the amount on the job sheet. The invoice comes later." },
             { text: "The card number, to be safe", ok: false, why: "That is the opposite of safe." },
             { text: "When it renews", ok: true, why: "If the website's name lapses, the site and the email both stop." },
-            { text: "Captain Chaos's phone number", ok: false, why: "He would only tell you to restart everything." }
+            { text: "Captain Chaos's phone number", ok: false, why: "He would only tell me to restart everything." }
           ] },
-        clue: { title: "One page, printed", text: "One printed page with a row for every tool you depend on: who owns the login, who to call, and what to do while it is down. Never a password." } }
+        clue: { title: "One page, printed", text: "I draft one page for Jordan to print, with a row for every tool Greenline depends on: who owns the login, who to call, and what to do while it is down. I never put a password on it." } }
     ],
 
-    /* Crack the case: three cards, exactly one with right: true. */
+    /* The plan: three cards, exactly one with right: true. The cards are the agent's own options, so
+       they say "I". None of the three pictures draws the agent, so the art is as it was. */
     crack: {
-      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three clues in the case book, and it is 4:47. How do we beat Captain Chaos?" }],
-      ask: "What is the move?",
+      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three things learned, {name}, and it is 4:47. So how do we stop Captain Chaos?" }],
+      ask: "What is my plan?",
       cards: [
-        { title: "Press everything at once", text: "Restart it all. Buy a new one. Five fixes together.", color: C.pink,
+        { title: "I press everything at once", text: "I restart it all. I unplug it all. Five fixes together.", color: C.pink,
           art: sh.at(-4, -14, 0.62, A.characterMarkup("chaos", { mood: "glad" })) + sh.ellipse(60, 112, 42, 11, sh.dark(C.red, 0.3)) + sh.ellipse(60, 105, 42, 13, C.red),
           react: { who: "chaos", mood: "glad", say: "Yes! Five fixes at once! Then nobody knows which one worked. Hee hee." } },
-        { title: "Call the one person who knows", text: "Hope they pick up. At 4:47 on a Friday.", color: C.sun,
+        { title: "I ask the one person who knows", text: "And I hope they pick up. At 4:47 on a Friday.", color: C.sun,
           art: sh.at(-22, -2, 0.62, A.characterMarkup("jordan", { mood: "worried", pose: "shrug" })) + sh.at(66, -4, 1.2, A.iconMarkup("m8ask")),
           react: { who: "jordan", mood: "worried", say: "That one person is me, and I do not know either. It should be written down." } },
-        { title: "Ask, lock, write it down", text: "Calm questions first. The email locked tight. One page that says who to call.", color: C.teal, right: true,
+        { title: "I ask. I lock. I write it down.", text: "Calm questions first. The email stays locked. I draft one page that says who to call.", color: C.teal, right: true,
           art: sh.at(-4, -2, 1.25, A.iconMarkup("m8ask")) + sh.at(64, -2, 1.25, A.iconMarkup("lock", C.sun)) + sh.at(28, 58, 1.3, A.iconMarkup("printer")),
           react: { who: "jordan", mood: "glad", say: "That's it. Questions, a lock and a page. Captain Chaos hates all three." } }
       ]
     },
 
-    /* The showdown: a title, three lines of how to play, and the fight itself. */
+    /* The showdown: a title, the task line Jordan gives (it shows in the visor), three lines of how to
+       play in the agent's own words, and the fight itself. */
     showdown: {
       title: "The Friday showdown",
-      how: ["Three rounds: stay calm, lock the doors, then say who to call.", "Tap or drag. Or use the number keys.", "After round one, Sprout writes to support. Check its work."],
+      task: "Ask. Lock. Write it down. Send nothing.",
+      how: ["Three rounds. I stay calm, I lock the doors, then I write down who to call.", "Tap or drag. Or use the number keys.", "After round one, Sprout shows me its shortcut. I check it before I copy it."],
       play: fridayShowdown
     },
 
-    /* After the catch: two lines. The second is one thing to try for real, tonight. The last case has no `next`. */
+    /* The handoff: the agent never sends. After the showdown the engine takes the work to Jordan.
+       ask: Jordan's line. work: three short lines of what the agent did. approve: Jordan's yes. */
+    handoff: {
+      ask: "Done before five, {agent}. What have you got for me?",
+      work: ["Four calm questions, and a support request with no guess in it.", "Three tricks kept out of the email. One page drafted: who to call.", "Nothing sent. Nothing paid. No password given to anybody."],
+      approve: "Approved. Support hears from me, and the page goes on the wall."
+    },
+
+    /* Extra art for the engine's caught screen: the other seven bandits come back to watch, in their nets. */
+    caught: { setup: (kit) => grandCatch(kit.stage) },
+
+    /* After the catch: two lines. The second steps out of the story: one thing for the person playing
+       to try for real, tonight. It starts "For the person behind the visor:". The last case has no `next`. */
     debrief: [
       { who: "jordan", mood: "glad", pose: "cheer", say: "All eight bandits, in the net. The whole business is on one screen, and I get my evenings back." },
-      { who: "sprout", mood: "proud", pose: "wave", say: "Tonight, turn on two-step login for your own email. Then drive home. The town has a surprise for you." }
+      { who: "sprout", mood: "proud", pose: "wave", say: "For the person behind the visor: tonight, turn on two-step login for your own email. The town has a surprise." }
     ]
   });
 })();

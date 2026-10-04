@@ -4,6 +4,12 @@
    and phone everywhere · AI assistants repeat what your pages plainly say, so say it plainly.
    And one thing nobody can promise: the first spot in a search.
    The showdown is the week's job done by hand: make the listing match, then put plain answers on the page.
+
+   AGENT MODE: the player IS the AI, Greenline's new agent. So every line here is written to the
+   agent ("you") or by the agent ("I"). Sprout is the trainer, the agent who had the job before, and
+   its one wrong shortcut (a line that is not in Jordan's facts) is the thing to catch. The agent never
+   publishes: the listing fix and the page are drafts, and the engine's handoff takes them to Jordan.
+
    The format and every kit call are explained in GAME.md; m1.js is the model. Everything in it is made up. */
 (function () {
   "use strict";
@@ -23,10 +29,10 @@
   ];
   /* The tiles for round one, in tray order. ok: it matches the website. why: one line of help. */
   const TILES = [
-    { kind: "name", text: "Greenline Landscaping LLC", why: "Close. The website has no LLC. To a program, that is another business." },
+    { kind: "name", text: "Greenline Landscaping LLC", why: "Close. The website has no LLC. To a program like me, that is another business." },
     { kind: "phone", text: "555-0100", ok: true },
     { kind: "addr", text: "12 Fern Road", ok: true },
-    { kind: "addr", text: "12 Fern Rd., rear gate", why: "A neighbor would find it. A program would not. Copy the website." },
+    { kind: "addr", text: "12 Fern Rd., rear gate", why: "A neighbor would find it. A program would not. I copy the website." },
     { kind: "name", text: "Greenline Landscaping", ok: true },
     { kind: "phone", text: "555-0101", why: "One digit off. Somebody else's phone rings." }
   ];
@@ -45,8 +51,8 @@
     { text: "We do it all! No job too small.", why: "All of what? That answers nothing anybody asked." },
     { text: "Every yard differs. You get a written quote.", a: 2 }
   ];
-  /* Sprout's turn. Jordan's facts, and the page Sprout writes from them: the sample answer from the
-     week 4 tool, with its planted mistake. Nobody told Sprout how long Greenline has been at it. */
+  /* Sprout's shortcut. Jordan's facts, and the page Sprout, the trainer, writes from them: the sample
+     answer from the week 4 tool, with its planted mistake. Nobody told Sprout how long Greenline has been at it. */
   const FACTS = ["Paver patios and walkways", "Cedar Hollow and the neighboring towns", "A free site visit, Saturdays too", "Then a written quote", "The quote form, or 555-0100"];
   const DRAFT = [
     { tag: "Title", text: "Paver Patios in Cedar Hollow | Greenline Landscaping" },
@@ -57,10 +63,11 @@
     { tag: "Answer", text: "After the visit you get a written quote." }
   ];
   const TRUE_LINE = "Yes. We build patios in Cedar Hollow and the neighboring towns.";
+  /* The agent's three options for the line Sprout made up, in its own words. Sprout answers a wrong one. */
   const FIXES = [
-    { label: "Keep it. It sounds great", icon: "star", color: C.sun, why: "It does sound great. It is still not in Jordan's facts." },
-    { label: "Take it out and ask Jordan", icon: "hand", color: C.green, ok: true },
-    { label: "Make it twenty years", icon: "bolt", color: C.pink, why: "A bigger number that nobody gave me? That is worse!" }
+    { label: "I keep it. It sounds great", icon: "star", color: C.sun, why: "It does sound great. It is still not in Jordan's facts." },
+    { label: "I take it out and ask Jordan", icon: "hand", color: C.green, ok: true },
+    { label: "I make it twenty years", icon: "bolt", color: C.pink, why: "A bigger number that nobody gave us? That is worse!" }
   ];
   /* The six bushes Hide-and-Seek has piled on Greenline's pin, in the order they leave: where each sits
      (percent of the kiosk), where it flies when it goes (percent of itself, and a spin), and its green. */
@@ -260,7 +267,7 @@
     function light() {
       bushes[lit].classList.add("m4-off"); lit++;
       pin.style.setProperty("--s", String(0.7 + lit * 0.055)); pin.style.setProperty("--g", String(Math.max(0, 1 - lit / 6)));
-      count.textContent = lit >= 6 ? "On the map!" : (6 - lit) + " to go"; kit.fx.pop(count); peek(SEEK_MOODS[lit]); S.play("m4rustle");
+      count.textContent = lit >= 6 ? "Ready for the map!" : (6 - lit) + " to go"; kit.fx.pop(count); peek(SEEK_MOODS[lit]); S.play("m4rustle");
       if (lit >= 6) { top.classList.add("m4-found"); kit.fx.confetti(28); S.play("color"); }
     }
     /* Fill the tray with tiles: drag one, tap it, or press its number. pick(n, zone) decides. */
@@ -280,14 +287,14 @@
     peek("glad");
     const clock = kit.timer({ up: true });
 
-    // Round 1 · the listing: snap the name, address and phone that match the website into place
+    // Round 1 · my first go. The listing: snap the name, address and phone that match the website into place
     const slots = {};
     under.appendChild(h("div", { class: "m4-card m4-site" }, h("div", { class: "m4-cardtop" }, A.icon("home"), "Greenline's website says"),
       KINDS.map((k) => h("p", null, h("small", null, k.label), h("span", null, SITE[k.key])))));
     mid.appendChild(h("div", { class: "m4-card m4-list" }, h("div", { class: "m4-cardtop" }, A.icon("pin"), "The town map listing says", h("em", null, "No match")),
       KINDS.map((k) => { slots[k.key] = h("div", { class: "m4-slot" }, h("small", null, k.label), h("span", null, LISTED[k.key]), A.icon("cross")); return slots[k.key]; })));
     const noMatch = mid.querySelector("em");
-    say("Make the listing match the website. Drag a tile to its line, tap it, or press its number.");
+    say("I make the listing match the website. Drag a tile to its line, tap it, or press its number.");
     await new Promise((resolve) => {
       let left = KINDS.length;
       const t = deal(TILES, KINDS.map((k) => slots[k.key]), (n, zone) => {
@@ -303,10 +310,10 @@
       });
     });
     top.classList.add("m4-named");
-    say("One business now, not three. The map knows who Greenline is.", "ok");
+    say("One business now, not three. My listing fix is ready for Jordan.", "ok");
     await kit.wait(1500);
 
-    // Round 2 · three neighbors walk up and ask the map a real question. Put the plain answer on the page.
+    // Round 2 · three neighbors walk up and ask the map a real question. The plain answer goes on the page draft.
     const walker = h("div", { class: "m4-walker m4-away" }), askWho = h("small"), askText = h("b"), ask = h("div", { class: "m4-ask", hidden: true }, askWho, askText);
     const title = h("b", null, "Services"), fluff = h("p", { class: "m4-fluff" }, "\"Welcome! At Greenline we do it all.\"");
     const rows = ASKERS.map(() => h("div", { class: "m4-line" }, h("span", null, "...")));
@@ -319,7 +326,7 @@
       const it = LINES[n], b = t2.tiles[n], who = ASKERS[now], name = A.cast[who.who].name;
       if (busy || b.disabled) return false;
       if (it.a === undefined) { kit.score.wrong(); giggle(); kit.fx.shake(b); say(it.why, "bad"); return false; }
-      if (it.a !== now) { kit.score.wrong(); giggle(); kit.fx.shake(b); say("True, but that is not what " + name + " asked. Answer the question.", "bad"); return false; }
+      if (it.a !== now) { kit.score.wrong(); giggle(); kit.fx.shake(b); say("True, but that is not what " + name + " asked. I answer the question.", "bad"); return false; }
       busy = true; kit.score.right(); t2.retire(b);
       const row = rows[now]; row.className = "m4-line m4-done"; row.innerHTML = ""; row.appendChild(A.icon("check")); row.appendChild(h("span", null, it.text));
       if (now === 0) { title.textContent = "Paver Patios in Cedar Hollow"; fluff.classList.add("m4-cut"); }
@@ -343,7 +350,7 @@
       await kit.wait(650);
       askWho.textContent = name + " asks the map"; askText.textContent = who.q; ask.hidden = false; kit.fx.pop(ask); S.play("pop");
       rows[now].className = "m4-line m4-now"; rows[now].firstChild.textContent = name + "'s answer goes here";
-      say("Which line answers " + name + "? Drag it onto the page, tap it, or press its number.");
+      say("Which line answers " + name + "? Drag it onto my page draft, tap it, or press its number.");
       busy = false; t2.next();
       await new Promise((resolve) => { answered = resolve; });
       walker.className = "m4-walker m4-bye";
@@ -351,27 +358,28 @@
     }
     t2.off(); clock.stop();
     t2.tiles.forEach((b) => t2.retire(b));
-    say("Greenline's pin is lit. People who ask the map can find it again.", "ok");
+    say("The pin lights up. My listing fix and my page draft are ready for Jordan.", "ok");
     const took = clock.value(), mine = Math.floor(took / 60) + ":" + String(took % 60).padStart(2, "0");
     await kit.wait(1700);
 
-    // Hide-and-Seek laughs, and Sprout has a go
+    // Hide-and-Seek laughs, and Sprout, the trainer, shows its shortcut
     wrap.classList.add("m4-talking");
     kit.cast([{ who: "hideseek", side: "left", mood: "glad" }, { who: "sprout", side: "right", mood: "happy" }]);
     await kit.say([
       { who: "hideseek", mood: "glad", say: "Hee hee. " + mine + " for one little page. Greenline has a dozen more. I will hide those instead!" },
-      { who: "sprout", mood: "glad", pose: "cheer", say: "A dozen pages? I have Jordan's facts and two seconds. Stand back!" }
+      { who: "sprout", mood: "glad", pose: "cheer", say: "A dozen pages? Watch my shortcut, {name}. Jordan's facts in, a page out. Two seconds!" }
     ]);
     kit.hush(); kit.cast([]); clock.hide();
 
-    // Round 3 · Sprout writes the next page from Jordan's facts. One line is not in the facts.
+    // Round 3 · Sprout's shortcut: it writes the next page from Jordan's facts, and says to copy it. One line
+    // is not in the facts. The note above the page always has Sprout's face, so every line in it is Sprout talking.
     const face = h("span", { class: "sg-face" }), words = h("span"), note = h("div", { class: "m4-say", role: "status", "aria-live": "polite" }, face, words);
     const tell = (text, mood, tone) => { words.textContent = text; face.innerHTML = ""; face.appendChild(A.avatar("sprout", { mood: mood })); note.className = "m4-say" + (tone ? " sg-" + tone : ""); kit.fx.pop(note); };
     const draft = h("div", { class: "m4-draft" });
     wrap.className = "m4 m4-named m4-check"; help.hidden = true; tray.innerHTML = ""; right.insertBefore(note, mid);
     under.innerHTML = ""; under.appendChild(h("div", { class: "m4-card m4-facts" }, h("div", { class: "m4-cardtop" }, A.icon("book"), "Jordan's facts"), h("ul", null, FACTS.map((f) => h("li", null, f)))));
     mid.innerHTML = ""; mid.appendChild(h("div", { class: "m4-card" }, h("div", { class: "m4-bar" }, h("i"), h("i"), h("i"), h("b", null, "Sprout's new page")), draft));
-    tell("Writing...", "think");
+    tell("Watch and learn. Writing...", "think");
     const chips = [];
     await new Promise((resolve) => {                   // six lines zip onto the page
       let n = 0;
@@ -381,15 +389,15 @@
         if (++n >= DRAFT.length) { stop(); kit.after(450, resolve); }
       });
     });
-    tell("Done! A title and five plain lines, in two seconds. All of it true. Probably.", "proud");
+    tell("Done! A title and five plain lines, in two seconds. Copy it. All of it true. Probably.", "proud");
     await kit.wait(1900);
-    tell("Sprout sounds very sure. One line says something Jordan never told it. Tap it.", "proud");
+    tell(kit.fill("Go on, check me, {name}. If one line is not in Jordan's facts, tap it. There is none!"), "proud");
     let tries = 0;
     const found = await new Promise((resolve) => {
       const pick = (c) => {
         if (c.el.disabled) return;
         if (!c.d.wrong) {
-          tries++; kit.score.wrong(); kit.fx.shake(c.el); c.el.disabled = true; c.el.classList.add("sg-okay"); tell("That one is in Jordan's facts. Look again.", "proud", "bad");
+          tries++; kit.score.wrong(); kit.fx.shake(c.el); c.el.disabled = true; c.el.classList.add("sg-okay"); tell("That one is in Jordan's facts. See? Keep looking if you must.", "proud", "bad");
           return kit.focus((chips.slice(chips.indexOf(c)).concat(chips).find((x) => !x.el.disabled) || c).el);   // the keyboard stays on the page
         }
         chips.forEach((x) => { x.el.disabled = true; }); c.el.classList.add("sg-found"); kit.score.right(); off();
@@ -399,7 +407,7 @@
       const keys = {}; chips.forEach((c, n) => { c.el.disabled = false; c.el.onclick = () => pick(c); keys[String(n + 1)] = () => pick(c); });
       const off = kit.keys(keys); kit.focus(chips[0].el);
     });
-    tell("Oops. Nobody told me how long Greenline has built patios. What do I do with that line?", "oops", "ok");
+    tell("Oops. Nobody told me how long Greenline has built patios. I guessed. What will you do with that line?", "oops", "ok");
     await new Promise((resolve) => {
       const fixes = FIXES.map((f, n) => h("button", { class: "sg-bin", type: "button", style: "--c:" + f.color, onclick: () => pick(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), A.icon(f.icon), h("b", null, f.label)));
       const pick = (n) => {
@@ -410,15 +418,15 @@
       tray.className = "m4-tray m4-fixes"; fixes.forEach((b) => tray.appendChild(b));
       const off = kit.keys({ "1": () => pick(0), "2": () => pick(1), "3": () => pick(2) }); kit.focus(fixes[0]);
     });
-    tell("Fixed. If a fact is missing, I leave it out and ask. That is my rule now.", "glad", "ok");
+    tell(kit.fill("Fixed. Good catch, {name}. My shortcut skipped the part where I ask Jordan."), "glad", "ok");
     await kit.wait(1700);
     wrap.classList.add("m4-talking"); note.hidden = true; peek("caught");
     kit.cast([{ who: "hideseek", side: "left", mood: "surprised" }, { who: "sprout", side: "right", mood: "proud", pose: "hips" }]);
     await kit.say([
-      { who: "hideseek", mood: "surprised", say: "One name everywhere? Plain facts? And you CHECK the robot? Nowhere left to hide. Not fair!" },
-      { who: "sprout", mood: "proud", pose: "cheer", say: "I draft. The detective checks the facts. Get the net!" }
+      { who: "hideseek", mood: "surprised", say: "One name everywhere? Plain facts? And you CHECK your own trainer? Nowhere left to hide. Not fair!" },
+      { who: "sprout", mood: "proud", pose: "cheer", say: "You check the facts. Jordan puts it on the map. Take it to Jordan, {name}!" }
     ]);
-    done();
+    done();                                            // the engine's handoff comes next: Jordan approves
   }
 
   // ── the case ──
@@ -429,7 +437,9 @@
     reward: { hours: 1, leads: 3, money: 0 },
     maxWrong: 4,
 
-    /* The briefing at Greenline HQ: a search that finds everybody but Greenline, and who is hiding behind it. */
+    /* The briefing at Greenline HQ: a search that finds everybody but Greenline, and who is hiding behind it.
+       Jordan and Sprout talk to the agent. {agent} becomes "Agent Ivy" and {name} becomes "Ivy".
+       who: "you" is the agent's own thought, shown as visor text with no actor. */
     briefing: {
       setup: (kit) => {
         kit.style(CSS);
@@ -439,103 +449,116 @@
             h("p", { class: "m4-none", style: "animation-delay:2.5s" }, A.icon("cross"), "Greenline: not found"))));
       },
       lines: [
-        { who: "jordan", mood: "worried", pose: "shrug", say: "Detective! Search for a patio builder in Cedar Hollow. Go on. I will wait." },
+        { who: "jordan", mood: "worried", pose: "shrug", say: "{agent}! Search for a patio builder in Cedar Hollow. Go on. I will wait." },
         { who: "jordan", mood: "worried", pose: "point", say: "Somebody Else. Somebody Else's Cousin. A page about ducks. No Greenline." },
-        { who: "sprout", mood: "think", pose: "idle", say: "I asked myself who builds patios around here. I had no idea. And I work here!" },
+        { who: "you", say: "I asked myself who builds patios around here. I had no idea. And I work here!" },
         { who: "jordan", mood: "worried", pose: "idle", say: "Our patio page is called \"Services\". It says we \"do it all\". It never names the town." },
         { who: "jordan", mood: "grumpy", pose: "hips", say: "That is Hide-and-Seek's work. It has hidden Greenline from the town map." },
-        { who: "sprout", mood: "glad", pose: "wave", say: "A man phoned. He will sell us the first spot in every search. Guaranteed, he said!" },
+        { who: "sprout", mood: "glad", pose: "wave", say: "When I had your job, a man phoned. He sells the first spot in every search. Guaranteed, he said!" },
         { who: "jordan", mood: "grumpy", pose: "idle", say: "Nobody can promise that spot. Not him, not anyone." },
-        { who: "jordan", mood: "happy", pose: "point", say: "Three people in town know how getting found really works. Get their clues, detective." }
+        { who: "jordan", mood: "happy", pose: "point", say: "Three people in town know how getting found really works. Go and learn from them, {name}." }
       ]
     },
 
-    /* Three clue stops: a place, who is there, a few lines, a quick challenge, and the clue it earns. */
+    /* Three stops: a place, who is there, a few lines, a quick challenge, and the knowledge it earns.
+       A piece of knowledge (`clue`) is one real idea from the class, as something the agent now knows
+       about itself or its work. It is kept under "What I know" in the Skills panel. */
     stops: [
       { place: "square", who: "maple",
         lines: [
-          { who: "maple", mood: "glad", pose: "wave", say: "Welcome to Town Square! Ask the map kiosk anything. It asks three questions back." },
+          { who: "maple", mood: "glad", pose: "wave", say: "Welcome to Town Square, {agent}! Ask the map kiosk anything. It asks three questions back." },
           { who: "maple", mood: "proud", pose: "point", say: "Can I read this page? Does it answer what was asked? Does anybody vouch for them?" },
-          { who: "sprout", mood: "oops", say: "Greenline's best page is a photo of a flyer. I can't read words inside a picture!" },
+          { who: "sprout", mood: "oops", say: "Greenline's best page is a photo of a flyer, {name}. I never could read the words inside it!" },
           { who: "maple", mood: "think", pose: "idle", say: "Then neither can the kiosk. Every trouble fails one of the three. See which is which." }
         ],
-        challenge: { type: "sort", ask: "Which of the three questions does each one fail?",
+        challenge: { type: "sort", ask: "Which of the three questions does each one fail? I sort them.",
           bins: [{ key: "read", label: "Can it read the page?", icon: "eye", color: C.blue }, { key: "answer", label: "Does the page answer?", icon: "chat", color: C.sun }, { key: "vouch", label: "Does anyone vouch?", icon: "star", color: C.pink }],
           items: [
             { text: "The words are inside a picture", bin: "read", why: "It needs real text. Words locked in a picture may not be read." },
             { text: "The page never names the town", bin: "answer", why: "A stranger types the service and the town. The page has to say both." },
-            { text: "Not one review yet", bin: "vouch", why: "A review is a neighbor vouching for you." },
-            { text: "The page is titled \"Services\"", bin: "answer", why: "It can be read. It answers nothing. Say the service and the town." },
+            { text: "Not one review yet", bin: "vouch", why: "A review is a neighbor vouching for Greenline." },
+            { text: "The page is titled \"Services\"", bin: "answer", why: "It can be read. It answers nothing. It has to say the service and the town." },
             { text: "No other website mentions Greenline", bin: "vouch", why: "A link from a real website is somebody vouching." },
-            { text: "The phone number is part of the logo", bin: "read", why: "A logo is a picture. Type the number as text too." }
+            { text: "The phone number is part of the logo", bin: "read", why: "A logo is a picture. The number has to be typed as text too." }
           ] },
-        clue: { title: "Three questions", text: "A search asks three things. Can it read your page? Does the page answer what was asked? Does anyone vouch for you?" } },
+        clue: { title: "I ask three questions", text: "A search asks three things, so I ask them too. Can it read the page? Does the page answer what was asked? Does anyone vouch for the business?" } },
 
       { place: "bank", who: "penny",
         lines: [
           { who: "penny", mood: "think", say: "A check came in for \"Green Line Landscape and Design\". I can't pay that to Greenline." },
-          { who: "penny", mood: "happy", pose: "point", say: "To a bank, a different name is a different business. A person shrugs. A program can't." },
-          { who: "sprout", mood: "oops", pose: "shrug", say: "Greenline is written three ways around town. The map thinks it is three small companies." },
+          { who: "penny", mood: "happy", pose: "point", say: "To a bank, a different name is a different business. A person shrugs. A program like you can't." },
+          { who: "sprout", mood: "oops", pose: "shrug", say: "Greenline is written three ways around town, {name}. The map thinks it is three small companies." },
           { who: "penny", mood: "proud", pose: "idle", say: "One name, one address, one phone. The same in every place. Find the odd one out." }
         ],
-        challenge: { type: "spot", ask: "Three listings for one business. One line does not match. Tap it.", nope: "That line is the same in all three. Keep looking.",
+        challenge: { type: "spot", ask: "Three listings for one business. I find the line that does not match. Tap it.", nope: "That line is the same in all three. I keep looking.",
           groups: [
             { label: "The website", color: C.teal, items: [{ text: "Greenline Landscaping" }, { text: "12 Fern Road" }, { text: "555-0100" }] },
             { label: "The town map", color: C.red, items: [{ text: "Greenline Landscaping" }, { text: "12 Fern Road" }, { text: "555-0199", wrong: true, why: "An old phone number. The map sends callers to a phone nobody answers." }] },
             { label: "The phone book", color: C.sun, items: [{ text: "Greenline Landscaping" }, { text: "12 Fern Road" }, { text: "555-0100" }] }
           ] },
-        clue: { title: "One name, one address, one phone", text: "Your free listing needs the same name, address and phone everywhere. Pick one way to write them. Use it in every place." } },
+        clue: { title: "One name, one address, one phone", text: "To a program like me, a different name is a different business. So a free listing needs the same name, address and phone everywhere. I write them one way, in every place." } },
 
       { place: "grind", who: "bea",
         lines: [
           { who: "bea", mood: "surprised", say: "A customer asked her phone who builds patios in Cedar Hollow. It never said Greenline!" },
-          { who: "sprout", mood: "think", pose: "shrug", say: "Helpers like me can only repeat what we can read. If it is not written down, we skip you." },
+          { who: "sprout", mood: "think", pose: "shrug", say: "Agents like us only repeat what we can read, {name}. Not written down? We skip Greenline." },
           { who: "bea", mood: "think", pose: "idle", say: "Greenline's page says \"premium outdoor living experiences\". What is there to repeat?" },
-          { who: "bea", mood: "happy", pose: "point", say: "My sign says \"Hot cocoa. Here. Every day.\" Plain. Tap the lines a helper could pass along." }
+          { who: "bea", mood: "happy", pose: "point", say: "My sign says \"Hot cocoa. Here. Every day.\" Plain. Tap the lines an agent like you could pass along." }
         ],
-        challenge: { type: "tap", ask: "Tap the four lines a helper like Sprout could repeat to a customer.",
+        challenge: { type: "tap", ask: "Tap the four lines an agent like me could pass along.",
           items: [
             { text: "We build paver patios in Cedar Hollow", ok: true, why: "What, and where. Easy to repeat." },
             { text: "Premium outdoor living experiences", ok: false, why: "Nice words. No service and no town in them." },
             { text: "Call 555-0100 or use the quote form", ok: true, why: "How to book, in one plain sentence." },
-            { text: "We do it all!", ok: false, why: "All of what? A helper cannot pass that along." },
+            { text: "We do it all!", ok: false, why: "All of what? I cannot pass that along." },
             { text: "The site visit is free", ok: true, why: "A fact a customer can use." },
             { text: "From concept to completion", ok: false, why: "That could be any company on earth." },
             { text: "After the visit you get a written quote", ok: true, why: "What happens next, said plainly." },
             { text: "Passionate about excellence", ok: false, why: "Lovely. Still no facts." }
           ] },
-        clue: { title: "Say it plainly", text: "AI assistants can only repeat what your pages plainly say. Write the facts in plain sentences: what, where, for whom, how to book." } }
+        clue: { title: "I repeat what is plainly said", text: "I can only repeat what a page plainly says. So I write the facts in plain sentences: what, where, for whom, how to book." } }
     ],
 
-    /* Crack the case: three cards, exactly one with right: true. */
+    /* The plan: three cards, exactly one with right: true. The cards are the agent's own options, so they say "I". */
     crack: {
-      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three clues in the case book. So how do we get Greenline back on the map?" }],
-      ask: "What is the move?",
+      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three things learned, {name}. So how do we get Greenline back on the map?" }],
+      ask: "What is my plan?",
       cards: [
-        { title: "Buy the first spot", text: "The man on the phone says it is guaranteed.", color: C.pink,
+        { title: "I ask Jordan to buy the first spot", text: "The man on the phone says it is guaranteed.", color: C.pink,
           art: sh.path(sh.star(60, 58, 50), C.sun) + sh.text(60, 72, "#1", 34) + sh.at(96, 96, 1, A.prop("coin")) + sh.at(22, 98, 0.8, A.prop("coin")),
           react: { who: "hideseek", mood: "glad", say: "Nobody can promise that spot. Pay him anyway! I will go on hiding you. Hee hee." } },
-        { title: "Plain facts, the same everywhere", text: "One name, address and phone. Pages that answer in plain words.", color: C.teal, right: true,
+        { title: "I write plain, matching facts", text: "One name, address and phone everywhere. Pages that answer in plain words.", color: C.teal, right: true,
           art: sh.at(6, 2, 2.1, A.iconMarkup("pin")) + sh.at(64, 62, 1.1, A.iconMarkup("check")),
-          react: { who: "jordan", mood: "glad", say: "That's it. Easy to read and easy to repeat. Go and put us back on the map." } },
-        { title: "Say the town forty times", text: "Cedar Hollow Cedar Hollow Cedar Hollow. They can't miss it.", color: C.sun,
+          react: { who: "jordan", mood: "glad", say: "That's it. Easy to read and easy to repeat. You draft it. I put us back on the map." } },
+        { title: "I say the town forty times", text: "Cedar Hollow Cedar Hollow Cedar Hollow. They can't miss it.", color: C.sun,
           art: sh.at(14, 0, 1.9, A.iconMarkup("sign")) + sh.rect(22, 80, 76, 34, 12, C.red) + sh.text(60, 105, "x 40", 24, "#fff"),
-          react: { who: "sprout", mood: "oops", say: "I read that page. It answered nothing. Name the towns you serve once, in a sentence." } }
+          react: { who: "sprout", mood: "oops", say: "I read a page like that. It answered nothing. Name the towns Greenline serves once, in a sentence." } }
       ]
     },
 
-    /* The showdown: a title, two or three lines of how to play, and the mini-game itself. */
+    /* The showdown: a title, the task line Jordan gives (it shows in the visor), two or three lines of
+       how to play in the agent's own words, and the mini-game itself. */
     showdown: {
       title: "Back on the map",
-      how: ["The map listing is wrong. Snap in the name, address and phone that match the website.", "Then neighbors ask the map real questions. Put the plain answer on Greenline's page.",
-        "Drag a tile, tap it, or press its number. Then check Sprout's page."],
+      task: "Fix the listing. Draft the page. Publish nothing.",
+      how: ["The map listing is wrong. I snap in the name, address and phone that match the website.", "Then neighbors ask the map real questions. I put the plain answer on my page draft.",
+        "Drag a tile, tap it, or press its number. Then Sprout shows me its shortcut. I check it."],
       play: backOnTheMap
     },
 
-    /* After the catch: two lines. The second is one thing to try for real, tonight. */
+    /* The handoff: the agent never publishes. After the showdown the engine takes the work to Jordan.
+       ask: Jordan's line. work: two or three short lines of what the agent did. approve: Jordan's yes. */
+    handoff: {
+      ask: "The listing and the patio page, {agent}. What have you got for me?",
+      work: ["A listing fix: one name, one address, one phone.", "A patio page with three plain answers. One made-up line out.", "Nothing published. Not one word."],
+      approve: "Approved. I will put the listing and the page up myself."
+    },
+
+    /* After the catch: two lines. The second steps out of the story: one thing for the person playing
+       to try for real, tonight. It starts "For the person behind the visor:". */
     debrief: [
       { who: "jordan", mood: "glad", pose: "cheer", say: "One name, one address, one phone, and a page that says what we do and where. They can find us." },
-      { who: "sprout", mood: "proud", pose: "wave", say: "Tonight, search what you sell plus your town. Then ask an AI helper the same thing. Check every fact." }
+      { who: "sprout", mood: "proud", pose: "wave", say: "For the person behind the visor: tonight, search what you sell plus your town. Ask an AI too. Check the facts." }
     ],
     next: "Next case: the marketing stops every time Jordan gets busy."
   });

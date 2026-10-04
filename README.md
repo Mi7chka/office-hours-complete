@@ -9,16 +9,27 @@ again with your own business.
 
 ## Play it as a game: Save Greenline
 
-**Save Greenline: The Case of the Busywork Bandits** is the same course as a cartoon adventure.
-Eight goofy bandits are stealing time from Greenline Landscaping. You drive the little green truck
-around the town of Cedar Hollow, collect three clues from the townspeople, pick the move that stops
-the bandit, and catch them in a hands-on mini-game that is that week's job. Your sidekick Sprout, a
-helper robot, stands for the AI: very fast, very keen, and wrong about one thing in every case,
-which is yours to catch. The town turns from gray to color as you go, and there is a certificate
-at the end.
+**Save Greenline: The Case of the Busywork Bandits** is the same course as a cartoon adventure,
+and you play it in the first person, as the AI. You log in as Greenline Landscaping's new AI agent:
+pick a name and a look, and see the town of Cedar Hollow through your own visor. Eight goofy bandits
+are stealing the company's time. In each case the owner, Jordan, gives you a job. You ride the
+little green truck to three places, and a townsperson at each one teaches you one thing. You pick
+your plan, and you do that week's job with your own hands in a mini-game. Sprout, the agent who had
+the job before you, is your trainer, and one of Sprout's shortcuts is wrong in every case, which is
+yours to catch. You never send anything yourself: you hand your work to Jordan, and Jordan approves
+it.
+
+You grow as you learn, the way a character in a life sim does. Every thing you learn feeds one of
+nine skills (one for each week, and Judgment), experience adds up to ten levels, and each level
+earns a new permission from Jordan. It is all on your ID badge and in the Skills panel. The town
+turns from gray to color as you go, and there is a certificate at the end.
 
 Press **Play** at the top of the app. Mouse, touch or keyboard. Sound is made by the game itself
-and can be switched off. Everything is drawn in code, so there is still nothing to install.
+and can be switched off. Everything is drawn in code, so there is still nothing to install. The
+agent's name is a made-up display name kept in your own browser: the game never asks for a password
+or an email. Up to four agents can share one computer, each with its own progress. If you played
+before Agent Mode, your closed cases and stars are still there: log in once, and your agent starts
+at the level they add up to.
 
 The game is optional. The class and every tool work without it. How it is built: `GAME.md`.
 
@@ -60,7 +71,7 @@ Press **Runbook** inside any tool for the 15-minute walk-through, with a box to 
   no AI at hand.
 - `prompts/` has every prompt as a text file. `samples/` has the sample files used in class.
 - `MODULES.md` explains how a tool is built, if you want to change one or add your own.
-- `GAME.md` explains the game: the story, how a case is written, the engine's toolbox. `tools/build_apps.py` builds the Mac and Windows apps into `dist/`.
+- `GAME.md` explains the game: the story, Agent Mode (the login, skills, levels and how a case awards experience), how a case is written, the engine's toolbox. `tools/build_apps.py` builds the Mac and Windows apps into `dist/`.
 - `tools/make_starter.py --week N` builds the starter copy the class begins with.
 
 ## The class

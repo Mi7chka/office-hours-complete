@@ -4,6 +4,13 @@
    an amount without showing you · check the total before and after, and explain every dollar of the gap.
    The showdown is the week's job done by hand: clean a messy jobs export without moving a dollar.
    Every row and every total comes from app/data/w7-data.js and is added up here, never typed in.
+
+   AGENT MODE: the player IS the AI, Greenline's new agent. So every line here is written to the
+   agent ("you") or by the agent ("I"). Here the agent is the tool that must show its changes. Sprout
+   is the trainer, the agent who had the job before, and its one wrong shortcut (a blank filled with
+   a guess, and no word about it) is the thing to catch. The agent never sends and never calls a
+   customer: the engine's handoff takes the cleaned rows to Jordan.
+
    GAME.md explains every field and every kit call used here. Everything in it is made up. */
 (function () {
   "use strict";
@@ -207,7 +214,7 @@
   // ── a quick challenge of its own: two lists side by side, and one amount that changed ──
   /* spec: {ask, who, left, right, rows: [{was, now, a, b}], yes, nope}. The row whose b differs from a is the one. */
   function tidyCopy(kit, spec, done) {
-    const p = kit.panel({ kicker: "Quick challenge", title: spec.ask, who: spec.who }); let solved = false;
+    const p = kit.panel({ kicker: "My turn", title: kit.fill(spec.ask), who: spec.who }); let solved = false;
     const row = (r, n) => h("button", { class: "m7-tk", type: "button", onclick: () => pick(n) }, h("kbd", { "aria-hidden": "true" }, String(n + 1)), h("i", null, r.now), h("em", null, String(r.b)));
     const mine = spec.rows.map(row);
     function pick(n) {
@@ -223,8 +230,12 @@
   }
 
   // ── the showdown: Twin trouble ──
-  /* play(kit, done) is the whole mini-game. Three beats: clean the export by hand while the scale
-     watches the total, let Sprout clean it in seconds, then catch the amount Sprout made up. */
+  /* play(kit, done) is the whole mini-game. Three beats: my first go (clean the export by hand while
+     the scale watches the total), Sprout's shortcut (all thirty rows in three seconds, "do it my
+     way"), then I catch the amount Sprout made up and put the blank back. Nothing is sent here:
+     done() hands the work to Jordan.
+     The help line is the agent's own thinking ("I"). The bar with Sprout's face is Sprout talking
+     to the agent ("you"). */
   async function twinTrouble(kit, done) {
     kit.backdrop("bank", { gray: true });
     kit.style(CSS);
@@ -289,20 +300,20 @@
       const r = s.row;
       if (s.kind === "date" && !s.fixed) {             // a date written the other way: straighten it, and nothing else
         s.fixed = true; got.date++; s.date.textContent = iso(r.date); s.el.classList.add("m7-ok"); kit.fx.pop(s.paper); kit.score.right(); S.play("m7fix");
-        say(got.date === 1 ? "Straight: " + iso(r.date) + ". Only the date changed. The scale did not move." : "Straight: " + iso(r.date) + ".", "ok"); return settled();
+        say(got.date === 1 ? "Straight: " + iso(r.date) + ". I changed only the date. The scale did not move." : "Straight: " + iso(r.date) + ".", "ok"); return settled();
       }
       if (s.kind === "copy" && !pairDone) {
         const mate = slips.find((x) => x !== s && x.kind === "copy");
         if (mate && mate.entered && s.entered) return pull(s, mate);
-        kit.score.wrong(); kit.fx.shake(s.paper); return say("By itself that row is fine. Watch what comes after it.", "bad");
+        kit.score.wrong(); kit.fx.shake(s.paper); return say("By itself that row is fine. I watch what comes after it.", "bad");
       }
       if (s.kind === "blank" && !s.fixed) return ask(s);
       if (s.kind === "name" && !s.fixed) {             // a bonus catch: not needed to win, never a wrong pick
-        s.fixed = true; s.flag("Ask"); kit.score.right(); return say("Good eye. " + r.who + " may be Priya. Flag it and ask Jordan. Never merge names on a guess.", "ok");
+        s.fixed = true; s.flag("Ask"); kit.score.right(); return say("Spotted. " + r.who + " may be Priya. I flag it and ask Jordan. I never merge names on a guess.", "ok");
       }
       if (s.fixed || s.kind === "copy") return say("That row is already put right.");
       kit.score.wrong(); kit.fx.shake(s.paper);        // a clean row: the engine counts the wrong pick
-      say(repeats(r) ? "Same customer, different day. A repeat customer is not a copy." : "Nothing wrong with that row. Let it ride.", "bad");
+      say(repeats(r) ? "Same customer, different day. A repeat customer is not a copy." : "Nothing wrong with that row. I let it ride.", "bad");
     }
     /* The copy comes off the belt, the total drops, and the scale tips until the gap has a reason. */
     function pull(s, mate) {
@@ -310,7 +321,7 @@
       pairDone = true; paused = true; got.copy++; s.out = true; s.el.remove(); mate.el.classList.add("m7-ok"); kit.score.right(); S.play("m7pull"); twin("surprised", true); paint();
       const loose = slip(r); loose.el.classList.add("m7-loose"); tray.innerHTML = ""; tray.appendChild(loose.el); tray.appendChild(h("b", null, "Hang it on the scale"));
       scale.set({ after: BEFORE - (r.amount || 0) }); note("The total dropped by " + money(GAP) + ". No reason given yet.", "bad");
-      say("Pulled: a copy of row " + mate.row.n + ". Now explain the gap. Tap the copy, drag it to the scale, or press Enter.");
+      say("Pulled: a copy of row " + mate.row.n + ". Now I explain the gap. Tap the copy, drag it to the scale, or press Enter.");
       let hung = false;
       const hangIt = () => {
         if (hung) return; hung = true;
@@ -329,9 +340,9 @@
     /* The blank: guess it, or say so? The belt waits. */
     function ask(s) {
       const r = s.row; paused = true; s.el.classList.add("m7-lift");
-      const opts = [{ text: "Type in a likely amount", why: "A guess in a sheet looks exactly like a fact. Leave it blank." }, { text: "Leave it blank and flag it", right: true }];
+      const opts = [{ text: "I type in a likely amount", why: "A guess in a sheet looks exactly like a fact. I leave it blank." }, { text: "I leave it blank and flag it", right: true }];
       const btns = opts.map((o, k) => h("button", { class: "sg-opt", type: "button", onclick: () => pick(k) }, h("kbd", { "aria-hidden": "true" }, String(k + 1)), h("span", null, o.text)));
-      const box = h("div", { class: "m7-ask" }, h("b", null, "Row " + r.n + " has no amount. What now?"), btns);
+      const box = h("div", { class: "m7-ask" }, h("b", null, "Row " + r.n + " has no amount. What do I do?"), btns);
       function pick(k) {
         const o = opts[k], b = btns[k]; if (b.disabled) return;
         if (!o.right) { kit.score.wrong(); kit.fx.shake(b); b.disabled = true; b.classList.add("sg-no"); return say(o.why, "bad"); }
@@ -349,25 +360,26 @@
     if (!still) kit.frame((t) => { const dt = Math.min(0.25, t - beltAt); beltAt = t; if (!paused) { off += dt * (pitch / 2.1) * rush * (fast ? 9 : 1); lay(); } });
     const step = (dir) => { const list = onBelt(); if (!list.length) return; const i = list.findIndex((s) => s.el === document.activeElement); kit.focus(list[i < 0 ? 0 : Math.max(0, Math.min(list.length - 1, i + dir))].el); };
     const offKeys = kit.keys({ ArrowRight: () => step(1), ArrowLeft: () => step(-1) });
-    say("Tap every row with a problem: a copy, a crooked date, a blank. Or use the arrow keys and Enter.");
+    say("I look for rows with a problem: a copy, a crooked date, a blank. Tap one, or use the arrow keys and Enter.");
     await new Promise((resolve) => { cleaned = resolve; if (!slips.length) return resolve(); const one = onBelt()[0]; if (one) kit.focus(one.el); });
     offKeys(); clock.stop();
     const took = clock.value(), mine = Math.floor(took / 60) + ":" + String(took % 60).padStart(2, "0");
     await kit.wait(700);
 
-    // Round 2 · the twins giggle, and Sprout cleans the same export in seconds
+    // Round 2 · the twins giggle, and Sprout, the trainer, shows its shortcut: the same export in seconds
     wrap.classList.add("m7-talking");
     kit.cast([{ who: "doubletrouble", side: "left", mood: "glad" }, { who: "sprout", side: "right", mood: "happy" }]);
     await kit.say([
       { who: "doubletrouble", mood: "glad", say: "Hee hee. Hee hee. One little copy, and it took you " + mine + " to find. We can make ten more by lunch!" },
-      { who: "sprout", mood: "glad", pose: "cheer", say: "My turn. I can clean all " + ROWS.length + " rows in three seconds. Stand back!" }
+      { who: "sprout", mood: "glad", pose: "cheer", say: "Not bad, {name}. Now watch my shortcut. All " + ROWS.length + " rows, clean, in three seconds." }
     ]);
     kit.hush(); kit.cast([]); clock.hide();
     const sprout = h("span", { class: "sg-face" }), words = h("span"), bar = h("div", { class: "m7-say", role: "status", "aria-live": "polite" }, sprout, words);
+    /* One line above the rows, with Sprout's face on it: every one is Sprout talking to the agent. */
     const tell = (text, mood, tone) => { words.textContent = text; sprout.innerHTML = ""; sprout.appendChild(A.avatar("sprout", { mood: mood })); bar.className = "m7-say" + (tone ? " sg-" + tone : ""); kit.fx.pop(bar); };
     wrap.className = "m7 m7-sprout"; wrap.style.setProperty("--haze", "0.25"); line.className = "m7-line"; line.innerHTML = ""; line.appendChild(rail); wrap.insertBefore(bar, line);
     scale.set({ after: BEFORE, explained: 0 }); note("Level. Sprout starts from the same export.");
-    tell("Cleaning...", "think");
+    tell("Watch and learn. Cleaning...", "think");
     await new Promise((resolve) => {                   // every row zips past, and Sprout fixes it on the way
       let n = 0;
       const stop = kit.every(95, () => {
@@ -380,21 +392,21 @@
       });
     });
     note("The total is up by " + money(GUESS) + ". Nobody said why.", "bad");
-    tell("Done. The copy is out, the dates are straight, every row is tidy. All perfect. Probably.", "proud");
+    tell("Done. The copy is out, the dates are straight, every row is tidy. Do it my way. All perfect. Probably.", "proud");
     await kit.wait(1900);
 
-    // Round 3 · which one is wrong? Then put the blank back, with a flag.
+    // Round 3 · I check before I copy: which row is wrong? Then I put the blank back, with a flag.
     const lineup = [CROOKED[0], ORIGINAL, DECOY, BLANK, TOP, CROOKED[CROOKED.length - 1]].filter((r, i, all) => r && all.indexOf(r) === i).sort((a, b) => a.n - b.n);
     const park = h("div", { class: "m7-park" }), parked = lineup.map((r, n) => { const s = slip(r, { date: iso(r.date), amount: r === BLANK ? GUESS : r.amount }); s.el.insertBefore(h("kbd", { "aria-hidden": "true" }, String(n + 1)), s.paper); park.appendChild(s.el); return s; });
     line.remove(); wrap.appendChild(park);
-    tell("The scale says otherwise. Sprout changed an amount and did not show you. Which row? Tap it.", "proud");
+    tell(kit.fill("The scale is off? I changed no amounts. Probably. Check my rows, {name}. Tap the one that changed."), "proud");
     let tries = 0;
     const found = await new Promise((resolve) => {
       const pick = (s) => {
         if (!s || s.el.disabled) return;
         if (s.row !== BLANK) {
           tries++; kit.score.wrong(); kit.fx.shake(s.paper); s.el.disabled = true; s.el.classList.add("sg-okay");
-          return tell(s.row === DECOY ? first(s.row.who) + "'s " + money(GUESS) + " was in the export. That one is real. Look again." : "That amount is the same as the export. Which row had no amount at all?", "proud", "bad");
+          return tell(s.row === DECOY ? "See? " + first(s.row.who) + "'s " + money(GUESS) + " was in the export. That one is real. Try another." : "See? Same amount as the export. Hm. Which row had no amount at all?", "proud", "bad");
         }
         off(); parked.forEach((x) => { x.el.disabled = true; }); s.el.classList.add("m7-found", "m7-keep"); kit.score.right();
         kit.score.sprout(tries === 0);                 // the second star: Sprout's slip caught on the first try
@@ -406,12 +418,12 @@
       kit.focus(parked[0].el);
     });
     if (found) {
-      tell("Oops. " + first(BLANK.who) + "'s row had no amount. " + BLANK.what + "s run about " + money(GUESS) + ", so I typed " + money(GUESS) + ".", "oops", "ok");
+      tell("Oops. " + first(BLANK.who) + "'s row had no amount. " + BLANK.what + "s run about " + money(GUESS) + ", so I typed " + money(GUESS) + ". What do you do with it?", "oops", "ok");
       wrap.classList.add("m7-fixing");
       await new Promise((resolve) => {
-        const fixes = [{ text: "Keep the " + money(GUESS) + ". It is probably close", why: "Probably is not a record. November would be planned on a guess." },
-          { text: "Delete " + first(BLANK.who) + "'s row", why: "The job happened. Deleting it hides money Greenline is owed." },
-          { text: "Put the blank back, with a flag", right: true }];
+        const fixes = [{ text: "I keep the " + money(GUESS) + ". It is probably close", why: "Probably is not a record. November would be planned on a guess." },
+          { text: "I delete " + first(BLANK.who) + "'s row", why: "The job happened. Deleting it hides money Greenline is owed." },
+          { text: "I put the blank back, with a flag", right: true }];
         const opts = fixes.map((f, k) => h("button", { class: "sg-opt", type: "button", onclick: () => pick(k) }, h("kbd", { "aria-hidden": "true" }, String(k + 1)), h("span", null, f.text)));
         function pick(k) {
           const f = fixes[k], b = opts[k]; if (b.disabled) return;
@@ -426,22 +438,22 @@
         kit.focus(opts[0]);
       });
     }
-    tell("Blank again, with a flag. If I change an amount, I show you the row and say why.", "glad", "ok");
+    tell(kit.fill("Blank again, with a flag. Good catch, {name}. My shortcut skipped showing what it changed."), "glad", "ok");
     await kit.wait(1700);
     // the payoff: one screen, built on rows that can be trusted
     park.remove(); wrap.classList.remove("m7-fixing");
     const tile = (k, big, small) => h("div", { class: "m7-tile" }, h("small", null, k), h("b", null, big), h("span", null, small));
     wrap.appendChild(h("div", { class: "m7-screen" },
       tile("October, cleaned", money(AFTER), "dollars, from " + CLEAN.length + " jobs. No row counted twice."),
-      tile("Still unpaid", money(OWED), TOP ? "dollars. " + money(TOP.amount) + " of it is one " + first(TOP.what).toLowerCase() + ". Call first." : "dollars. Call first."),
-      tile("Flagged, not guessed", BLANK ? "1 row" : "0 rows", BLANK ? first(BLANK.who) + "'s amount. Look it up." : "Nothing to look up.")));
+      tile("Still unpaid", money(OWED), TOP ? "dollars. " + money(TOP.amount) + " of it is one " + first(TOP.what).toLowerCase() + ". Jordan calls first." : "dollars. Jordan calls first."),
+      tile("Flagged, not guessed", BLANK ? "1 row" : "0 rows", BLANK ? first(BLANK.who) + "'s amount. Jordan looks it up." : "Nothing to look up.")));
     tell("Now the one screen is worth building. And look what it found.", "proud", "ok"); kit.fx.confetti(24);
     await kit.wait(3200);
     wrap.classList.add("m7-talking"); wrap.style.setProperty("--haze", "0");
     kit.cast([{ who: "doubletrouble", side: "left", mood: "surprised" }, { who: "sprout", side: "right", mood: "proud", pose: "hips" }]);
     await kit.say([
       { who: "doubletrouble", mood: "surprised", say: "You counted before AND after? Doing things twice is OUR trick. That is not fair!" },
-      { who: "sprout", mood: "proud", pose: "cheer", say: "I clean. The sheet counts. The detective decides. Get the net!" }
+      { who: "sprout", mood: "proud", pose: "cheer", say: "You clean. The sheet counts. Jordan decides. Take it to Jordan, {name}!" }
     ]);
     done();
   }
@@ -464,26 +476,27 @@
         }
         kit.stage.appendChild(above); kit.stage.appendChild(h("div", { class: "m7-boss" }, A.character("doubletrouble", { mood: "glad" })));
       },
+      /* Jordan and Sprout talk to the agent. who: "you" is the agent's own thought, shown as visor text. */
       lines: [
-        { who: "jordan", mood: "happy", pose: "wave", say: "Detective! The leads are moving and October is over. So I asked one simple question. How did we do?" },
+        { who: "jordan", mood: "happy", pose: "wave", say: "{agent}! The leads are moving and October is over. So I asked one question. How did we do?" },
         { who: "jordan", mood: "worried", pose: "shrug", say: "The jobs export says " + money(BEFORE) + ". I do not trust it. I typed those rows in the truck, between jobs." },
-        { who: "sprout", mood: "glad", pose: "cheer", say: "Thirty rows! I can chart that in one second. Bars! Colors! A pie!" },
+        { who: "sprout", mood: "glad", pose: "cheer", say: "Thirty rows! When this was my job, I charted them in one second. Bars! Colors! A pie!" },
         { who: "jordan", mood: "worried", pose: "point", say: "Not yet. A chart built on bad rows is a confident lie. And somebody has been copying rows." },
         { who: "jordan", mood: "grumpy", pose: "hips", say: "Double Trouble. Twins. They copy one row, and suddenly two totals do not agree." },
-        { who: "sprout", mood: "think", pose: "idle", say: "So first we find what is wrong. And we change no amount while we do it." },
-        { who: "jordan", mood: "happy", pose: "point", say: "Exactly. Three people in town keep very tidy books. Get their clues, then meet me at the bank." }
+        { who: "you", say: "So first I find what is wrong. And I change no amount while I do it." },
+        { who: "jordan", mood: "happy", pose: "point", say: "Three people in town keep very tidy books. Go and learn from them. Then meet me at the bank." }
       ]
     },
 
     stops: [
       { place: "square", who: "maple",
         lines: [
-          { who: "maple", mood: "proud", pose: "wave", say: "Welcome to Town Square! One town, one map. It lives in that kiosk." },
+          { who: "maple", mood: "proud", pose: "wave", say: "Welcome to Town Square, {agent}! One town, one map. It lives in that kiosk." },
           { who: "maple", mood: "grumpy", pose: "hips", say: "Last spring the cafe, the bank and the bus stop each drew their own. Three maps. Three different parks." },
           { who: "sprout", mood: "surprised", say: "Which one was right?" },
           { who: "maple", mood: "happy", pose: "point", say: "The kiosk. It is the map's home. The rest are copies. Now, where do Greenline's things live?" }
         ],
-        challenge: { type: "sort", ask: "Give each thing its one home.",
+        challenge: { type: "sort", ask: "Each thing has one home. Where do I put it?",
           bins: [{ key: "people", label: "The customer list", icon: "chat", color: A.C.blue }, { key: "money", label: "The money app", icon: "coins", color: A.C.sun }, { key: "files", label: "The shared drive", icon: "book", color: A.C.green }],
           items: [
             { text: "Dana's phone number", bin: "people", why: "A fact about a customer. It lives in the customer list." },
@@ -493,7 +506,7 @@
             { text: "October's paid invoices", bin: "money", why: "What came in is true in the money app." },
             { text: "A photo of the finished hedge", bin: "files", why: "Photos are files. One folder, one home." }
           ] },
-        clue: { title: "One home", text: "Every kind of data has one home: customers, money, files. When two places disagree, the home wins. Everything else is a copy." } },
+        clue: { title: "One home", text: "Every kind of data I work with has one home: customers, money, files. When two places disagree, I trust the home. Everything else is a copy." } },
 
       { place: "grind", who: "bea",
         setup: (kit) => kit.style(CSS),
@@ -503,20 +516,20 @@
           { who: "sprout", mood: "think", say: "It changed something and did not show you? Even I leave a list. Usually." },
           { who: "bea", mood: "happy", pose: "point", say: "Here are my five tickets, and the till's tidy copy. One amount is different. Find it." }
         ],
-        challenge: { ask: "The till tidied five tickets. One amount changed. Tap it in the tidy copy.", play: tidyCopy,
+        challenge: { ask: "The till tidied five tickets. Which amount did it change? Tap it in the tidy copy.", play: tidyCopy,
           left: "Bea's tickets", right: "The till's tidy copy",
           rows: [{ was: "table 1", now: "Table 1", a: 12, b: 12 }, { was: "TABLE 2", now: "Table 2", a: 18, b: 18 }, { was: "tbl 3", now: "Table 3", a: 7, b: 7 }, { was: "Table 4", now: "Table 4", a: 23, b: 32 }, { was: "table five", now: "Table 5", a: 15, b: 15 }],
           yes: "23 became 32, and the till never said a word.", nope: "Same amount as Bea's ticket. Only the name got tidied. Keep looking." },
-        clue: { title: "Show me the change", text: "Never let a tool change an amount without showing you which row, and why. It may tidy a date. It may not quietly move a dollar." } },
+        clue: { title: "I show every change", text: "I never change an amount without showing a person which row, and why. I may tidy a date. I may not quietly move a dollar." } },
 
       { place: "garden", who: "dana",
         lines: [
-          { who: "dana", mood: "happy", pose: "wave", say: "Detective! Mind the seedlings. I counted forty in this tray before I tidied it." },
+          { who: "dana", mood: "happy", pose: "wave", say: "{agent}! Mind the seedlings. I counted forty in this tray before I tidied it." },
           { who: "dana", mood: "worried", pose: "idle", say: "After tidying: thirty-seven. So I stop. Nothing gets planted until I know where three went." },
-          { who: "sprout", mood: "think", say: "Could we just call it forty? It is close." },
+          { who: "sprout", mood: "think", say: "My shortcut: just call it forty. It is close." },
           { who: "dana", mood: "happy", pose: "point", say: "Close is how a garden goes missing. Every seedling in that gap gets a reason. Help me find them." }
         ],
-        challenge: { type: "tap", ask: "40 before, 37 after. Tap the two notes that explain the gap of 3.",
+        challenge: { type: "tap", ask: "40 before, 37 after. Which two notes explain the gap of 3? Tap them.",
           items: [
             { text: "2 wilted, now in the compost", ok: true, why: "Two of the three have a reason." },
             { text: "It is probably fine", ok: false, why: "Probably is not a reason." },
@@ -524,35 +537,47 @@
             { text: "Call it 40 anyway", ok: false, why: "Then the tray and the list disagree forever." },
             { text: "Count again next week", ok: false, why: "Plant nothing on a number you cannot explain." }
           ] },
-        clue: { title: "Before and after", text: "Check the total before you clean a list, and again after. Explain every dollar of the gap. If you cannot, stop and build nothing on it." } }
+        clue: { title: "Before and after", text: "I check the total before I clean a list, and again after. I explain every dollar of the gap. If I cannot, I stop, and nothing gets built on it." } }
     ],
 
+    /* The plan: the agent's own three options, so they say "I". The card where I fix things quietly
+       shows the player's own agent, so its art is a function. */
     crack: {
-      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three clues in the case book. So how do we stop Double Trouble?" }],
-      ask: "What is the move?",
+      lines: [{ who: "sprout", mood: "glad", pose: "cheer", say: "Three things learned, {name}. So how do we stop Double Trouble?" }],
+      ask: "What is my plan?",
       cards: [
-        { title: "Take the bigger number", text: money(BEFORE) + " looks nicer on the wall. Plan November on it.", color: A.C.pink,
+        { title: "I take the bigger number", text: money(BEFORE) + " looks nicer on the wall. Jordan plans November on it.", color: A.C.pink,
           art: sh.at(34, 78, 1.1, slipArt()) + sh.at(52, 70, 1.1, slipArt("#ffd9e8")) + sh.at(64, 14, 1.05, A.iconMarkup("coins")),
           react: { who: "doubletrouble", mood: "glad", say: "Yes! Use it! We will copy a few more rows by Friday. Hee hee. Hee hee." } },
-        { title: "Sprout fixes it quietly", text: "Dates, blanks, amounts. No list of what changed.", color: A.C.sun,
-          art: sh.at(2, 4, 0.4, A.characterMarkup("sprout", { mood: "glad", pose: "point" })) + sh.at(70, 56, 1.05, A.iconMarkup("pencil")),
-          react: { who: "sprout", mood: "oops", say: "If I fill a blank with a guess, it looks just like a fact. Please make me show my changes." } },
-        { title: "Total, clean, total again", text: "Change no amount. Explain every dollar of the gap.", color: A.C.teal, right: true,
+        { title: "I fix it quietly", text: "Dates, blanks, amounts. No list of what I changed.", color: A.C.sun,
+          art: () => sh.at(2, 4, 0.4, A.characterMarkup("agent", { mood: "glad", pose: "point" })) + sh.at(70, 56, 1.05, A.iconMarkup("pencil")),
+          react: { who: "sprout", mood: "oops", say: "That was my shortcut. A blank filled with a guess looks just like a fact. Show every change you make." } },
+        { title: "I total, clean, total again", text: "I change no amount. I explain every dollar of the gap.", color: A.C.teal, right: true,
           art: sh.rect(54, 34, 12, 66, 5, A.C.purple) + sh.rect(32, 96, 56, 12, 6, "#7a5ad6") + sh.rect(12, 28, 96, 11, 5, A.C.sun) + sh.ellipse(60, 33, 8, 8, "#fff", 4) +
             [18, 102].map((x) => sh.line("M" + x + ",36 L" + (x - 13) + ",62 M" + x + ",36 L" + (x + 13) + ",62", A.C.ink, 3) + sh.path("M" + (x - 17) + ",62 H" + (x + 17) + " Q" + (x + 14) + ",76 " + x + ",76 Q" + (x - 14) + ",76 " + (x - 17) + ",62 Z", "#fff", 4)).join(""),
           react: { who: "jordan", mood: "glad", say: "That's it. Total before, total after, and every dollar of the gap explained. Go and get those twins." } }
       ]
     },
 
+    /* The showdown: a title, Jordan's task line for the visor, how to play in the agent's own words. */
     showdown: {
       title: "Twin trouble",
-      how: ["Thirty rows ride the belt. Tap every row with a problem: a copy, a crooked date, a blank.", "Tap a row, or use the arrow keys and Enter. Change no amount, and keep the scale level.", "Then Sprout has a go. Check its work."],
+      task: "Clean the thirty rows. Change no amount.",
+      how: ["Thirty rows ride the belt. I catch every row with a problem: a copy, a crooked date, a blank.", "Tap a row, or use the arrow keys and Enter. I change no amount, and I keep the scale level.", "Then Sprout shows me its shortcut. I check it before I copy it."],
       play: twinTrouble
     },
 
+    /* The handoff: the agent never sends. After the showdown the engine takes the work to Jordan. */
+    handoff: {
+      ask: "Thirty rows, {agent}. What have you got for me?",
+      work: ["One copy pulled. The gap of " + money(GAP) + " is explained.", "Dates straightened. One blank flagged, not guessed.", "No amount changed. Nothing sent."],
+      approve: "Approved. Now I trust the total. I'll look up that blank myself."
+    },
+
+    /* After the catch: two lines. The second steps out of the story, for the person playing. */
     debrief: [
       { who: "jordan", mood: "glad", pose: "cheer", say: money(BEFORE) + " became " + money(AFTER) + ". The gap of " + money(GAP) + " is one job typed twice. And " + money(OWED) + " is still unpaid, mostly one patio." },
-      { who: "sprout", mood: "proud", pose: "wave", say: "I clean. The sheet counts. Tonight, export one list, work on a copy, and total it before and after." }
+      { who: "sprout", mood: "proud", pose: "wave", say: "For the person behind the visor: tonight, export one list, work on a copy, and total it before and after." }
     ],
     next: "Next case: Friday, 4:41 PM. The card reader dies with a customer waiting."
   });
