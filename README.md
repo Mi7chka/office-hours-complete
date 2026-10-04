@@ -9,11 +9,16 @@ again with your own business.
 
 ## Play it as a game: Save Greenline
 
-Greenline Landscaping is a good company drowning in busywork, and the owner has just handed you the
-keys to the office. Eight missions, one per week of the class. Each mission is a short scene, three
-quick questions, and then the real job in that week's tool, with objectives that tick themselves as
-you work. A mission is passed only by doing the job, including catching the one thing the AI got
-wrong. Stars, badges, and a certificate at the end. Press **Play** at the top of the app.
+**Save Greenline: The Case of the Busywork Bandits** is the same course as a cartoon adventure.
+Eight goofy bandits are stealing time from Greenline Landscaping. You drive the little green truck
+around the town of Cedar Hollow, collect three clues from the townspeople, pick the move that stops
+the bandit, and catch them in a hands-on mini-game that is that week's job. Your sidekick Sprout, a
+helper robot, stands for the AI: very fast, very keen, and wrong about one thing in every case,
+which is yours to catch. The town turns from gray to color as you go, and there is a certificate
+at the end.
+
+Press **Play** at the top of the app. Mouse, touch or keyboard. Sound is made by the game itself
+and can be switched off. Everything is drawn in code, so there is still nothing to install.
 
 The game is optional. The class and every tool work without it. How it is built: `GAME.md`.
 
@@ -55,7 +60,7 @@ Press **Runbook** inside any tool for the 15-minute walk-through, with a box to 
   no AI at hand.
 - `prompts/` has every prompt as a text file. `samples/` has the sample files used in class.
 - `MODULES.md` explains how a tool is built, if you want to change one or add your own.
-- `GAME.md` explains the game: missions, objectives, stars. `tools/build_apps.py` builds the Mac and Windows apps into `dist/`.
+- `GAME.md` explains the game: the story, how a case is written, the engine's toolbox. `tools/build_apps.py` builds the Mac and Windows apps into `dist/`.
 - `tools/make_starter.py --week N` builds the starter copy the class begins with.
 
 ## The class
