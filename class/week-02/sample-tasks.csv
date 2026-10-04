@@ -1,0 +1,7 @@
+title,lane,done means,due,steps
+Fix the missed visit for Dana Whitfield,Doing,Dana has a new date and has said yes to it,2026-10-14,ai: Draft the apology and offer two dates (done) | you: Check the draft and send it | you: Put the new date on the crew calendar
+Quote the Oyelaran patio,To do,Marcus has a written quote and a site visit is booked,2026-10-16,you: Visit the site and measure | ai: Draft the quote from the measurements | you: Check the quote and send it
+Chase the three overdue invoices,To do,Each customer has had a reminder and a date to pay by,2026-10-15,ai: List the three invoices and how late each one is | ai: Draft a polite reminder for each | you: Send the reminders
+Order mulch for Friday's jobs,Doing,18 cubic yards are confirmed for delivery on Thursday,2026-10-14,you: Confirm the amount with Luis (done) | you: Place the order with Northside Mulch Supply
+Fix the trailer hitch light,To do,The light works and Luis has checked it,2026-10-17,Book the repair
+Thank Sam K. for the review,Done,A short thank you is posted under the review,2026-10-13,ai: Draft a two-line thank you (done) | you: Post it under the review (done)

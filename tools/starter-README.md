@@ -1,60 +1,99 @@
-# Office Hours demo · the starter
+# The class command center · the starter
 
-The demo project for **Wednesday Office Hours**, a free live class by Mitchell B Consulting for
-people who run a small business. Every Wednesday at 9:00 PM Eastern: 30 minutes of teaching, a
-15-minute follow-along demo in this project, then your questions.
+The project for **Wednesday Office Hours**, a free live class by Mitchell B Consulting for people
+who run a small business. This season we build a command center together: one screen that shows
+where the business stands. Eight Wednesdays, one piece a week.
 
-This is the copy the class starts with. **It grows by one tool every Wednesday.** It holds
-week {{WEEK}} of 8 so far.
+This is the starter for **week {{WEEK}}: {{SHORT}}**. This week's piece is **{{PIECE}}**. It is
+ready to build and it is not built yet. That part is yours.
 
 ## Open it
 
-1. Press the green **Code** button on this page, then **Download ZIP**, and unzip it.
+1. Press the green **Code** button on this page, then **Download ZIP**, and unzip it. Put the folder
+   somewhere you will find it, such as Documents. This is your project folder.
 2. Double-click **Launch.command** (Mac) or **Launch.bat** (Windows). Or just open `index.html`.
 
-That's it. Nothing to install. It never goes online, and anything you type stays in your own
-browser on your own computer.
+Nothing to install. No account. It never goes online, and what you type stays in your own browser
+on your own computer.
 
-## Play it as a game: Save Greenline
+## Build this week's piece
 
-Press **Play** at the top of the app, and log in as Greenline Landscaping's new AI agent: a made-up
-name and a look, no password. You play in the first person, as the AI. Eight goofy bandits are
-stealing the company's time. You ride around town in the little green truck, learn one thing at
-each stop, and do that week's job in a hands-on mini-game. Sprout, the agent who had the job before
-you, trains you, and one of its shortcuts is wrong in every case, which is yours to catch. You never
-send anything yourself: the owner approves your work. Every thing you learn feeds a skill, and
-skills add up to levels. Cases unlock in order and a new one arrives every Wednesday. The game is
-optional: the class and the tools work without it.
+Every piece goes through the same six steps. The app walks you through them: press **Start the six
+steps** on the home screen. Press **Runbook** for the 15-minute version we do together in class.
 
-## What is in it so far
+| Step | What it makes | In one line |
+|---|---|---|
+| 1. Design | A design note | Who uses it, the one question it answers, what is on it, what done means. |
+| 2. Prompt | The build prompt | Role, context, the design note, the rules, what to hand back. |
+| 3. Review | A reviewed build | Read it against the design note. Find the one thing it got wrong. |
+| 4. Test | Three checks, passed | Written before the build, run with sample data. |
+| 5. Ship | A runbook line | The step, the sign it worked, how to undo it. |
+| 6. Log | One change log line | What changed and why, plus a decision when a choice was made. |
 
-| Week | Tool | The session | Follow along |
+The build prompt works in both tools:
+
+- **In the Claude app:** paste the prompt and send. Save the file it makes as `{{FILE}}` in the
+  `pieces` folder.
+- **In Claude Code:** open this folder and paste the same prompt. It writes `pieces/{{FILE}}` for you.
+
+The app notices the file by itself. There is no list to edit. A file named `{{FILE}}` is already in
+`pieces`, holding the place, so your computer asks whether to replace it. Say yes. If it does not
+ask, the name is not right.
+
+Stuck? The finished piece is in the complete project, in its `pieces` folder:
+https://github.com/Mi7chka/office-hours-complete
+
+## What is in the folder
+
+| Where | What it is |
+|---|---|
+| `Launch.command`, `Launch.bat`, `index.html` | The command center. Double-click to open. |
+| `pieces/` | One file per piece. Your builds go here. |
+| `class/week-{{WEEK2}}/` | This week's notes: the design note, the build prompt, the three checks, the runbook. |
+| `CLAUDE.md` | The rules file for your AI. It drafts and you send. It says what it is unsure about. It never invents a number. It never sends, pays, posts or deletes. |
+| `app/` | The shell every piece runs in. Leave it as it is. |
+| `samples/`, `prompts/` | Files for the Toolbox. |
+
+## Sample business, then your own
+
+Every piece starts with a made-up company, Greenline Landscaping, so you can try it safely. Press
+**My business** on the home screen to switch to your own. There, a piece shows only what you
+brought in, by typing, pasting text or dropping in a file. Where nothing is brought in yet it says
+**Needs setup**. It never shows a made-up number.
+
+Nothing in this project sends, posts, pays or deletes. AI drafts. You decide.
+
+## Built so far
+
+| Week | Piece | Where | The notes |
 |---|---|---|---|
-{{HAVE}}
+{{BUILT}}
 
-Press **Runbook** inside any tool for the 15-minute walk-through, with a box to tick at each step.
-Every tool starts with a made-up company (Greenline Landscaping) so you can try it safely, and
-each one has a way to use your own emails, leads or numbers.
+## Coming
 
-## What is coming
-
-| Week | Date | Tool | The session |
+| Week | Date | The session | The piece |
 |---|---|---|---|
 {{COMING}}
 
-After each session, download this page's ZIP again (or `git pull`) to get the new tool. What you
-typed stays in your browser.
+Each Wednesday, download this page's ZIP again to get that week's starter. To keep the pieces you
+built yourself, copy the files from your old `pieces` folder into the new one.
+
+## The Toolbox and the game
+
+- **Toolbox:** eight small tools from version 1 of the class (inbox, automations, website, search,
+  marketing, leads, data, support). They are extras. The command center works without them.
+- **Save Greenline:** the same ideas as a cartoon adventure. Press **Play** at the top. It is
+  optional, and it never asks for a password or an email. How it is built: `GAME.md`.
 
 ## The class
 
-Free, live on Google Meet, every Wednesday at 9:00 PM Eastern. Subscribe for the weekly link:
+Free, live on Google Meet, every Wednesday at 9:00 PM Eastern: 30 minutes of teaching, a 15-minute
+build together, then your questions. Subscribe for the weekly link:
 **https://mitchellbconsulting.com/office-hours**
 
-- `prompts/` has every prompt as a text file, so you can use them without this app.
-- `samples/` has the sample files used in class.
-- `MODULES.md` explains how a tool is built, if you want to change one or add your own.
-
-Want a hand putting this to work in your own business? The first call is free:
+In class you run every piece yourself, and that is free. If you would rather have the version that
+runs by itself, fitted to your business, that is the 48-Hour Command Center: one flat price, on the
+page at https://mitchellbconsulting.com/command-center. The first call is free:
 https://mitchellbconsulting.com/book
 
 MIT licence. Every name and number in the sample data is made up.

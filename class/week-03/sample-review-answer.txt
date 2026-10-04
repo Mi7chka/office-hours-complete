@@ -1,0 +1,40 @@
+REVIEW
+EMAIL 1 | REPLY TODAY | Dana Whitfield | Nobody showed up on Tuesday | An upset customer who took the morning off work
+EMAIL 2 | REPLY TODAY | Website form | New quote request: backyard patio | A new lead. Weekends are best
+EMAIL 3 | REPLY TODAY | Priya Raman | Can we move Friday? | Needs a yes or no before Friday
+EMAIL 4 | CAN WAIT | Northside Mulch Supply | Invoice 4471 for September delivery | Terms are net 30
+EMAIL 5 | FYI | Square | You received a payment | Nothing to do
+EMAIL 6 | JUNK | Account Security | URGENT: Your account is suspended | Looks fake. Do not click
+EMAIL 7 | FYI | Google Business Profile | You have a new review | A 5-star review from Sam K.
+EMAIL 8 | CAN WAIT | Luis (crew lead) | Thursday off? | Wants an answer by Wednesday
+EMAIL 9 | CAN WAIT | Harbor Mutual Insurance | Your commercial auto policy renews next month | Review before the 15th
+EMAIL 10 | JUNK | The Small Biz Weekly | 7 trends every owner should watch this fall | A newsletter
+EMAIL 11 | FYI | QuickBooks | 3 invoices are overdue | A reminder notice
+EMAIL 12 | JUNK | ToolBarn Deals | Trimmers on sale this weekend only | A promotion
+
+SHORT LIST
+EMAIL 1 | Call Dana Whitfield, say sorry and offer a new date | Today
+EMAIL 2 | Offer Marcus Oyelaran two weekend times for a site visit | Today
+EMAIL 3 | Check Thursday or Monday with the crew, then answer Priya | Today
+EMAIL 8 | Tell Luis yes or no about Thursday afternoon | By Wednesday
+
+DRAFTS
+DRAFT 1 | To: Dana Whitfield | Subject: About Tuesday
+Hi Dana, I am sorry. Nobody came on Tuesday and nobody called, and you took the morning off for it. That is on us. I would like to make it right this week. Would Thursday morning or Friday morning work for the hedge trimming? Tell me which is better and I will confirm it with the crew today.
+Jordan, Greenline Landscaping
+END
+DRAFT 2 | To: Marcus Oyelaran | Subject: Your patio
+Hi Marcus, thank you for getting in touch, and congratulations on the new house. I would like to come and look at the backyard before I say anything about the patio or the planting. Would Saturday morning or Sunday afternoon suit you?
+Jordan, Greenline Landscaping
+END
+DRAFT 3 | To: Priya Raman | Subject: Re: Can we move Friday?
+Hi Priya, thanks for letting me know. I am checking Thursday and Monday with the crew, and I will confirm one of them with you today.
+Jordan, Greenline Landscaping
+END
+
+LOOKS FAKE
+EMAIL 6 | The sender's address does not match any company you use, and it asks for a password and a card number
+
+UNSURE
+- I was not sure whether the QuickBooks notice about overdue invoices needs you today. I put it in FYI.
+- Draft 1 offers Thursday or Friday morning. Those days are not in the emails, so check them before you send.

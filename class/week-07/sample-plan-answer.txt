@@ -1,0 +1,30 @@
+DAY PLAN
+FIRST | Call Dana Whitfield, say sorry and offer a new date | from: email
+THEN | 07:30 | Crew leaves the yard. Tell Luis yes or no about Thursday afternoon | from: calendar
+THEN |  | Send Marcus Oyelaran two weekend times for the patio visit | from: pipeline
+THEN |  | Check Thursday or Monday with the crew, then answer Priya Raman | from: email
+THEN | 10:00 | Site visit: Ruth Delgado, hedges along the driveway | from: calendar
+THEN |  | Phone Gloria Stein at Maple Court Homeowners. The notes say she prefers a call | from: pipeline
+THEN | 13:30 | Call with the insurance agent about the auto policy | from: calendar
+THEN |  | Follow up with Hartwell Dental about the lawn care note | from: pipeline
+
+MESSAGES
+MESSAGE | To: Marcus Oyelaran | Subject: Your patio
+Hi Marcus, I would like to come and look at the backyard before I say anything about the patio. Would Saturday morning or Sunday afternoon suit you?
+Jordan, Greenline Landscaping
+END
+MESSAGE | To: Priya Raman | Subject: Re: Can we move Friday?
+Hi Priya, I am checking Thursday and Monday with the crew, and I will confirm one of them with you today.
+Jordan, Greenline Landscaping
+END
+MESSAGE | To: Nina Hartwell | Subject: Lawn care for the office
+Hi Nina, I wanted to make sure my note reached you and answered your questions. You asked about starting in spring. I am happy to talk that through whenever suits you.
+Jordan, Greenline Landscaping
+END
+
+LEFT OUT
+- Review the vehicles and the drivers. The policy is not due for 20 days.
+- Visit the Oyelaran site and measure. The visit is not booked yet.
+
+UNSURE
+- Priya Raman has no next step in the pipeline. I used the email short list for her.

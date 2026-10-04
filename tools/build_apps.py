@@ -46,7 +46,7 @@ BUNDLE_ID = "com.mitchellbconsulting.savegreenline"
 EXECUTABLE = "save-greenline"                # Contents/MacOS/<this>
 START_PAGE = "Open Save Greenline.html"      # sends a default browser to game/index.html#/game
 
-GAME = ["index.html", "app", "runbooks", "prompts", "samples", "LICENSE"]   # the game, and nothing else
+GAME = ["index.html", "app", "pieces", "class", "runbooks", "prompts", "samples", "LICENSE"]   # the game, and the app it lives in
 GAME_REQUIRED = ["index.html", "app"]
 SKIP = shutil.ignore_patterns(".DS_Store", "__pycache__", "*.pyc", "Thumbs.db", ".git*")
 

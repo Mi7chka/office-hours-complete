@@ -1,5 +1,607 @@
-/* Built by tools/build_runbooks.py from runbooks/session-NN.json. Do not edit by hand. */
-window.OH = window.OH || {}; window.OH.runbooks = {
+/* Built by tools/build_runbooks.py from runbooks/session-NN.json and runbooks/toolbox/session-NN.json. Do not edit by hand. */
+window.OH = window.OH || {};
+window.OH.runbooks = {
+ "1": {
+  "session": 1,
+  "week": 1,
+  "module": "week-1-today",
+  "title": "Build together: the Today page",
+  "minutes": 15,
+  "goal": "Take the first piece of the command center through the six steps: design, prompt, review, test, ship, log. You leave with a project folder, a rules file for your AI, and a Today page that opens with a double-click.",
+  "you_need": [
+   "The class starter folder, unzipped",
+   "The Claude app or Claude Code",
+   "Nothing to install"
+  ],
+  "steps": [
+   {
+    "at": "0:00",
+    "min": 2,
+    "do": "Design: Double-click Launch in the starter folder, then press Start the six steps.",
+    "see": "The home screen with eight pieces that say Not built yet, then the build page for week 1.",
+    "tip": "This folder is your project folder. Keep it somewhere you will find it, such as Documents."
+   },
+   {
+    "at": "0:02",
+    "min": 2,
+    "do": "Design: Under step 1, open The rules file for the AI and read the rules out loud.",
+    "see": "It drafts and a person sends. It says what it is unsure about. It never invents a number. It never sends, pays, posts or deletes.",
+    "tip": "The same rules sit in your folder as CLAUDE.md. Add one rule of your own there after class."
+   },
+   {
+    "at": "0:04",
+    "min": 2,
+    "do": "Design: Read the design note: who uses it, the one question it answers, what is on it, what done means.",
+    "see": "Four short answers. The question is: what needs me today?",
+    "tip": "Design comes before the prompt. If you cannot answer the four questions, the AI cannot either."
+   },
+   {
+    "at": "0:06",
+    "min": 3,
+    "do": "Prompt: Press Copy the build prompt, paste it into the Claude app or Claude Code, and send. Save the file it makes as week-1-today.js in the pieces folder, and say yes to replace.",
+    "see": "Your computer asks whether to replace week-1-today.js. That question means the name is right.",
+    "tip": "In the Claude app you save the file yourself. In Claude Code it writes the file for you."
+   },
+   {
+    "at": "0:09",
+    "min": 2,
+    "do": "Review: Press I saved the file. Look again. Then read the Today page against the design note and find the one thing it got wrong.",
+    "see": "The Today page, with the one thing first at the top and Jordan's list under it.",
+    "tip": "Do not ask whether it is right. Ask which one thing is wrong."
+   },
+   {
+    "at": "0:11",
+    "min": 2,
+    "do": "Test: Press How it was built, go to step 4, and run the three checks with the sample business. Tick each one you saw.",
+    "see": "Three ticks, and the words Three checks passed.",
+    "tip": "The checks were written before the build. That is what makes them a test."
+   },
+   {
+    "at": "0:13",
+    "min": 1,
+    "do": "Ship: In step 5, type your runbook line: the step, the sign it worked, how to undo it.",
+    "see": "Three short answers, saved as you type.",
+    "tip": "For example: each morning I write today's list. The first thing is at the top. Start over puts it back."
+   },
+   {
+    "at": "0:14",
+    "min": 1,
+    "do": "Log: In step 6, type what changed and why, then press Add to my change log.",
+    "see": "The line under the button says your change log has 1 line.",
+    "tip": "Next Wednesday we build the board, and the page that shows this log."
+   }
+  ],
+  "real_life": [
+   "Tomorrow morning: press My business on the home screen, open Today, and write your own list. The first line is the one thing first.",
+   "Open CLAUDE.md in your project folder and add one rule that is true only for your business.",
+   "Write down three things you retype every week. Those are the next pieces worth building."
+  ],
+  "if_it_breaks": [
+   "The AI is slow, or the page does not show after you saved the file: take the finished week-1-today.js from the pieces folder of the complete project, save it in your pieces folder, and keep going. The lesson is the six steps, not the typing.",
+   "Your computer did not ask to replace the file: the name is not exactly week-1-today.js, or it is not in the pieces folder. Rename it, move it, and press Look again.",
+   "The page says the file needs a fix: copy that sentence to the AI and ask for the whole file again. Start over with the sample data puts the Today page back."
+  ]
+ },
+ "2": {
+  "session": 2,
+  "week": 2,
+  "module": "week-2-board",
+  "title": "Build together: the board and the change log",
+  "minutes": 15,
+  "goal": "Take the second piece through the six steps. You leave with one board where every card says what done means and who does each step, and a change log that says when, who, what and why.",
+  "you_need": [
+   "The class starter for week 2, unzipped",
+   "The Claude app or Claude Code",
+   "Optional: your own to-do list"
+  ],
+  "steps": [
+   {
+    "at": "0:00",
+    "min": 2,
+    "do": "Design: Double-click Launch, press Start the six steps, and read the design note for the board.",
+    "see": "The question it answers: what is open, and what is waiting on me?",
+    "tip": "The table before the page. Decide what a card records before you think about how it looks."
+   },
+   {
+    "at": "0:02",
+    "min": 3,
+    "do": "Prompt: Press Copy the build prompt, paste it into the Claude app or Claude Code, and send. Save the file as week-2-board.js in the pieces folder, and say yes to replace.",
+    "see": "Your computer asks whether to replace week-2-board.js.",
+    "tip": "The prompt holds the design note and the rules. You did not have to explain them again."
+   },
+   {
+    "at": "0:05",
+    "min": 2,
+    "do": "Review: Press I saved the file. Look again. Read the board against the design note and find the one thing it got wrong.",
+    "see": "Three lanes, eight cards, and a Waiting on you list at the top.",
+    "tip": "Check one line of the note at a time. Does every card say what done means?"
+   },
+   {
+    "at": "0:07",
+    "min": 3,
+    "do": "Test: Run the three checks. Count Waiting on you against the home screen, choose an owner for the trailer light, and move the mulch order to Done.",
+    "see": "The numbers match, the No owner label goes away, and the change log has a new top line that starts with Done.",
+    "tip": "A step with no owner does not get done. That is the card to find."
+   },
+   {
+    "at": "0:10",
+    "min": 2,
+    "do": "Test: Open Bring in my tasks, press Load the sample messy list, then press Make these into cards.",
+    "see": "Six new cards in To do, each with the label Say what done means.",
+    "tip": "A task with no done means is a wish. Write one for each card."
+   },
+   {
+    "at": "0:12",
+    "min": 2,
+    "do": "Ship: Press How it was built, and in step 5 type your runbook line: the step, the sign it worked, how to undo it.",
+    "see": "Three short answers, saved as you type.",
+    "tip": "For example: each evening I move finished cards to Done. The change log has a new line. Move the card back."
+   },
+   {
+    "at": "0:14",
+    "min": 1,
+    "do": "Log: In step 6, type what changed and why, then press Add to my change log.",
+    "see": "Your change log has one more line.",
+    "tip": "From now on the Change log tab shows every line, newest first."
+   }
+  ],
+  "real_life": [
+   "Tomorrow: press My business, open the board, and paste your own to-do list under Bring in my tasks, one task per line.",
+   "Write what done means on every card, and give every step an owner: you or the AI.",
+   "At the end of the day, move what is finished to Done and read the change log. It writes itself."
+  ],
+  "if_it_breaks": [
+   "The AI is slow, or the page does not show after you saved the file: take the finished week-2-board.js from the pieces folder of the complete project, save it in your pieces folder, and keep going.",
+   "Your computer did not ask to replace the file: the name is not exactly week-2-board.js, or it is not in the pieces folder. Rename it, move it, and press Look again.",
+   "The board looks wrong after you brought a file in: the first row of the file needs the headings title, lane, done means, due, steps. Start over with the sample data puts the board back."
+  ]
+ },
+ "3": {
+  "session": 3,
+  "week": 3,
+  "module": "week-3-email",
+  "title": "Build together: the email short list",
+  "minutes": 15,
+  "goal": "Take the third piece through the six steps. You leave with an inbox review you run when you ask: everything sorted, the short list only you can act on, and reply drafts to check. It never sends.",
+  "you_need": [
+   "The class starter for week 3, unzipped",
+   "The Claude app or Claude Code",
+   "Optional: ten of your own emails, with no passwords in them"
+  ],
+  "steps": [
+   {
+    "at": "0:00",
+    "min": 2,
+    "do": "Design: Double-click Launch, press Start the six steps, and read the design note for the email short list.",
+    "see": "The question it answers: which emails need me, and what do I say?",
+    "tip": "An inbox is a to-do list that other people write. The short list is the part only you can do."
+   },
+   {
+    "at": "0:02",
+    "min": 3,
+    "do": "Prompt: Find the five parts in the build prompt, then press Copy the build prompt, paste it into the Claude app or Claude Code, and send. Save the file as week-3-email.js in the pieces folder, and say yes to replace.",
+    "see": "Role, context, the design note, the rules, what to hand back. Then your computer asks whether to replace week-3-email.js.",
+    "tip": "Brief it like a new hire. A prompt is a template you fill in, not a wish."
+   },
+   {
+    "at": "0:05",
+    "min": 2,
+    "do": "Review: Press I saved the file. Look again. Read the page against the design note and find the one thing it got wrong.",
+    "see": "12 emails reviewed, 4 on the short list, 3 drafts to check, 1 that looks fake.",
+    "tip": "Look for a Send button. There must not be one."
+   },
+   {
+    "at": "0:07",
+    "min": 3,
+    "do": "Test: Open Run the review, press Copy the prompt and the emails, paste into Claude and send. Bring the whole answer back and press Use this review.",
+    "see": "The page fills in again, this time from the AI's own answer.",
+    "tip": "No AI handy? Press the button that loads the sample answer."
+   },
+   {
+    "at": "0:10",
+    "min": 2,
+    "do": "Test: Run the three checks. Count the four piles, move 3 invoices are overdue from FYI to Reply today, and copy one draft.",
+    "see": "The piles add up to 12, the short list grows by one, and nothing is sent.",
+    "tip": "The AI could not know what a late invoice means to you. Now the page does."
+   },
+   {
+    "at": "0:12",
+    "min": 2,
+    "do": "Ship: Press How it was built, and in step 5 type your runbook line: the step, the sign it worked, how to undo it.",
+    "see": "Three short answers, saved as you type.",
+    "tip": "If your Claude plan has the Gmail connector, the review can read the inbox itself, and it only reads. If not, paste the emails in. Any mail program works."
+   },
+   {
+    "at": "0:14",
+    "min": 1,
+    "do": "Log: In step 6, type what changed and why, then press Add to my change log.",
+    "see": "Your change log has one more line.",
+    "tip": "Next Wednesday: the pipeline, where every deal gets a next step and a date."
+   }
+  ],
+  "real_life": [
+   "Tomorrow morning: press My business, open Email, and run the review on ten of your own emails. Leave out anything with a password or a card number.",
+   "Read every draft before you copy it. Tick I checked every fact in it only when you did.",
+   "When the review sorts an email wrong, move it, and add one line to the prompt so it gets it right next time."
+  ],
+  "if_it_breaks": [
+   "The AI is slow, or the page does not show after you saved the file: take the finished week-3-email.js from the pieces folder of the complete project, save it in your pieces folder, and keep going.",
+   "The page says it could not find the review: the answer has to start with the word REVIEW and keep the shape the prompt shows. Ask the AI to hand it back again in that shape.",
+   "Start over with the sample data puts the sample review back."
+  ]
+ },
+ "4": {
+  "session": 4,
+  "week": 4,
+  "module": "week-4-pipeline",
+  "title": "Build together: the pipeline",
+  "minutes": 15,
+  "goal": "Take the fourth piece through the six steps, and slow down on the review. You leave with one board where every deal has a next step and a date, a follow-up checklist, and message templates that are drafts only.",
+  "you_need": [
+   "The class starter for week 4, unzipped",
+   "The Claude app or Claude Code",
+   "Optional: your own list of open quotes"
+  ],
+  "steps": [
+   {
+    "at": "0:00",
+    "min": 2,
+    "do": "Design: Double-click Launch, press Start the six steps, and read the design note for the pipeline.",
+    "see": "The question it answers: which deals have gone quiet, and what is the next step for each?",
+    "tip": "Work goes quiet. It is not lost. A next step and a date bring it back."
+   },
+   {
+    "at": "0:02",
+    "min": 3,
+    "do": "Prompt: Press Copy the build prompt, paste it into the Claude app or Claude Code, and send. Save the file as week-4-pipeline.js in the pieces folder, and say yes to replace.",
+    "see": "Your computer asks whether to replace week-4-pipeline.js.",
+    "tip": "A sheet is enough until it is not. The prompt builds the board from the same rows."
+   },
+   {
+    "at": "0:05",
+    "min": 3,
+    "do": "Review: Press I saved the file. Look again. Put the design note beside the page and check it one line at a time.",
+    "see": "Three tabs: Follow-ups, Board, Clients and deals. Four deals need you today.",
+    "tip": "Evidence, or it is not on the page. If the note asks for it and you cannot see it, that is your finding."
+   },
+   {
+    "at": "0:08",
+    "min": 2,
+    "do": "Review: In Follow-ups, read the draft for Maple Court Homeowners, then read the notes above it. Say what is wrong with sending that draft.",
+    "see": "The notes say Gloria prefers a phone call. An email is the wrong move.",
+    "tip": "The notes win. A draft that says something the notes do not is not ready."
+   },
+   {
+    "at": "0:10",
+    "min": 2,
+    "do": "Test: Run the three checks. Look at the marks on the Board, match the count to the home screen, and save a new next step for Hartwell Dental.",
+    "see": "Hartwell Dental leaves the list and the count goes from 4 to 3.",
+    "tip": "Every open deal ends the day with a next step and a date."
+   },
+   {
+    "at": "0:12",
+    "min": 2,
+    "do": "Ship: Press How it was built, and in step 5 type your runbook line: the step, the sign it worked, how to undo it.",
+    "see": "Three short answers, saved as you type.",
+    "tip": "For example: each morning I open Follow-ups. The list is empty by noon. A wrong date is fixed on the card."
+   },
+   {
+    "at": "0:14",
+    "min": 1,
+    "do": "Log: In step 6, type what changed and why, then press Add to my change log.",
+    "see": "Your change log has one more line.",
+    "tip": "Next Wednesday: website inquiries come into this pipeline with their source."
+   }
+  ],
+  "real_life": [
+   "Tomorrow: press My business, open the pipeline, and add your five most recent quotes with Add a deal. Give each one a next step and a date.",
+   "Have more than a handful? Put them in a sheet with the headings from sample-deals.csv, save it as CSV, and drop it under Bring in my deals.",
+   "When a deal has had two follow-ups and no answer, copy the polite last note. A clear no is a good outcome. Silence is not."
+  ],
+  "if_it_breaks": [
+   "The AI is slow, or the page does not show after you saved the file: take the finished week-4-pipeline.js from the pieces folder of the complete project, save it in your pieces folder, and keep going.",
+   "No deals came in from your sheet: the first row needs the heading client, and dates need to look like 2026-10-28. Open sample-deals.csv in the class folder to see the shape.",
+   "Start over with the sample data puts the sample deals back."
+  ]
+ },
+ "5": {
+  "session": 5,
+  "week": 5,
+  "module": "week-5-website",
+  "title": "Build together: website inquiries and the website tab",
+  "minutes": 15,
+  "goal": "Take the fifth piece through the six steps, and slow down on the test. You leave with website inquiries in your pipeline, each with its source, and a build you tested with three checks you read first.",
+  "you_need": [
+   "The class starter for week 5, unzipped",
+   "The Claude app or Claude Code",
+   "Optional: a form export from your own website, saved as CSV"
+  ],
+  "steps": [
+   {
+    "at": "0:00",
+    "min": 2,
+    "do": "Design: Double-click Launch, press Start the six steps, and read the design note for website inquiries.",
+    "see": "The question it answers: what came in through the website, and is the website doing its job?",
+    "tip": "The form is the front door. Know where each lead came from."
+   },
+   {
+    "at": "0:02",
+    "min": 2,
+    "do": "Design: Before you build, read the three checks in step 4. Say out loud the numbers each one expects.",
+    "see": "8 rows in the file: 5 to add, 2 duplicates, 1 held back.",
+    "tip": "A check written before the build is a test. A check written after is a description."
+   },
+   {
+    "at": "0:04",
+    "min": 3,
+    "do": "Prompt: Press Copy the build prompt, paste it into the Claude app or Claude Code, and send. Save the file as week-5-website.js in the pieces folder, and say yes to replace.",
+    "see": "Your computer asks whether to replace week-5-website.js.",
+    "tip": "Nothing is connected to your website. The export comes in by hand, and that is the point."
+   },
+   {
+    "at": "0:07",
+    "min": 2,
+    "do": "Review: Press I saved the file. Look again. Read the page against the design note and find the one thing it got wrong.",
+    "see": "Two tabs: Inquiries, with a box for the form export, and Website, with the three-second test and the search numbers.",
+    "tip": "Look for a number that could not have come from the file. There must not be one."
+   },
+   {
+    "at": "0:09",
+    "min": 3,
+    "do": "Test: Press Load the sample file, then Check this file. Read the sum, then press Add 5 to the pipeline. Then load and check the same file again.",
+    "see": "5 plus 2 plus 1 is 8. The pipeline goes from 8 deals to 13. The second time, 0 to add.",
+    "tip": "Count before and after, and explain any gap. If you cannot explain it, stop."
+   },
+   {
+    "at": "0:12",
+    "min": 2,
+    "do": "Ship: Press How it was built, and in step 5 type your runbook line: the step, the sign it worked, how to undo it.",
+    "see": "Three short answers, saved as you type.",
+    "tip": "For example: each Monday I export the form and check it here. The sum matches the file. Start over puts the sample back."
+   },
+   {
+    "at": "0:14",
+    "min": 1,
+    "do": "Log: In step 6, type what changed and why, then press Add to my change log.",
+    "see": "Your change log has one more line.",
+    "tip": "Next Wednesday: the content calendar, and a post graphic from your own Canva template."
+   }
+  ],
+  "real_life": [
+   "This week: export the form submissions from your own website as a CSV file. Press My business, open Website, and drop the file in.",
+   "Read the sum before you press Add. Rows in the file equals added plus duplicates plus held back.",
+   "Open the Website tab and run the three-second test on your own home page. Ask someone who has never seen it."
+  ],
+  "if_it_breaks": [
+   "The AI is slow, or the page does not show after you saved the file: take the finished week-5-website.js from the pieces folder of the complete project, save it in your pieces folder, and keep going.",
+   "No rows were found in your export: the first row needs headings such as Name, Email, Phone and Message. Open sample-form-export.csv in the class folder to see the shape.",
+   "The counts look wrong: press Start over with the sample data here and in the pipeline, then run the checks again."
+  ]
+ },
+ "6": {
+  "session": 6,
+  "week": 6,
+  "module": "week-6-content",
+  "title": "Build together: the content calendar and the posts board",
+  "minutes": 15,
+  "goal": "Take the sixth piece through the six steps. You leave with a month of posts on one calendar, a board that shows what is ready, a content pack prompt, and a post graphic from your own Canva template.",
+  "you_need": [
+   "The class starter for week 6, unzipped",
+   "The Claude app or Claude Code",
+   "Optional: one design exported from Canva as a PNG file"
+  ],
+  "steps": [
+   {
+    "at": "0:00",
+    "min": 2,
+    "do": "Design: Double-click Launch, press Start the six steps, and read the design note for the content piece.",
+    "see": "The question it answers: what are we posting this month, and what is ready to go?",
+    "tip": "The blank page is the problem. One idea is enough for a week of posts."
+   },
+   {
+    "at": "0:02",
+    "min": 3,
+    "do": "Prompt: Press Copy the build prompt, paste it into the Claude app or Claude Code, and send. Save the file as week-6-content.js in the pieces folder, and say yes to replace.",
+    "see": "Your computer asks whether to replace week-6-content.js.",
+    "tip": "The prompt says Canva is not connected. The graphic comes in as a file you export."
+   },
+   {
+    "at": "0:05",
+    "min": 2,
+    "do": "Review: Press I saved the file. Look again. Read the page against the design note and find the one thing it got wrong.",
+    "see": "Four tabs: Calendar, Posts, Content pack, Graphic. Nine posts, and today is marked.",
+    "tip": "Look for a Post button. There must not be one. A person posts, then ticks Posted."
+   },
+   {
+    "at": "0:07",
+    "min": 3,
+    "do": "Test: Open Content pack, press Copy the prompt and the idea, paste into Claude and send. Bring the answer back, press Use this content pack, and find the claim you never made.",
+    "see": "Two options for each platform. One of them claims an award that is not in the idea.",
+    "tip": "No AI handy? Load the sample answer. Then press Something here is not true on the one that says Voted the best landscaper."
+   },
+   {
+    "at": "0:10",
+    "min": 2,
+    "do": "Test: Open Graphic and press My business. Read what it says. Then export one design from Canva as a PNG and drop it in the box.",
+    "see": "First it says Needs setup and shows no picture. Then it shows your own graphic with its file name.",
+    "tip": "One outside tool at a time, with the least access it needs. Not connected means Needs setup, never a made-up picture."
+   },
+   {
+    "at": "0:12",
+    "min": 2,
+    "do": "Ship: Press How it was built, and in step 5 type your runbook line: the step, the sign it worked, how to undo it.",
+    "see": "Three short answers, saved as you type.",
+    "tip": "For example: each Monday I turn one idea into drafts. Two posts are under Ready. Untick Posted to move one back."
+   },
+   {
+    "at": "0:14",
+    "min": 1,
+    "do": "Log: In step 6, type what changed and why, then press Add to my change log.",
+    "see": "Your change log has one more line.",
+    "tip": "Next Wednesday: plan my day, which reads the board, the pipeline, the email short list and the calendar."
+   }
+  ],
+  "real_life": [
+   "This week: press My business, open Content pack, and type one question a customer asked you. Run the prompt and read every option against what you really said.",
+   "Make one Canva template with your colors, your font and your logo. Use it every time, and change only the headline.",
+   "After you post something yourself, tick Posted. The board is only true if a person ticks it."
+  ],
+  "if_it_breaks": [
+   "The AI is slow, or the page does not show after you saved the file: take the finished week-6-content.js from the pieces folder of the complete project, save it in your pieces folder, and keep going.",
+   "The page could not find the options: the answer has to start with CONTENT PACK and keep one option per line. Ask the AI to hand it back in that shape.",
+   "The picture did not show: export it from Canva as a PNG or a JPG and drop that file in. Start over with the sample data puts the sample posts back."
+  ]
+ },
+ "7": {
+  "session": 7,
+  "week": 7,
+  "module": "week-7-day-plan",
+  "title": "Build together: plan my day",
+  "minutes": 15,
+  "goal": "Take the seventh piece through the six steps, and slow down on the ship step. You leave with a routine you run each morning: it reads your board, your pipeline, your email short list and your calendar, and writes the day page with one thing first.",
+  "you_need": [
+   "The class starter for week 7, unzipped",
+   "The Claude app or Claude Code",
+   "Optional: today's events from your own calendar"
+  ],
+  "steps": [
+   {
+    "at": "0:00",
+    "min": 2,
+    "do": "Design: Double-click Launch, press Start the six steps, and read the design note for plan my day.",
+    "see": "The question it answers: what do I do first today, and what comes after?",
+    "tip": "The day starts in the inbox unless you decide where it starts. One thing first."
+   },
+   {
+    "at": "0:02",
+    "min": 3,
+    "do": "Prompt: Press Copy the build prompt, paste it into the Claude app or Claude Code, and send. Save the file as week-7-day-plan.js in the pieces folder, and say yes to replace.",
+    "see": "Your computer asks whether to replace week-7-day-plan.js.",
+    "tip": "This piece reads the three you already built. That is why the order of the weeks matters."
+   },
+   {
+    "at": "0:05",
+    "min": 2,
+    "do": "Review: Press I saved the file. Look again. Read the day page against the design note and find the one thing it got wrong.",
+    "see": "Four numbers at the top: Board, Pipeline, Email, Calendar. Then First, Then, and the messages.",
+    "tip": "Does every line say which list it came from? A line with no source is a line the AI made up."
+   },
+   {
+    "at": "0:07",
+    "min": 3,
+    "do": "Test: Open Plan my day, press Copy the prompt and the lists, paste into Claude and send. Bring the plan back and press Use this plan.",
+    "see": "The day page fills in from the AI's own plan: one thing first, then the rest.",
+    "tip": "No AI handy? Press the button that loads the sample answer."
+   },
+   {
+    "at": "0:10",
+    "min": 2,
+    "do": "Test: Run the three checks. Read Check it against your lists, then press Put this plan on the Today page and open Today.",
+    "see": "The plan left out the mulch order without saying so. The Today page now starts with Call Dana Whitfield.",
+    "tip": "Do not ask whether the plan is right. Ask what it left out."
+   },
+   {
+    "at": "0:12",
+    "min": 2,
+    "do": "Ship: Press How it was built, and in step 5 type the runbook line for your morning. Then open the day page and read My runbook.",
+    "see": "Your lines from every week so far, one per piece: the step, the sign it worked, how to undo it.",
+    "tip": "A runbook is what lets you run this on a bad day. Morning routine first, end-of-day wrap last."
+   },
+   {
+    "at": "0:14",
+    "min": 1,
+    "do": "Log: In step 6, type what changed and why, then press Add to my change log.",
+    "see": "Your change log has one more line.",
+    "tip": "Next Wednesday is the last one: the owner summary, the knowledge page, the backup and your roadmap."
+   }
+  ],
+  "real_life": [
+   "Tomorrow morning: press My business, open Day plan, paste today's events, and run plan my day before you open your inbox.",
+   "Read Check it against your lists every time. Add what it missed, then press Put this plan on the Today page.",
+   "At the end of the day, tick what got done and press Write the wrap in the change log."
+  ],
+  "if_it_breaks": [
+   "The AI is slow, or the page does not show after you saved the file: take the finished week-7-day-plan.js from the pieces folder of the complete project, save it in your pieces folder, and keep going.",
+   "The page could not find the plan: the answer has to start with DAY PLAN and keep the shape the prompt shows. Ask the AI to hand it back in that shape.",
+   "A list says Needs setup: open that piece under My business and bring your data in first. Start over with the sample data puts the sample plan back."
+  ]
+ },
+ "8": {
+  "session": 8,
+  "week": 8,
+  "module": "week-8-keep-running",
+  "title": "Build together: keep it running",
+  "minutes": 15,
+  "goal": "Take the last piece through the six steps. You leave with an owner summary whose numbers say what they are, a knowledge page, a backup you have restored on purpose, and a 90-day roadmap: build next, or hire out.",
+  "you_need": [
+   "The class starter for week 8, unzipped",
+   "The Claude app or Claude Code",
+   "Optional: a USB stick or a second drive for a copy of the backup"
+  ],
+  "steps": [
+   {
+    "at": "0:00",
+    "min": 2,
+    "do": "Design: Double-click Launch, press Start the six steps, and read the design note for keep it running.",
+    "see": "The question it answers: is the business where I think it is, and is it safe?",
+    "tip": "This is the last piece. After tonight all eight tiles on the home screen are built."
+   },
+   {
+    "at": "0:02",
+    "min": 3,
+    "do": "Prompt: Press Copy the build prompt, paste it into the Claude app or Claude Code, and send. Save the file as week-8-keep-running.js in the pieces folder, and say yes to replace.",
+    "see": "Your computer asks whether to replace week-8-keep-running.js.",
+    "tip": "Same five parts as week 1: role, context, the design note, the rules, what to hand back."
+   },
+   {
+    "at": "0:05",
+    "min": 2,
+    "do": "Review: Press I saved the file. Look again. Read the page against the design note and find the one thing it got wrong.",
+    "see": "Four tabs: Summary, Knowledge, Backup, Roadmap.",
+    "tip": "Look for a total that adds a measured number to a guess. There must not be one."
+   },
+   {
+    "at": "0:07",
+    "min": 2,
+    "do": "Test: On the Summary tab, read each number and say out loud what kind it is. Then check Cards waiting on you against the home screen.",
+    "see": "Measured numbers say where they were counted. Estimated and projected numbers say how they were made.",
+    "tip": "Measured, estimated and projected are three separate kinds. They are never added together."
+   },
+   {
+    "at": "0:09",
+    "min": 3,
+    "do": "Test: Open Backup and press Save a backup file. Then choose that file under Restore one file on purpose, read what is in it, and press Put this backup back.",
+    "see": "Last backup says Today, and Restored on purpose shows today's date.",
+    "tip": "Three copies, two places, one away from the computer. A backup you never restored is a hope."
+   },
+   {
+    "at": "0:12",
+    "min": 2,
+    "do": "Ship: Open Roadmap and mark each line build next or hire out. Then press How it was built and type your runbook line in step 5.",
+    "see": "Three blocks of 30 days, and every line has a label.",
+    "tip": "Send, pay and post are always your steps. If it has to run by itself, connect live systems or serve a team, that is the hire out side."
+   },
+   {
+    "at": "0:14",
+    "min": 1,
+    "do": "Log: In step 6, type what changed and why, then press Add to my change log. Then click Home.",
+    "see": "Eight pieces, all built: one screen for the whole business.",
+    "tip": "Eight pieces, six steps, every time. You built all of it yourself."
+   }
+  ],
+  "real_life": [
+   "This week: press My business, open Knowledge, and fill in your voice, your facts and your services. Copy it to the top of your next prompt.",
+   "Save a backup file every Friday. Put one copy on a second drive and one away from the computer, and restore one on purpose once a month.",
+   "Write three lines on your roadmap for the next 30 days, and mark each one build next or hire out."
+  ],
+  "if_it_breaks": [
+   "The AI is slow, or the page does not show after you saved the file: take the finished week-8-keep-running.js from the pieces folder of the complete project, save it in your pieces folder, and keep going.",
+   "The page says the file is not a backup: choose the file named command-center-backup with a date, from your Downloads folder.",
+   "A measured number says Needs setup: that piece has no data yet under My business. Open it and bring your data in. Start over with the sample data puts this page back."
+  ]
+ }
+};
+window.OH.toolRunbooks = {
  "1": {
   "session": 1,
   "week": 1,

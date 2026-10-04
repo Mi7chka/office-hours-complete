@@ -1,40 +1,12 @@
-# Office Hours demo · the complete project
+# The class command center · the complete project
 
-A small command center for a small business, built one tool a week in **Wednesday Office Hours**,
-a free live class by Mitchell B Consulting. Eight sessions, eight tools, one screen.
+A command center for a small business, built one piece a week in **Wednesday Office Hours**, a
+free live class by Mitchell B Consulting. Eight Wednesdays, eight pieces, one screen that shows
+where the business stands.
 
-Every tool does the job taught that week: sample data first, then the prompt, then the answer
-comes back, then you check its work, and you leave with something you can use. Then you do it
-again with your own business.
-
-## Play it as a game: Save Greenline
-
-**Save Greenline: The Case of the Busywork Bandits** is the same course as a cartoon adventure,
-and you play it in the first person, as the AI. You log in as Greenline Landscaping's new AI agent:
-pick a name and a look, and see the town of Cedar Hollow through your own visor. Eight goofy bandits
-are stealing the company's time. In each case the owner, Jordan, gives you a job. You ride the
-little green truck to three places, and a townsperson at each one teaches you one thing. You pick
-your plan, and you do that week's job with your own hands in a mini-game. Sprout, the agent who had
-the job before you, is your trainer, and one of Sprout's shortcuts is wrong in every case, which is
-yours to catch. You never send anything yourself: you hand your work to Jordan, and Jordan approves
-it.
-
-You grow as you learn, the way a character in a life sim does. Every thing you learn feeds one of
-nine skills (one for each week, and Judgment), experience adds up to ten levels, and each level
-earns a new permission from Jordan. It is all on your ID badge and in the Skills panel. The town
-turns from gray to color as you go, and there is a certificate at the end.
-
-Press **Play** at the top of the app. Mouse, touch or keyboard. Sound is made by the game itself
-and can be switched off. Everything is drawn in code, so there is still nothing to install. The
-agent's name is a made-up display name kept in your own browser: the game never asks for a password
-or an email. Up to four agents can share one computer, each with its own progress. If you played
-before Agent Mode, your closed cases and stars are still there: log in once, and your agent starts
-at the level they add up to.
-
-The game is optional. The class and every tool work without it. How it is built: `GAME.md`.
-
-Prefer an app with its own icon? There is one for Mac and one for Windows, built from these same
-files: see `INSTALL.md`. They are not signed, so each system asks once before opening them.
+This is the complete project: all eight pieces are built, and it is where the finished version of
+every piece lives. The class works from the **starter**, which holds the pieces built so far and
+this week's piece ready to build: https://github.com/Mi7chka/office-hours-starter
 
 ## Open it
 
@@ -42,42 +14,125 @@ files: see `INSTALL.md`. They are not signed, so each system asks once before op
 2. Double-click **Launch.command** (Mac) or **Launch.bat** (Windows). Or just open `index.html`.
 
 Nothing to install. No account. It never goes online, and anything you type stays in your own
-browser on your own computer.
+browser on your own computer. Nothing in this project sends, posts, pays or deletes.
 
-## The eight tools
+## The eight pieces
 
-| Week | Tool | What you do with it | The session | Follow along |
-|---|---|---|---|---|
-| 1 | Inbox to task list | Sort an inbox into four piles with AI, catch the one it gets wrong, leave with a to-do list | AI at work: 5 jobs to hand off this week | [session-01](runbooks/session-01.md) |
-| 2 | Lead form to follow-up | A form that saves the lead, tells you, and drafts the reply | Automations: make the apps you already pay for talk to each other | [session-02](runbooks/session-02.md) |
-| 3 | The 3-second home page test | Test the top of a home page, then rewrite it from your own facts | Your website has 3 seconds | [session-03](runbooks/session-03.md) |
-| 4 | The get-found checks | Five checks for Google and for AI answers, and one weak page fixed | Get found: SEO for Google and for AI answers | [session-04](runbooks/session-04.md) |
-| 5 | One idea, five pieces | Turn one lesson from your week into a week of posts, in your own voice | Marketing that runs every day without eating your week | [session-05](runbooks/session-05.md) |
-| 6 | The pipeline board | See which leads went quiet and draft the follow-ups | Leads to paid work | [session-06](runbooks/session-06.md) |
-| 7 | From a messy export to one screen | Find the problems in an export, check the totals, see the business on one screen | Where your data lives | [session-07](runbooks/session-07.md) |
-| 8 | The when-it-breaks sheet and your 90-day plan | A clear support request, a one-page sheet for a bad day, and a plan for the next 12 weeks | When it breaks | [session-08](runbooks/session-08.md) |
+| Week | Date | The piece | The question it answers | Class notes | Runbook |
+|---|---|---|---|---|---|
+| 1 | Oct 7 | The Today page | What needs me today? | [class/week-01](class/week-01) | [session-01](runbooks/session-01.md) |
+| 2 | Oct 14 | The board and the change log | What is open, and what is waiting on me? | [class/week-02](class/week-02) | [session-02](runbooks/session-02.md) |
+| 3 | Oct 21 | The email short list | Which emails need me, and what do I say? | [class/week-03](class/week-03) | [session-03](runbooks/session-03.md) |
+| 4 | Oct 28 | The pipeline | Which deals have gone quiet, and what is the next step? | [class/week-04](class/week-04) | [session-04](runbooks/session-04.md) |
+| 5 | Nov 4 | Website inquiries and the website tab | What came in through the website, and is it doing its job? | [class/week-05](class/week-05) | [session-05](runbooks/session-05.md) |
+| 6 | Nov 11 | The content calendar and the posts board | What are we posting this month, and what is ready? | [class/week-06](class/week-06) | [session-06](runbooks/session-06.md) |
+| 7 | Nov 18 | Plan my day and the day page | What do I do first today, and what comes after? | [class/week-07](class/week-07) | [session-07](runbooks/session-07.md) |
+| 8 | Nov 25 | The owner summary, the knowledge page, the backup and the roadmap | Is the business where I think it is, and is it safe? | [class/week-08](class/week-08) | [session-08](runbooks/session-08.md) |
 
-Press **Runbook** inside any tool for the 15-minute walk-through, with a box to tick at each step.
+The home screen shows the eight pieces first, each with one number. Under them is the Toolbox
+(the eight tools from version 1 of the class), and then the game. Both are extras.
 
-## How it works
+## How a week works: the six steps
 
-- Plain HTML, CSS and JavaScript. No framework, no build step, no server.
-- Every tool starts with a made-up company, Greenline Landscaping. No real people, no real numbers.
-- Your own data is kept by your browser on your computer (`localStorage`). "Start over with the
-  sample data" in each tool clears that tool.
-- AI is used the way the class teaches it: the tool builds the prompt, you paste it into the AI
-  chat you already use (Claude, ChatGPT, Gemini, Copilot), and you paste the answer back. No key,
-  no account, nothing sent by this project. Each tool also has a sample answer, so it works with
-  no AI at hand.
-- `prompts/` has every prompt as a text file. `samples/` has the sample files used in class.
-- `MODULES.md` explains how a tool is built, if you want to change one or add your own.
-- `GAME.md` explains the game: the story, Agent Mode (the login, skills, levels and how a case awards experience), how a case is written, the engine's toolbox. `tools/build_apps.py` builds the Mac and Windows apps into `dist/`.
-- `tools/make_starter.py --week N` builds the starter copy the class begins with.
+Every piece goes through the same six steps, in the same order. In the app, each piece has a
+build page that walks through them (press **How it was built** on a piece), and the **Runbook**
+button opens the 15-minute version we do together in class.
+
+| Step | What it makes | In one line |
+|---|---|---|
+| 1. Design | A design note | Who uses it, the one question it answers, what is on it, what done means. |
+| 2. Prompt | The build prompt | Written from a template: role, context, the design note, the rules, what to hand back. |
+| 3. Review | A reviewed build | Read it against the design note. Find the one thing it got wrong. |
+| 4. Test | Three checks, passed | Written before the build, run with sample data. |
+| 5. Ship | A runbook line | The step, the sign it worked, how to undo it. Use it with real data the next morning. |
+| 6. Log | One change log line | What changed and why, plus a decision when a choice was made. |
+
+For week N, these are the files:
+
+| File | What it is |
+|---|---|
+| `class/week-0N/design-note.md` | The four questions, answered for that piece. |
+| `class/week-0N/build-prompt.md` | The one prompt that makes the piece. Put together from the design note, the build details, the rules and two shared parts. |
+| `class/week-0N/checks.md` | Three checks a person can verify by looking. |
+| `class/week-0N/runbook.md` | The 15-minute build. The same content as `runbooks/session-0N.json`, which the slide decks are made from. |
+| `class/week-0N/sample-*` and `*-prompt.md` | Sample files, and the prompts a piece uses day to day, to use without the app. |
+| `class/week-01/rules.md` | The rules file for the AI. The starter also carries it as `CLAUDE.md`. |
+| `pieces/week-N-name.js` | The finished piece. |
+| `app/data/week-N-name.js` | Its made-up sample data. |
+
+## Both tools: the Claude app and Claude Code
+
+Every build prompt works in both, and says so in its first two lines.
+
+- **In the Claude app:** paste the prompt and send. Save the file it makes into the `pieces` folder.
+- **In Claude Code:** open the project folder and paste the same prompt. It writes the file for you.
+
+## How a piece shows up
+
+There is no list to edit. Each piece is one file with a fixed name in the `pieces` folder, such as
+`pieces/week-1-today.js`. When the file is there, the app shows the piece. In the starter, a small
+placeholder file with the same name holds the place, so the computer asks whether to replace it.
+That question is the sign the name is right.
+
+If the file is there and does not work, the home screen says the file needs a fix, and the build
+page says what to tell the AI.
+
+## The sample business, then your own
+
+Every piece starts with a made-up company: Greenline Landscaping, owner Jordan Reyes, in Cedar
+Hollow. No real people and no real numbers. Press **My business** on the home screen to switch to
+your own. The two sets of data are kept apart and never mixed.
+
+- Your own data comes in by typing, by pasting text, or by dropping in a file you exported. That
+  works with no connector at all. Where a week names a connector (Gmail, Google Calendar, Canva),
+  it is optional, and the page says "if your Claude plan has it".
+- Where nothing is brought in yet, a piece says **Needs setup**. It never shows a made-up number.
+- On the owner summary, every number is marked measured, estimated or projected, and the three
+  kinds are never added together.
+- AI is used the way the class teaches it: the piece builds the prompt, you paste it into Claude,
+  and you bring the answer back. Each piece also has a sample answer, so it works with no AI at hand.
+
+## What is free and what is paid
+
+You run it yourself, it is free. That is everything in this project. The version that runs by
+itself, connects live systems or serves a team is the 48-Hour Command Center: one flat price, on
+the page at https://mitchellbconsulting.com/command-center. Each piece says in one line what its
+paid version does. The class does not teach that side. AI drafts. You decide.
+
+## The Toolbox
+
+Eight tools from version 1 of the class: inbox to task list, lead form to follow-up, the 3-second
+home page test, the get-found checks, one idea in five pieces, the pipeline board, a messy export
+on one screen, and the when-it-breaks sheet. Each still works as it did, with its own follow-along
+under `runbooks/toolbox/`, its prompts in `prompts/` and its sample files in `samples/`.
+Version 1 as it was is saved as the tag `season-1-v1`.
+
+## The game: Save Greenline
+
+**Save Greenline: The Case of the Busywork Bandits** is version 1 of the course as a cartoon
+adventure. You play in the first person, as Greenline's new AI agent, and catch eight goofy bandits
+who steal the company's time. Press **Play** at the top of the app. It is optional: the class and
+every piece work without it. It never asks for a password or an email. How it is built: `GAME.md`.
+There is also an app with its own icon for Mac and Windows: see `INSTALL.md`.
+
+## For whoever looks after this project
+
+- Plain HTML, CSS and JavaScript. No framework, no build step, no server, no network calls.
+- `MODULES.md` explains how a piece is built, the toolbox every piece gets, and the Toolbox tools.
+- `python3 tools/build_runbooks.py` puts the build prompts together and builds what the app shows
+  from `runbooks/` and `class/`. Run it after changing any class note or runbook.
+- `python3 tools/make_starter.py --week N` builds the class starter for week N: every earlier piece
+  built, week N ready to build, nothing from later weeks.
+- `python3 tools/check_words.py` checks the words: no dashes, no dollar amounts, no hype words.
+- `python3 tools/build_apps.py` builds the Mac and Windows apps into `dist/`.
+- The rules file is `class/week-01/rules.md`. The starter gets a copy named `CLAUDE.md`, which
+  Claude Code reads by itself. This project has no `CLAUDE.md`, so the class rules do not steer
+  work on the project itself.
 
 ## The class
 
 Free, live on Google Meet, every Wednesday at 9:00 PM Eastern: 30 minutes of teaching, a 15-minute
-follow-along demo in this project, then your questions. Subscribe for the weekly link:
+build together, then your questions. Subscribe for the weekly link:
 **https://mitchellbconsulting.com/office-hours**
 
 Want a hand putting this to work in your own business? The first call is free:
