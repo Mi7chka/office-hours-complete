@@ -19,8 +19,7 @@ KEEP = [".gitignore", "LICENSE", "Launch.command", "Launch.bat", "index.html", "
         "app/shell.js", "app/shell.css", "app/course.js", "tools/build_runbooks.py"]
 # The game's engine goes whole into every starter. Its missions do not: a starter gets only the
 # mission files of the weeks it holds, and the game shows the rest as locked cases with a date.
-GAME = ["app/game/art.js", "app/game/sound.js", "app/game/kit.js", "app/game/game.js", "app/game/fallback.js",
-        "app/game/game.css"]
+GAME = ["app/game/art.js", "app/game/sound.js", "app/game/kit.js", "app/game/game.js", "app/game/game.css"]
 
 
 def main():
