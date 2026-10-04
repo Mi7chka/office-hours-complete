@@ -1,0 +1,79 @@
+SAVE GREENLINE {{VERSION}} FOR MAC
+The Office Hours game, from Mitchell B Consulting
+
+
+TO INSTALL
+
+1. Drag "Save Greenline" into your Applications folder.
+2. Open Applications and double-click Save Greenline.
+3. macOS will stop it the first time. See THE WARNING below. You do this once.
+
+
+THE WARNING, AND HOW TO ALLOW THE APP
+
+The first time you open it, macOS shows a box that says something like:
+
+   "Save Greenline" Not Opened
+   Apple could not verify "Save Greenline" is free of malware that may harm
+   your Mac or compromise your privacy.
+
+Click Done. Do not click Move to Trash. Then:
+
+1. Open the Apple menu (top left of the screen) and choose System Settings.
+2. Click Privacy & Security in the list on the left.
+3. Scroll down to the part called Security. It says:
+   "Save Greenline" was blocked to protect your Mac.
+4. Click Open Anyway.
+5. Click Open Anyway again, then type your Mac password or use Touch ID.
+
+The game opens. From then on it opens with a double-click like any other app.
+The Open Anyway button only shows for about an hour after you try to open the
+app. If it is not there, double-click Save Greenline again and look again.
+
+On an older Mac (macOS 14 Sonoma or earlier) there is a shorter way: in
+Applications, hold the Control key and click Save Greenline, choose Open, then
+click Open in the box that appears.
+
+Why you see it: this app is not signed and not notarized. That means its maker
+has not paid Apple for a developer ID and has not sent the app to Apple to be
+checked. macOS shows this warning for every app like that. The exact words
+change a little from one version of macOS to the next.
+
+
+WHAT YOU NEED
+
+macOS 11 or newer, and a web browser. With Google Chrome or Microsoft Edge
+installed, the game opens in a window of its own. With neither, it opens in
+your usual browser (Safari, for example) as an ordinary tab.
+
+While the game is open in its own window, the Dock shows a second Chrome (or
+Edge) icon for it. To quit, press Command and Q, as with any Mac app.
+
+
+YOUR PROGRESS
+
+Your progress is saved on this Mac only. It does not follow you to another
+computer, and the game does not go online or send anything anywhere. It is
+also separate from the web version of the game: progress made in one does not
+show in the other.
+
+
+TO UPDATE
+
+Download the new copy and drag it into Applications. When the Mac asks, choose
+Replace. Your progress is kept. macOS will ask you to allow the new copy, the
+same way as the first time.
+
+
+TO REMOVE
+
+Drag Save Greenline from Applications to the Trash.
+To remove your saved progress as well: in Finder, open the Go menu, choose
+Go to Folder, paste the line below, press Return, and move the folder called
+Save Greenline to the Trash.
+
+   ~/Library/Application Support
+
+
+Full instructions: INSTALL.md in the project,
+https://github.com/Mi7chka/office-hours-complete

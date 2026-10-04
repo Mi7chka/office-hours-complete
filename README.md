@@ -7,6 +7,19 @@ Every tool does the job taught that week: sample data first, then the prompt, th
 comes back, then you check its work, and you leave with something you can use. Then you do it
 again with your own business.
 
+## Play it as a game: Save Greenline
+
+Greenline Landscaping is a good company drowning in busywork, and the owner has just handed you the
+keys to the office. Eight missions, one per week of the class. Each mission is a short scene, three
+quick questions, and then the real job in that week's tool, with objectives that tick themselves as
+you work. A mission is passed only by doing the job, including catching the one thing the AI got
+wrong. Stars, badges, and a certificate at the end. Press **Play** at the top of the app.
+
+The game is optional. The class and every tool work without it. How it is built: `GAME.md`.
+
+Prefer an app with its own icon? There is one for Mac and one for Windows, built from these same
+files: see `INSTALL.md`. They are not signed, so each system asks once before opening them.
+
 ## Open it
 
 1. Press the green **Code** button on this page, then **Download ZIP**, and unzip it.
@@ -42,6 +55,7 @@ Press **Runbook** inside any tool for the 15-minute walk-through, with a box to 
   no AI at hand.
 - `prompts/` has every prompt as a text file. `samples/` has the sample files used in class.
 - `MODULES.md` explains how a tool is built, if you want to change one or add your own.
+- `GAME.md` explains the game: missions, objectives, stars. `tools/build_apps.py` builds the Mac and Windows apps into `dist/`.
 - `tools/make_starter.py --week N` builds the starter copy the class begins with.
 
 ## The class

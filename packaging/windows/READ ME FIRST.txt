@@ -1,0 +1,93 @@
+SAVE GREENLINE {{VERSION}} FOR WINDOWS
+The Office Hours game, from Mitchell B Consulting
+
+
+TO INSTALL
+
+1. If you are reading this inside the zip file, stop here. Close this file,
+   right-click Save-Greenline-Windows.zip, choose Extract All, and open the
+   folder that appears. The installer cannot work from inside a zip.
+2. Double-click "Install Save Greenline". Windows may show its name as
+   "Install Save Greenline.bat".
+3. Windows will probably show a warning. See THE WARNING below.
+4. A black window copies the game and adds two shortcuts. When it says Done,
+   press any key to close it.
+5. Double-click "Save Greenline" on your Desktop. It is also in the Start menu.
+
+
+THE WARNING
+
+Windows will probably show a blue box that says:
+
+   Windows protected your PC
+   Microsoft Defender SmartScreen prevented an unrecognized app from starting.
+   Running this app might put your PC at risk.
+
+Click "More info". Then click "Run anyway".
+
+On some computers the box says instead "Open File - Security Warning. The
+publisher could not be verified." There, click "Run".
+
+Why you see it: the installer is not signed. Signing means paying for a
+certificate that tells Windows who made a program, and that has not been done
+for this one. Windows shows this warning for every program like that.
+
+The installer is a plain text file. To read it before you run it, right-click
+it and choose Edit. It copies one folder and makes two shortcuts.
+
+
+WHAT YOU NEED
+
+Windows 10 or Windows 11, and a web browser. Microsoft Edge is already on
+almost every Windows computer, and the game uses it to open in a window of its
+own. Without Edge it uses Google Chrome the same way. With neither, it opens in
+whatever browser you have, as an ordinary tab.
+
+
+WHAT IT PUTS ON YOUR COMPUTER
+
+- The game, in a folder called SaveGreenline inside your own app folder
+  (%LOCALAPPDATA%\SaveGreenline)
+- A shortcut called Save Greenline on your Desktop
+- A shortcut called Save Greenline in your Start menu
+
+Nothing else. It does not ask for an administrator password. The game does not
+go online and sends nothing anywhere.
+
+
+YOUR PROGRESS
+
+Your progress is saved on this computer only, inside that same folder. It does
+not follow you to another computer. It is also separate from the web version
+of the game: progress made in one does not show in the other.
+
+
+TO UPDATE
+
+Download the new zip, extract it, and run "Install Save Greenline" again. The
+game is replaced and your progress is kept.
+
+
+TO REMOVE
+
+Double-click "Uninstall Save Greenline" in this folder and press Y. That
+removes the game, your saved progress and both shortcuts.
+
+By hand: delete the two shortcuts. Then hold the Windows key and press R, type
+%LOCALAPPDATA% and press Enter, and delete the folder called SaveGreenline.
+
+
+IF YOU WOULD RATHER NOT INSTALL ANYTHING
+
+After extracting the zip, double-click "Open Save Greenline" in this folder.
+The game opens in your browser as an ordinary tab. Nothing is copied anywhere.
+
+
+AN HONEST NOTE
+
+This Windows installer was written on a Mac. At version {{VERSION}} it has not
+been tested on a Windows computer. If it gives you trouble, use "Open Save
+Greenline" as described above, and please mention it at the next Office Hours.
+
+Full instructions: INSTALL.md in the project,
+https://github.com/Mi7chka/office-hours-complete

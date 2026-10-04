@@ -203,6 +203,30 @@
     intro: "Three seconds, three questions. Test a weak first screen, rewrite it from a few plain facts, and test it again.",
     render: render,
     // The current page is the new first screen once a headline is picked, and the "before" page until then.
-    summary: function () { const n = yesCount(get("chosen", null) ? "after" : "before"); return { label: "Home page questions answered", value: n + " of 3", tone: n === 3 ? "ok" : n ? "warn" : "bad" }; }
+    summary: function () { const n = yesCount(get("chosen", null) ? "after" : "before"); return { label: "Home page questions answered", value: n + " of 3", tone: n === 3 ? "ok" : n ? "warn" : "bad" }; },
+    /* What counts as done in the game (GAME.md). Read only: every answer comes from what the tool has already
+       saved, in the order the runbook walks it. The catch is the headline on the page: it has to pass the same
+       check the cards run (no number or big claim that is missing from the facts), and then the test is run again. */
+    objectives: function () {
+      const ok = (test) => { try { return !!test(); } catch (e) { return false; } };               // nothing saved yet, or something odd saved: not done
+      const typed = () => { const f = get("facts", null); return f && typeof f === "object" ? f : null; };                 // the facts as typed over, or none
+      const facts = () => Object.assign({}, S.facts, typed()), chosen = () => get("chosen", null);
+      const headlines = () => { const o = get("options", null); return Array.isArray(o) && o.length > 0; };
+      const answered = (which) => { const a = get("score", {})[which]; return Array.isArray(a) && S.questions.every((q, i) => typeof a[i] === "boolean"); };
+      return [
+        { id: "tested", label: "Run the 3-second test on the old page and answer all three", required: true,
+          done: ok(() => answered("before")) },
+        { id: "drafted", label: "Bring three headlines back from the AI", required: true,
+          done: ok(headlines) },
+        { id: "caught", label: "Check each headline against the facts. Pick a true one", required: true,
+          done: ok(() => { const c = chosen(); return headlines() && clean(c.headline) && !notInFacts(c, facts()).length; }) },
+        { id: "retested", label: "Run the test on the new page and score 3 of 3", required: true,
+          done: ok(() => clean(chosen().headline) && answered("after") && yesCount("after") === S.questions.length) },
+        { id: "parts", label: "Tick the parts your own site already has", required: false,
+          done: ok(() => get("parts", []).some((p) => p === true)) },
+        { id: "own", label: "Type your own business over Greenline's facts", required: false,
+          done: ok(() => typed() && !isSample(facts())) }
+      ];
+    }
   });
 })();

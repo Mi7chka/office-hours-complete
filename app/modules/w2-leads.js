@@ -236,6 +236,34 @@
     week: 2, id: "w2-leads", title: "Lead form to follow-up",
     intro: "A quote request comes in, lands as a row in the sheet, and the owner is told. Then a reply is drafted and checked, and nothing is sent to anybody.",
     render: render,
-    summary: function () { const wait = waiting(leads()); return { label: "Leads waiting for a first reply", value: wait.length, tone: waitTone(wait) }; }
+    summary: function () { const wait = waiting(leads()); return { label: "Leads waiting for a first reply", value: wait.length, tone: waitTone(wait) }; },
+    /* What counts as done in the game (GAME.md). Read only: every answer comes from what the tool has already
+       saved, in the order the runbook walks it. The catch is the draft: a person ticks all four checks, and a
+       draft that still names a price or a day also needs a rule written against it. */
+    objectives: function () {
+      const ok = (test) => { try { return !!test(); } catch (e) { return false; } };               // nothing saved yet, or something odd saved: not done
+      const saved = () => get("leads", null) || [], answer = () => get("answer", null) || {}, text = () => String(answer().text || "");
+      return [
+        { id: "junk", label: "Find the sales pitch in the sheet and mark it Not a lead", required: false,
+          done: ok(() => saved().some((l) => l.status === "junk")) },
+        { id: "lead", label: "Send tonight's 9 PM lead through the quote form", required: true,
+          done: ok(() => { const id = get("notice", 0); return id > 0 && saved().some((l) => l.id === id); }) },
+        { id: "sentence", label: "Say one automation in a sentence and pick its level", required: false,
+          done: ok(() => {
+            const first = S.examples[0], sen = get("sentence", null) || { ex: 0, when: first.when, do: first.do, tell: first.tell }, level = get("level", 0);
+            return ["when", "do", "tell"].every((f) => String(sen[f] || "").trim()) && level > 0 && (sen.ex == null || S.examples[sen.ex].levels.indexOf(level) >= 0);
+          }) },
+        { id: "draft", label: "Bring the draft reply back from the AI", required: true,
+          done: ok(() => text().trim()) },
+        { id: "caught", label: "Tick the four checks and add a rule for what it got wrong", required: true,
+          done: ok(() => {
+            const checks = get("checks", []), rules = get("rules", []), found = readAnswer(text());
+            return text().trim() && Array.isArray(checks) && S.checks.every((c, i) => checks[i] === true)
+              && ((Array.isArray(rules) && rules.length > 0) || !(found.prices.length || found.dates.length));
+          }) },
+        { id: "replied", label: "Mark the lead as replied once the draft is right", required: true,
+          done: ok(() => { const id = answer().id; return id != null && saved().some((l) => l.id === id && l.status === "replied"); }) }
+      ];
+    }
   });
 })();

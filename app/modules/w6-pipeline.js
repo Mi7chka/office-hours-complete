@@ -237,6 +237,34 @@
     week: 6, id: "w6-pipeline", title: "The pipeline board",
     intro: "One list of leads, sorted by next step date, so nobody goes quiet because you got busy. The AI drafts the follow-ups, you catch the one that is wrong, and nothing is sent to anybody.",
     render: render,
-    summary: function () { const t = today(), all = leads(), n = all.filter((l) => status(l, t).quiet).length; return { label: "Leads gone quiet", value: n + " of " + all.length, tone: n ? "bad" : "ok" }; }
+    summary: function () { const t = today(), all = leads(), n = all.filter((l) => status(l, t).quiet).length; return { label: "Leads gone quiet", value: n + " of " + all.length, tone: n ? "bad" : "ok" }; },
+    /* For the game (GAME.md): what counts as done, read from what this page has already saved. It writes nothing.
+       The catch is the drafts that must not go out: with the sample answer, Victor already said no and
+       Angela's draft names a day that is not in her notes. The proof is a list where nobody is quiet. */
+    objectives: function () {
+      const d = { drafts: false, held: false, closed: false, sent: false, quiet: false, again: false };
+      try {
+        const list = leads(), t = today(), marks = get("marks", null) || {}, saved = get("drafts", null);
+        const byId = (id) => list.find((l) => l.id === id);
+        const drafts = (Array.isArray(saved) ? saved : []).filter((x) => x && typeof x.text === "string" && byId(x.id));
+        const flagged = drafts.filter((x) => problems(byId(x.id), x.text).length);       // the same check step 4 runs
+        const saidNo = (l) => SAID_NO.test(tidy(l.notes + " " + l.step));
+        const lost = list.filter((l) => l.stage === "Lost");
+        d.drafts = drafts.length > 0;
+        d.held = d.drafts && (flagged.length ? flagged : drafts).every((x) => marks[x.id]);   // a choice made on every flagged draft, or on every draft when none is flagged
+        d.closed = !list.some((l) => l.stage !== "Lost" && saidNo(l));
+        d.sent = Object.keys(marks).some((id) => marks[id] === "sent");
+        d.quiet = list.length > 0 && !list.some((l) => status(l, t).quiet);
+        d.again = lost.some((l) => !!l.step && !!l.date && l.date >= t);
+      } catch (e) { /* nothing saved yet, or something unreadable: every box stays empty */ }
+      return [
+        { id: "drafts", label: "Bring the follow-up drafts back", done: !!d.drafts, required: true },
+        { id: "held", label: "Hold back every draft that should not go out", done: !!d.held, required: true },
+        { id: "closed", label: "Close the lead who already said no", done: !!d.closed, required: true },
+        { id: "sent", label: "Mark the good draft sent, with a next step and a date", done: !!d.sent, required: true },
+        { id: "quiet", label: "Leave no open lead without a next step and a date", done: !!d.quiet, required: true },
+        { id: "again", label: "Write down when to try the lost lead again", done: !!d.again, required: false }
+      ];
+    }
   });
 })();

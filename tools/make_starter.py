@@ -15,8 +15,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-KEEP = [".gitignore", "LICENSE", "Launch.command", "Launch.bat", "index.html", "MODULES.md",
-        "app/shell.js", "app/shell.css", "app/course.js", "tools/build_runbooks.py"]
+KEEP = [".gitignore", "LICENSE", "Launch.command", "Launch.bat", "index.html", "MODULES.md", "GAME.md",
+        "app/shell.js", "app/shell.css", "app/course.js", "app/game/game.js", "app/game/game.css",
+        "tools/build_runbooks.py"]
 
 
 def main():
@@ -47,6 +48,11 @@ def main():
     for m in mods:
         copy(f"app/data/{m}.js")
         copy(f"app/modules/{m}.js")
+        mission = f"app/game/missions/m{int(m[1])}.js"         # the game: one mission per week this copy holds
+        if (ROOT / mission).exists():
+            copy(mission)
+        else:
+            print(f"  note: {mission} is not written yet, so the game shows that mission as arriving later")
     for k in range(1, a.week + 1):
         for folder, pattern in (("prompts", f"week-{k}-*"), ("samples", f"week-{k}-*"), ("runbooks", f"session-{k:02d}.json")):
             for p in sorted((ROOT / folder).glob(pattern)):

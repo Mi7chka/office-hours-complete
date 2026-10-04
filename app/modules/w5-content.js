@@ -204,6 +204,34 @@
     week: 5, id: "w5-content", title: "One idea, five pieces",
     intro: "One real lesson from the week goes in. A post, a video script, an email, a website answer and a Google post come out, and nothing is ready until you approve it.",
     render: render,
-    summary: function () { const n = approvedCount(); return { label: "Pieces approved this week", value: n + " of " + S.pieces.length, tone: n === S.pieces.length ? "ok" : "warn" }; }
+    summary: function () { const n = approvedCount(); return { label: "Pieces approved this week", value: n + " of " + S.pieces.length, tone: n === S.pieces.length ? "ok" : "warn" }; },
+    /* For the game (GAME.md): what counts as done, read from what this page has already saved. It writes nothing.
+       The catch is a promise no fact supports: in the sample answer, the Google post guarantees every shrub. */
+    objectives: function () {
+      const d = { pieces: false, weakest: false, fixed: false, approved: false, routine: false, number: false };
+      try {
+        const saved = get("pieces", null), weak = get("weak", null), approved = get("approved", null) || {};
+        const ticks = get("routine", null) || {}, log = get("log", null), idea = get("idea", null) || sampleIdea();
+        if (Array.isArray(saved) && saved.length === S.pieces.length) {
+          const text = (i) => String((saved[i] || {}).text || "");
+          const allowed = /guarantee/i.test(idea.lesson + " " + idea.facts);             // a guarantee is invented only when the facts never give one
+          const promised = S.pieces.map((p, i) => i).filter((i) => !allowed && /guarantee/i.test(text(i)));
+          d.pieces = S.pieces.every((p, i) => text(i).trim() !== "");
+          d.weakest = d.pieces && typeof weak === "number" && !!saved[weak] && promised.every((i) => i === weak);
+          d.fixed = d.pieces && saved.some((p) => p && p.fixed) && !promised.length;
+          d.approved = d.fixed && S.pieces.every((p, i) => approved[i]);                  // ticks made before the fix do not count: a changed piece needs a fresh yes
+        }
+        d.routine = S.routine.slice(0, 2).every((r) => ticks[r.day]);
+        d.number = Array.isArray(log) && log.length > 0;
+      } catch (e) { /* nothing saved yet, or something unreadable: every box stays empty */ }
+      return [
+        { id: "pieces", label: "Bring five pieces back from one idea", done: !!d.pieces, required: true },
+        { id: "weakest", label: "Find the piece that overpromises and mark it weakest", done: !!d.weakest, required: true },
+        { id: "fixed", label: "Have only that piece fixed, and swap the fix in", done: !!d.fixed, required: true },
+        { id: "approved", label: "Approve all five pieces, the fixed one included", done: !!d.approved, required: true },
+        { id: "routine", label: "Tick Monday and Tuesday on the weekly routine", done: !!d.routine, required: false },
+        { id: "number", label: "Write down this week's one number", done: !!d.number, required: false }
+      ];
+    }
   });
 })();

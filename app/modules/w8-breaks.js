@@ -7,6 +7,13 @@
    Works with the Greenline sample, or with your own business. Nothing is sent anywhere. */
 (function () {
   const h = OH.h, S = OH.sample.breaks, K = "w8:", WEEK = 8;
+  // armed(button, question): true on the second press within five seconds. No native dialogs anywhere in this app.
+  function armed(btn, question) {
+    if (btn.dataset.armed === "1") { btn.dataset.armed = ""; return true; }
+    const was = btn.textContent; btn.dataset.armed = "1"; btn.textContent = question;
+    setTimeout(() => { if (btn.dataset.armed === "1") { btn.dataset.armed = ""; btn.textContent = was; } }, 5000);
+    return false;
+  }
   const get = (k, d) => OH.store.get(K + k, d), set = (k, v) => OH.store.set(K + k, v);
   const filled = (v) => String(v || "").trim() !== "";
   const heading = (text) => h("h3", { style: "margin-top:20px" }, text);
@@ -203,12 +210,13 @@
       h("button", { class: "primary", onclick: () => printOnly(sheetForPrint(top, rows)) }, "Print the sheet"),
       h("button", { onclick: () => OH.download("when-it-breaks-sheet.csv", OH.toCSV([T.cols].concat(rows)), "text/csv") }, "Download as CSV"),
       h("span", { class: "spacer" }),
-      h("button", { class: "ghost", onclick: () => {
-        if (get("rows", null) && !window.confirm("Replace the rows on the screen with a blank sheet?")) return;
+      // Replacing the rows asks first, in the page: the first press arms the button, the second one does it.
+      h("button", { class: "ghost", onclick: (ev) => {
+        if (get("rows", null) && !armed(ev.target, "Press again to replace the rows with a blank sheet")) return;
         set("rows", T.blank.map((tool) => T.cols.map((c, i) => (i ? "" : tool)))); set("top", { biz: "", first: "", second: "" }); redraw();
       } }, "Start a blank sheet for my business"),
-      h("button", { class: "ghost", onclick: () => {
-        if (get("rows", null) && !window.confirm("Replace the rows on the screen with the Greenline sample?")) return;
+      h("button", { class: "ghost", onclick: (ev) => {
+        if (get("rows", null) && !armed(ev.target, "Press again to bring back the Greenline rows")) return;
         set("rows", null); set("top", null); redraw();
       } }, "Bring back the Greenline rows")));
     body.appendChild(OH.note(T.rule, "warn"));
@@ -337,6 +345,30 @@
     summary: function () {
       const n = planDone(), total = S.plan.steps.length;
       return { label: "90-day plan steps done", value: n + " of " + total, tone: n >= total ? "ok" : n ? "warn" : "" };
+    },
+    /* For the game (GAME.md): what counts as done, read from what this page has already saved. It writes nothing.
+       The catch is the answer nobody has yet: the exact words on the screen stay empty until somebody asks Luis. */
+    objectives: function () {
+      const d = { words: false, compared: false, sheet: false, habits: false, plan: false };
+      try {
+        const own = get("own", "") || "", form = get("form", null) || (own ? {} : sampleForm());
+        let urgency = get("urgency", null); if (urgency == null) urgency = own ? "" : "money";
+        const T = S.sheet, rows = get("rows", null), ticks = get("habits", null) || {};
+        const greenline = T.rows.map((row) => row[0]);
+        const untouched = (row) => T.blank.indexOf(row[0]) >= 0 && row.slice(1).every((v) => !filled(v));   // a row of the blank sheet nobody has filled in
+        d.words = !!urgency && S.fields.every((q) => filled(form[q.id]));               // the request is ready: no answer left empty
+        d.compared = filled(get("ai", ""));
+        d.sheet = Array.isArray(rows) && rows.some((row) => Array.isArray(row) && filled(row[0]) && greenline.indexOf(row[0]) < 0 && !untouched(row));
+        d.habits = S.habits.some((x) => ticks[x.id]);
+        d.plan = planDone() > 0;
+      } catch (e) { /* nothing saved yet, or something unreadable: every box stays empty */ }
+      return [
+        { id: "words", label: "Find the missing answer and get it from Luis", done: !!d.words, required: true },
+        { id: "compared", label: "Check the AI's version for a guessed cause", done: !!d.compared, required: true },
+        { id: "sheet", label: "Put one tool of your own on the when-it-breaks sheet", done: !!d.sheet, required: true },
+        { id: "habits", label: "Tick the security habits you already have", done: !!d.habits, required: false },
+        { id: "plan", label: "Tick the first step of your 90-day plan", done: !!d.plan, required: true }
+      ];
     }
   });
 })();

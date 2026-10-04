@@ -272,6 +272,31 @@
     week: 7, id: "w7-data", title: "From a messy export to one screen",
     intro: "Thirty messy rows go in. The page finds what is wrong, cleans it without changing a single amount, explains the gap, and shows the result on one screen.",
     render: render,
-    summary: function () { const c = cols(), V = view(analyze(rows(), c, get("names", null) || {}), c); return { label: "Unpaid jobs, in dollars", value: fmt(V.owed), tone: V.owed ? "warn" : "ok" }; }
+    summary: function () { const c = cols(), V = view(analyze(rows(), c, get("names", null) || {}), c); return { label: "Unpaid jobs, in dollars", value: fmt(V.owed), tone: V.owed ? "warn" : "ok" }; },
+    /* For the game (GAME.md): what counts as done, read from what this page has already saved. It writes nothing.
+       The catch is the check that proves the work: the total typed by hand has to match the clean table.
+       With the sample that is 26,655, not the 27,040 the export started with. */
+    objectives: function () {
+      const d = { found: false, labels: false, second: false, total: false, map: false };
+      try {
+        const c = cols(), A = analyze(rows(), c, get("names", null) || {}), ai = get("ai", null), hand = num(get("hand", null)), map = get("map", null) || {};
+        const typed = (v) => String(v || "").trim() !== "", bag = (list) => list.map((v) => (v == null ? "blank" : v));
+        d.found = get("shown", false) === true;
+        d.labels = typed(get("estimated", "")) && typed(get("projected", ""));
+        if (Array.isArray(ai) && ai.length) {                                             // the same comparison step 5 shows
+          const x = difference(bag(ai.map((r) => num(r[c.amount]))), bag(A.kept.map((r) => r.amount)));
+          d.second = !x.extra.length && !x.missing.length;
+        }
+        d.total = hand != null && hand === A.after;
+        d.map = S.map.every((m) => typed(map[m.key + ":home"]));
+      } catch (e) { /* nothing saved yet, or something unreadable: every box stays empty */ }
+      return [
+        { id: "found", label: "Show what is wrong in the export, row by row", done: !!d.found, required: true },
+        { id: "labels", label: "Type an estimate and a projection, each in its own box", done: !!d.labels, required: true },
+        { id: "second", label: "Get a second opinion that changes no amount", done: !!d.second, required: true },
+        { id: "total", label: "Check the clean total by hand until it matches", done: !!d.total, required: true },
+        { id: "map", label: "Write down one home for customers, money and files", done: !!d.map, required: false }
+      ];
+    }
   });
 })();

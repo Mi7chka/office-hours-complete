@@ -266,6 +266,29 @@
     week: 4, id: "w4-getfound", title: "The get-found checks",
     intro: "Five free checks on whether Google and AI assistants can find and describe a business, then one weak page fixed from a few plain facts.",
     render: render,
-    summary: function () { const n = checksDone(); return { label: "Get-found checks done", value: n + " of " + S.checks.length, tone: n === S.checks.length ? "ok" : "warn" }; }
+    summary: function () { const n = checksDone(); return { label: "Get-found checks done", value: n + " of " + S.checks.length, tone: n === S.checks.length ? "ok" : "warn" }; },
+    /* What counts as done in the game (GAME.md). Read only: every answer comes from what the tool has already
+       saved, in the order the runbook walks it. The catch is step 7: every piece of the rewrite gets a call, and
+       the piece holding the sample answer's made-up line ("for more than ten years") only counts once it is flagged. */
+    objectives: function () {
+      const ok = (test) => { try { return !!test(); } catch (e) { return false; } };               // nothing saved yet, or something odd saved: not done
+      const MADE_UP = /more than ten years/i;
+      return [
+        { id: "own", label: "Point the checks at your own business", required: false,
+          done: ok(() => { const b = get("biz", null); return b.name && b.name !== S.business.name; }) },
+        { id: "checks", label: "Run three of the five checks and record what you saw", required: true,
+          done: ok(() => checksDone() >= 3) },
+        { id: "rewrite", label: "Bring the rewritten page back from the AI", required: true,
+          done: ok(() => { const r = get("rewrite", null); return r.title && r.qa.length > 0; }) },
+        { id: "caught", label: "Hold each piece against the facts. Flag what is made up", required: true,
+          done: ok(() => {
+            const r = get("rewrite", null), calls = get("verdicts", {});
+            const pieces = [["title", r.title], ["description", r.description]].concat(r.qa.map((x, i) => ["q" + (i + 1), x.q + " " + x.a]));
+            return pieces.every((p) => (MADE_UP.test(p[1]) ? calls[p[0]] === "flag" : calls[p[0]] === "mine" || calls[p[0]] === "flag"));
+          }) },
+        { id: "allfive", label: "Finish all five checks", required: false,
+          done: ok(() => checksDone() === S.checks.length) }
+      ];
+    }
   });
 })();
